@@ -1,5 +1,30 @@
 <resources>
+    <!-- Application: general app-level strings -->
     <string name="app_name">Barber Appointment App</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- WelcomeFragment: entry screen where user selects role -->
+    <string name="welcome_title">Barber Appointment</string>
+    <string name="welcome_subtitle">Choose your role</string>
+    <string name="welcome_client_btn">Login as Client</string>
+    <string name="welcome_barber_btn">Login as Barber</string>
+
+    <!-- LoginFragment: shared login screen for client and barber -->
+    <string name="login_title">Login</string>
+    <string name="login_email_hint">Email</string>
+    <string name="login_password_hint">Password</string>
+    <string name="login_continue_btn">Continue</string>
+
+    <!-- ClientHomeFragment: main menu for client actions -->
+    <string name="client_home_title">Client Home</string>
+    <string name="client_book_btn">Book Appointment</string>
+    <string name="client_my_appointments_btn">My Appointments</string>
+    <string name="client_rate_btn">Rate Barber</string>
+
+    <!-- BarberHomeFragment: main menu for barber actions -->
+    <string name="barber_home_title">Barber Home</string>
+    <string name="barber_appointments_btn">View Appointments</string>
+    <string name="barber_upload_btn">Upload to Gallery</string>
+    <string name="barber_gallery_btn">Gallery</string>
+
+    <!-- Future feature fragments: placeholders for upcoming screens -->
 </resources>
