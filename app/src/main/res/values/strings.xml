@@ -25,6 +25,18 @@
     <string name="barber_appointments_btn">View Appointments</string>
     <string name="barber_upload_btn">Upload to Gallery</string>
     <string name="barber_gallery_btn">Gallery</string>
+    <string name="barber_reviews_btn">View Reviews</string>
+
+
+    <!-- Reviews (shared fragment) -->
+    <!-- Client Review -->
+    <string name="reviews_title">Reviews</string>
+    <string name="reviews_subtitle_client">Write a review</string>
+    <string name="reviews_subtitle_barber">Your reviews</string>
+    <string name="reviews_add_btn">Add Review</string>
+    <!-- Barber Review -->
+
+
 
     <!-- Future feature fragments: placeholders for upcoming screens -->
 </resources>
