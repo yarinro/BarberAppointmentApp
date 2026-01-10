@@ -8,7 +8,7 @@
     <string name="welcome_client_btn">Login as Client</string>
     <string name="welcome_barber_btn">Login as Barber</string>
 
-    <!-- LoginFragment: shared login screen for client and barber -->
+    <!-- LoginFragment: shared - client&barber -->
     <string name="login_title">Login</string>
     <string name="login_email_hint">Email</string>
     <string name="login_password_hint">Password</string>
@@ -18,7 +18,17 @@
     <string name="client_home_title">Client Home</string>
     <string name="client_book_btn">Book Appointment</string>
     <string name="client_my_appointments_btn">My Appointments</string>
-    <string name="client_rate_btn">Rate Barber</string>
+    <string name="client_add_review_btn">Add Review</string>
+    <string name="client_gallery_btn">Barber's Gallery</string>
+
+    <!-- ClientBookAppointmentFragment- client -->
+    <string name="book_appointment_title">Book an Appointment</string>
+
+    <!-- ClientMyAppointmentsFragment - client -->
+    <string name="client_my_appointments_title">My Appointments</string>
+
+    <!-- ClientAddReviewFragment - client -->
+    <string name="client_add_review_title">Rate and Add a Review</string>
 
     <!-- BarberHomeFragment: main menu for barber actions -->
     <string name="barber_home_title">Barber Home</string>
@@ -27,14 +37,24 @@
     <string name="barber_gallery_btn">Gallery</string>
     <string name="barber_reviews_btn">View Reviews</string>
 
+    <!-- BarberAppointmentsFragment -->
+    <string name="barber_appointments_title">Booked Appointments</string>
+    <string name="barber_appointments_add_appointment_btn">Add Appointment></string>
 
-    <!-- Reviews (shared fragment) -->
-    <!-- Client Review -->
-    <string name="reviews_title">Reviews</string>
-    <string name="reviews_subtitle_client">Write a review</string>
-    <string name="reviews_subtitle_barber">Your reviews</string>
-    <string name="reviews_add_btn">Add Review</string>
-    <!-- Barber Review -->
+    <!-- BarberUploadToGalleryFragment -->
+    <string name="barber_upload_to_gallery_fragment_title">Add image</string>
+
+    <!-- BarberScheduleSettingsFragment -->
+    <string name="barber_schedule_settings_title">Schedule Settings</string>
+
+    <!-- ______________________________________Shared Fragments = Client&Barber (VIEW ONLY)___________________________________ -->
+        <!-- Reviews (shared - client&barber) -->
+        <string name="reviews_title">Barber Reviews</string>
+
+        <!-- Gallery (shared - client&barber) -->
+        <string name="gallery_title">Barber's Gallery</string>
+
+
 
 
 
