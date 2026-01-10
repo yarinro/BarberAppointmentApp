@@ -16,13 +16,13 @@
 
     <!-- ClientHomeFragment: main menu for client actions -->
     <string name="client_home_title">Client Home</string>
-    <string name="client_book_btn">Book Appointment</string>
-    <string name="client_my_appointments_btn">My Appointments</string>
-    <string name="client_add_review_btn">Add Review</string>
-    <string name="client_gallery_btn">Barber's Gallery</string>
+    <string name="client_home_book_btn">Book Appointment</string>
+    <string name="client_home_my_appointments_btn">My Appointments</string>
+    <string name="client_home_add_review_btn">Add Review</string>
+    <string name="client_home_gallery_btn">Barber's Gallery</string>
 
     <!-- ClientBookAppointmentFragment- client -->
-    <string name="book_appointment_title">Book an Appointment</string>
+    <string name="client_book_appointment_title">Book an Appointment</string>
 
     <!-- ClientMyAppointmentsFragment - client -->
     <string name="client_my_appointments_title">My Appointments</string>
@@ -32,10 +32,13 @@
 
     <!-- BarberHomeFragment: main menu for barber actions -->
     <string name="barber_home_title">Barber Home</string>
-    <string name="barber_appointments_btn">View Appointments</string>
-    <string name="barber_upload_btn">Upload to Gallery</string>
-    <string name="barber_gallery_btn">Gallery</string>
-    <string name="barber_reviews_btn">View Reviews</string>
+    <string name="barber_home_appointments_btn">View Appointments</string>
+    <string name="barber_home_upload_btn">Upload to Gallery</string>
+    <string name="barber_home_gallery_btn">Gallery</string>
+    <string name="barber_home_reviews_btn">View Reviews</string>
+    <string name="barber_home_schedule_management_btn">Schedule Management</string>
+    <string name="barber_home_services_and_prices_btn">Services and Prices Management</string>
+    <string name="barber_home_ui_btn">UI Theme</string>
 
     <!-- BarberAppointmentsFragment -->
     <string name="barber_appointments_title">Booked Appointments</string>
@@ -44,19 +47,21 @@
     <!-- BarberUploadToGalleryFragment -->
     <string name="barber_upload_to_gallery_fragment_title">Add image</string>
 
-    <!-- BarberScheduleSettingsFragment -->
-    <string name="barber_schedule_settings_title">Schedule Settings</string>
+    <!-- BarberServicesAndPricesFragment -->
+    <string name="barber_services_and_prices_title">Services and Prices Management</string>
+
+    <!-- BarberUiSettingsFragment (optional) -->
+    <string name="barber_ui_settings_title">UI Theme</string>
+
+    <!-- BarberScheduleManagementFragment -->
+    <string name="barber_schedule_management_title">Schedule Settings</string>
 
     <!-- ______________________________________Shared Fragments = Client&Barber (VIEW ONLY)___________________________________ -->
-        <!-- Reviews (shared - client&barber) -->
-        <string name="reviews_title">Barber Reviews</string>
+    <!-- Reviews (shared - client&barber) -->
+    <string name="reviews_title">Barber Reviews</string>
 
-        <!-- Gallery (shared - client&barber) -->
-        <string name="gallery_title">Barber's Gallery</string>
-
-
-
-
+    <!-- Gallery (shared - client&barber) -->
+    <string name="gallery_title">Barber Gallery</string>
 
     <!-- Future feature fragments: placeholders for upcoming screens -->
 </resources>

@@ -17,23 +17,35 @@
         android:id="@+id/button7"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/barber_appointments_btn" />
+        android:text="@string/barber_home_appointments_btn" />
 
     <Button
         android:id="@+id/button8"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/barber_gallery_btn" />
+        android:text="@string/barber_home_gallery_btn" />
 
     <Button
         android:id="@+id/button9"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/barber_upload_btn" />
+        android:text="@string/barber_home_upload_btn" />
 
     <Button
         android:id="@+id/button10"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/barber_reviews_btn" />
+        android:text="@string/barber_home_reviews_btn" />
+
+    <Button
+        android:id="@+id/button11"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/barber_home_schedule_management_btn" />
+
+    <Button
+        android:id="@+id/button14"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/barber_home_services_and_prices_btn" />
 </LinearLayout>
