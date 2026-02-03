@@ -6,6 +6,14 @@
     android:orientation="vertical"
     tools:context=".BarberUploadToGalleryFragment">
 
+    <ImageButton
+        android:id="@+id/btn_back_barber_upload_gallery"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/ic_arrow_back"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="Back" />
+
     <!-- TODO: Update blank fragment layout -->
     <TextView
         android:layout_width="match_parent"
