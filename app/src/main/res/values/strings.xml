@@ -19,7 +19,7 @@
     <string name="client_home_book_btn">Book Appointment</string>
     <string name="client_home_my_appointments_btn">My Appointments</string>
     <string name="client_home_add_review_btn">Add Review</string>
-    <string name="client_home_gallery_btn">Barber's Gallery</string>
+    <string name="client_home_gallery_btn">Barber\'s Gallery</string>
 
     <!-- ClientBookAppointmentFragment- client -->
     <string name="client_book_appointment_title">Book an Appointment</string>

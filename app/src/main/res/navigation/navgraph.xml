@@ -1,6 +1,164 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/navgraph">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navgraph"
+    app:startDestination="@id/welcomeFragment">
 
+    <fragment
+        android:id="@+id/welcomeFragment"
+        android:name="com.example.barberappointmentapp.WelcomeFragment"
+        android:label="fragment_welcome"
+        tools:layout="@layout/fragment_welcome" >
+        <action
+            android:id="@+id/action_welcomeFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.example.barberappointmentapp.LoginFragment"
+        android:label="fragment_login"
+        tools:layout="@layout/fragment_login" >
+        <action
+            android:id="@+id/action_loginFragment_to_barberHomeFragment"
+            app:destination="@id/barberHomeFragment" />
+        <action
+            android:id="@+id/action_loginFragment_to_clientHomeFragment"
+            app:destination="@id/clientHomeFragment" />
+        <action
+            android:id="@+id/action_loginFragment_to_welcomeFragment"
+            app:destination="@id/welcomeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/barberHomeFragment"
+        android:name="com.example.barberappointmentapp.BarberHomeFragment"
+        android:label="fragment_barber_home"
+        tools:layout="@layout/fragment_barber_home" >
+        <action
+            android:id="@+id/action_barberHomeFragment_to_galleryFragment"
+            app:destination="@id/galleryFragment" />
+        <action
+            android:id="@+id/action_barberHomeFragment_to_reviewsFragment"
+            app:destination="@id/reviewsFragment" />
+        <action
+            android:id="@+id/action_barberHomeFragment_to_barberServicesAndPricesFragment"
+            app:destination="@id/barberServicesAndPricesFragment" />
+        <action
+            android:id="@+id/action_barberHomeFragment_to_barberScheduleManagementFragment"
+            app:destination="@id/barberScheduleManagementFragment" />
+        <action
+            android:id="@+id/action_barberHomeFragment_to_barberAppointmentsFragment"
+            app:destination="@id/barberAppointmentsFragment" />
+        <action
+            android:id="@+id/action_barberHomeFragment_to_barberUploadToGalleryFragment"
+            app:destination="@id/barberUploadToGalleryFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/clientHomeFragment"
+        android:name="com.example.barberappointmentapp.ClientHomeFragment"
+        android:label="fragment_client_home"
+        tools:layout="@layout/fragment_client_home" >
+        <action
+            android:id="@+id/action_clientHomeFragment_to_galleryFragment"
+            app:destination="@id/galleryFragment" />
+        <action
+            android:id="@+id/action_clientHomeFragment_to_reviewsFragment"
+            app:destination="@id/reviewsFragment" />
+        <action
+            android:id="@+id/action_clientHomeFragment_to_clientBookAppointmentFragment"
+            app:destination="@id/clientBookAppointmentFragment" />
+        <action
+            android:id="@+id/action_clientHomeFragment_to_clientAddReviewFragment"
+            app:destination="@id/clientAddReviewFragment" />
+        <action
+            android:id="@+id/action_clientHomeFragment_to_clientMyAppointmentsFragment"
+            app:destination="@id/clientMyAppointmentsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/barberAppointmentsFragment"
+        android:name="com.example.barberappointmentapp.BarberAppointmentsFragment"
+        android:label="fragment_barber_appointments"
+        tools:layout="@layout/fragment_barber_appointments" >
+        <action
+            android:id="@+id/action_barberAppointmentsFragment_to_barberHomeFragment"
+            app:destination="@id/barberHomeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/barberScheduleManagementFragment"
+        android:name="com.example.barberappointmentapp.BarberScheduleManagementFragment"
+        android:label="fragment_barber_schedule_settings"
+        tools:layout="@layout/fragment_barber_schedule_settings" >
+        <action
+            android:id="@+id/action_barberScheduleManagementFragment_to_barberHomeFragment"
+            app:destination="@id/barberHomeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/barberServicesAndPricesFragment"
+        android:name="com.example.barberappointmentapp.BarberServicesAndPricesFragment"
+        android:label="fragment_barber_services_and_prices"
+        tools:layout="@layout/fragment_barber_services_and_prices" >
+        <action
+            android:id="@+id/action_barberServicesAndPricesFragment_to_barberHomeFragment"
+            app:destination="@id/barberHomeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/barberUploadToGalleryFragment"
+        android:name="com.example.barberappointmentapp.BarberUploadToGalleryFragment"
+        android:label="fragment_barber_upload_to_gallery"
+        tools:layout="@layout/fragment_barber_upload_to_gallery" >
+        <action
+            android:id="@+id/action_barberUploadToGalleryFragment_to_barberHomeFragment"
+            app:destination="@id/barberHomeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/clientAddReviewFragment"
+        android:name="com.example.barberappointmentapp.ClientAddReviewFragment"
+        android:label="fragment_client_add_review"
+        tools:layout="@layout/fragment_client_add_review" >
+        <action
+            android:id="@+id/action_clientAddReviewFragment_to_clientHomeFragment"
+            app:destination="@id/clientHomeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/clientBookAppointmentFragment"
+        android:name="com.example.barberappointmentapp.ClientBookAppointmentFragment"
+        android:label="fragment_client_book_appointment"
+        tools:layout="@layout/fragment_client_book_appointment" >
+        <action
+            android:id="@+id/action_clientBookAppointmentFragment_to_clientHomeFragment"
+            app:destination="@id/clientHomeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/clientMyAppointmentsFragment"
+        android:name="com.example.barberappointmentapp.ClientMyAppointmentsFragment"
+        android:label="fragment_client_my_appointments"
+        tools:layout="@layout/fragment_client_my_appointments" >
+        <action
+            android:id="@+id/action_clientMyAppointmentsFragment_to_clientHomeFragment"
+            app:destination="@id/clientHomeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/galleryFragment"
+        android:name="com.example.barberappointmentapp.GalleryFragment"
+        android:label="fragment_gallery"
+        tools:layout="@layout/fragment_gallery" >
+        <action
+            android:id="@+id/action_galleryFragment_to_barberHomeFragment"
+            app:destination="@id/barberHomeFragment" />
+        <action
+            android:id="@+id/action_galleryFragment_to_clientHomeFragment"
+            app:destination="@id/clientHomeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/reviewsFragment"
+        android:name="com.example.barberappointmentapp.ReviewsFragment"
+        android:label="fragment_reviews"
+        tools:layout="@layout/fragment_reviews" >
+        <action
+            android:id="@+id/action_reviewsFragment_to_barberHomeFragment"
+            app:destination="@id/barberHomeFragment" />
+        <action
+            android:id="@+id/action_reviewsFragment_to_clientHomeFragment"
+            app:destination="@id/clientHomeFragment" />
+    </fragment>
 </navigation>
