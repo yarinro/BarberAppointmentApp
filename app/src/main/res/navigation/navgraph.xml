@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_welcomeFragment_to_loginFragment"
             app:destination="@id/loginFragment" />
+        <action
+            android:id="@+id/action_welcomeFragment_to_clientSignUpFragment"
+            app:destination="@id/clientSignUpFragment" />
     </fragment>
     <fragment
         android:id="@+id/loginFragment"
@@ -160,5 +163,14 @@
         <action
             android:id="@+id/action_reviewsFragment_to_clientHomeFragment"
             app:destination="@id/clientHomeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/clientSignUpFragment"
+        android:name="com.example.barberappointmentapp.ClientSignUpFragment"
+        android:label="fragment_client_sign_up"
+        tools:layout="@layout/fragment_client_sign_up" >
+        <action
+            android:id="@+id/action_clientSignUpFragment_to_welcomeFragment"
+            app:destination="@id/welcomeFragment" />
     </fragment>
 </navigation>

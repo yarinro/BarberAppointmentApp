@@ -21,15 +21,27 @@
         android:textSize="20sp" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/btn_login_as_client"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/welcome_client_btn" />
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/btn_login_as_barber"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/welcome_barber_btn" />
+
+    <Button
+        android:id="@+id/btn_welcome_login"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/welcome_login_btn" />
+
+    <Button
+        android:id="@+id/btn_welcome_signup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/welcome_signup_btn" />
 
 </LinearLayout>

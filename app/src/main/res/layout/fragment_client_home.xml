@@ -14,27 +14,33 @@
         android:textSize="34sp" />
 
     <Button
-        android:id="@+id/button4"
+        android:id="@+id/btn_client_book_appointment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/client_home_book_btn" />
 
     <Button
-        android:id="@+id/button5"
+        android:id="@+id/btn_client_my_appointments"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/client_home_my_appointments_btn" />
 
     <Button
-        android:id="@+id/button6"
+        android:id="@+id/btn_client_add_review"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/client_home_add_review_btn" />
 
     <Button
-        android:id="@+id/button12"
+        android:id="@+id/btn_client_gallery"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/client_home_gallery_btn" />
+
+    <Button
+        android:id="@+id/btn_client_reviews"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/client_home_reviews" />
 
 </LinearLayout>
