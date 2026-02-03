@@ -3,10 +3,12 @@ package com.example.barberappointmentapp;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -59,6 +61,58 @@ public class BarberHomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_barber_home, container, false);
+        View view =  inflater.inflate(R.layout.fragment_barber_home, container, false);
+
+        //----------------------------------------------BUTTONS----------------------------------------------------------------------------
+        Button btnViewAppointments = view.findViewById(R.id.btn_barber_view_appointments);
+        btnViewAppointments.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Navigation.findNavController(view).navigate(R.id.action_barberHomeFragment_to_barberAppointmentsFragment);
+            }
+        });
+
+        Button btnGallery = view.findViewById(R.id.btn_barber_gallery);
+        btnGallery.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Navigation.findNavController(view).navigate(R.id.action_barberHomeFragment_to_galleryFragment);
+            }
+        });
+
+        Button btnUploadToGallery = view.findViewById(R.id.btn_barber_upload_to_gallery);
+        btnUploadToGallery.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Navigation.findNavController(view).navigate(R.id.action_barberHomeFragment_to_barberUploadToGalleryFragment);
+            }
+        });
+
+        Button btnReviews = view.findViewById(R.id.btn_barber_reviews);
+        btnReviews.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Navigation.findNavController(view).navigate(R.id.action_barberHomeFragment_to_reviewsFragment);
+            }
+        });
+
+        Button scheduleManagement = view.findViewById(R.id.btn_barber_schedule_management);
+        scheduleManagement.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Navigation.findNavController(view).navigate(R.id.action_barberHomeFragment_to_barberScheduleManagementFragment);
+            }
+        });
+
+        Button servicesAndPrices = view.findViewById(R.id.btn_barber_services_and_prices);
+        servicesAndPrices.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Navigation.findNavController(view).navigate(R.id.action_barberHomeFragment_to_barberServicesAndPricesFragment);
+            }
+        });
+        //--------------------------------------------------------------------------------------------------------------------------
+
+        return view;
     }
 }

@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -59,6 +60,18 @@ public class BarberServicesAndPricesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_barber_services_and_prices, container, false);
+        View view = inflater.inflate(R.layout.fragment_barber_services_and_prices, container, false);
+
+        //----------------------------------BACK BUTTON-------------------------------------------
+        ImageButton btnBack = view.findViewById(R.id.btn_back_barber_services_prices);
+
+        btnBack.setOnClickListener(v ->
+                requireActivity()
+                        .getOnBackPressedDispatcher()
+                        .onBackPressed()
+        );
+        //----------------------------------BACK BUTTON-------------------------------------------
+
+        return view;
     }
 }

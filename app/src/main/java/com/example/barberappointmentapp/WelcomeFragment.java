@@ -3,10 +3,12 @@ package com.example.barberappointmentapp;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -59,6 +61,47 @@ public class WelcomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_welcome, container, false);
+        View view =  inflater.inflate(R.layout.fragment_welcome, container, false);
+
+        //----------------------------------------------BUTTONS----------------------------------------------------------------------------
+
+        // Debugging button - Login as client. DO NOT FORGET TO ERASE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        Button btnLoginAsClient = view.findViewById(R.id.btn_login_as_client);
+        btnLoginAsClient.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Navigation.findNavController(view).navigate(R.id.action_welcomeFragment_to_clientHomeFragment);
+            }
+        });
+
+        // Debugging button - Login as client. DO NOT FORGET TO ERASE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        Button btnLoginAsBarber = view.findViewById(R.id.btn_login_as_barber);
+        btnLoginAsBarber.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Navigation.findNavController(view).navigate(R.id.action_welcomeFragment_to_barberHomeFragment);
+            }
+        });
+
+        Button btnLogin = view.findViewById(R.id.btn_welcome_login);
+        btnLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Navigation.findNavController(view).navigate(R.id.action_welcomeFragment_to_loginFragment);
+            }
+        });
+
+        Button btnSignUp = view.findViewById(R.id.btn_welcome_signup);
+        btnSignUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Navigation.findNavController(view).navigate(R.id.action_welcomeFragment_to_clientSignUpFragment);
+            }
+        });
+        //--------------------------------------------------------------------------------------------------------------------------
+
+
+
+        return view;
+        }
     }
-}
