@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "881858775338",
+    "project_id": "barber-appointment-app-cfc93",
+    "storage_bucket": "barber-appointment-app-cfc93.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:881858775338:android:4904bfd3396837b6f1b653",
+        "android_client_info": {
+          "package_name": "com.example.barberappointmentapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDTMa4WL4jHHeUuK65JZU7uJrQlzxGVsEg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

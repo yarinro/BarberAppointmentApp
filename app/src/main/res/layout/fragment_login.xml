@@ -22,7 +22,7 @@
         android:textSize="34sp" />
 
     <EditText
-        android:id="@+id/editTextTextEmailAddress"
+        android:id="@+id/editText_login_email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -30,7 +30,7 @@
         android:inputType="textEmailAddress" />
 
     <EditText
-        android:id="@+id/editTextTextPassword"
+        android:id="@+id/editText_login_password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"

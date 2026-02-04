@@ -70,7 +70,12 @@ public class GalleryFragment extends Fragment {
                         .getOnBackPressedDispatcher()
                         .onBackPressed()
         );
-        //----------------------------------BACK BUTTON-------------------------------------------
+        //-----------------------------------------------------------------------------
+        //----------------------------------LOGIN BUTTON-------------------------------------------
+        ImageButton btnLogin = view.findViewById(R.id.btn_login);
+
+        //btnLogin.setOnClickListener()
+        //-----------------------------------------------------------------------------
 
         return view;
 
