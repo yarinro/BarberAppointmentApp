@@ -36,8 +36,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void login() {
-        String email = ((EditText) findViewById(R.id.editText_login_email)).getText().toString();
+
+        String email = ((EditText) findViewById(R.id.editText_login_email)).getText().toString().trim();
         String password = ((EditText) findViewById(R.id.editText_login_password)).getText().toString();
+
+        if (email.isEmpty() || password.isEmpty()) {
+            Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -69,5 +75,18 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
-
+//    public void signUp(){
+//        mAuth.createUserWithEmailAndPassword(email, password)
+//                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<AuthResult> task) {
+//                        if (task.isSuccessful()) {
+//
+//                        }
+//                        else {
+//
+//                        }
+//                    }
+//                });
+//    }
 }
