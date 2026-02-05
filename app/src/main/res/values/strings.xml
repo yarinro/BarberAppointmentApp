@@ -18,6 +18,11 @@
 
     <!-- ClientSignUpFragment: client-->
     <string name="client_signup_title">Sign Up</string>
+    <string name="client_signup_name">Full name</string>
+    <string name="client_signup_phone_number">Phone number</string>
+    <string name="client_signup_email">Email</string>
+    <string name="client_signup_password">Password</string>
+    <string name="client_signup_signup_btn">Sign Up</string>
 
     <!-- ClientHomeFragment: main menu for client actions -->
     <string name="client_home_title">Client Home</string>

@@ -3,7 +3,6 @@ package com.example.barberappointmentapp;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
-import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -81,7 +80,7 @@ public class LoginFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 mainActivity =(MainActivity) getActivity();
-                mainActivity.login();
+                mainActivity.logIn();
             }
         });
         //----------------------------------------------------------------------------------------

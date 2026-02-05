@@ -20,4 +20,43 @@
         android:layout_height="wrap_content"
         android:text="@string/client_signup_title"
         android:textSize="34sp" />
+
+    <EditText
+        android:id="@+id/editText_signup_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="@string/client_signup_name"
+        android:inputType="text" />
+
+    <EditText
+        android:id="@+id/editText_signup_phone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="@string/client_signup_phone_number"
+        android:inputType="text" />
+
+    <EditText
+        android:id="@+id/editText_signup_email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="@string/client_signup_email"
+        android:inputType="text|textEmailAddress" />
+
+    <EditText
+        android:id="@+id/editText_signup_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="@string/client_signup_password"
+        android:inputType="text|textPassword" />
+
+    <Button
+        android:id="@+id/signup_btn_sign_up"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/client_signup_signup_btn" />
+
 </LinearLayout>
