@@ -5,6 +5,7 @@ public class Appointment {
     private String clientUid;
     private String serviceId;
     private long startEpoch;
+    private long endEpoch;
     private int durationMinutes;
     private long createdAtEpoch;
 
@@ -37,6 +38,14 @@ public class Appointment {
 
     public long getStartEpoch() {
         return startEpoch;
+    }
+
+    public long getEndEpoch() {
+        return endEpoch;
+    }
+
+    public void setEndEpoch(long endEpoch) {
+        this.endEpoch = endEpoch;
     }
 
     public void setStartEpoch(long startEpoch) {
