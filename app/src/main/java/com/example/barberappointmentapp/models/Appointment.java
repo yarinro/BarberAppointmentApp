@@ -6,6 +6,7 @@ public class Appointment {
     private String serviceId;
     private long startEpoch;
     private int durationMinutes;
+    private boolean isCancelled;
 
     public Appointment() {
     }
@@ -16,6 +17,7 @@ public class Appointment {
         this.serviceId = serviceId;
         this.startEpoch = startEpoch;
         this.durationMinutes = durationMinutes;
+        this.isCancelled = false;
     }
 
     public String getId() {
@@ -47,6 +49,12 @@ public class Appointment {
     }
     public void setDurationMinutes(int durationMinutes) {
         this.durationMinutes = durationMinutes;
+    }
+    public boolean isCancelled() {
+        return isCancelled;
+    }
+    public void setCancelled(boolean cancelled) {
+        isCancelled = cancelled;
     }
 
     public long calcEndEpoch() {

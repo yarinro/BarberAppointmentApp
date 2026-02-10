@@ -1,5 +1,8 @@
 package com.example.barberappointmentapp.utils;
 
+import com.example.barberappointmentapp.models.TimeInterval;
+import com.example.barberappointmentapp.models.WorkWindow;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
