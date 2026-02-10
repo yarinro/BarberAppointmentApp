@@ -5,10 +5,17 @@ public class Service {
     private String name;
     private int price;
     private int durationMinutes;
-    private long createdAtEpoch;
     private boolean isActive;
 
     public Service() {
+    }
+
+    public Service(String id, String name, int price, int durationMinutes, boolean isActive) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.durationMinutes = durationMinutes;
+        this.isActive = isActive;
     }
 
     public String getId() {
@@ -41,14 +48,6 @@ public class Service {
 
     public void setDurationMinutes(int durationMinutes) {
         this.durationMinutes = durationMinutes;
-    }
-
-    public long getCreatedAtEpoch() {
-        return createdAtEpoch;
-    }
-
-    public void setCreatedAtEpoch(long createdAtEpoch) {
-        this.createdAtEpoch = createdAtEpoch;
     }
 
     public boolean isActive() {
