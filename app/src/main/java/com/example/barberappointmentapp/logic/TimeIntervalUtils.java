@@ -10,12 +10,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class TimeIntervalUtils {
-    public TimeIntervalUtils() {}
+    private TimeIntervalUtils() {}
 
     // converts a WorkWindow (which in minutes format) to an Interval (which in Epoch time format)
     public static TimeInterval workWindowToInterval(WorkWindow w, long dayStartEpoch) {
+        if (w == null) return null;
+
         long start = dayStartEpoch + TimeUtils.minutesToMillis(w.getStartMinute());
         long end   = dayStartEpoch + TimeUtils.minutesToMillis(w.getEndMinute());
+
+        if (end <= start) return null;
 
         return new TimeInterval(start, end);
     }

@@ -39,6 +39,8 @@ public final class SlotsCalculator {
 
     private static boolean isSlotBlocked(long slotStart, long slotEnd, List<TimeInterval> blocked) {
         // IMPORTANT: 'blocked' has to be sorted and merged
+        if (blocked == null || blocked.isEmpty()) return false;
+
         for (TimeInterval blockedInterval : blocked) {
             if (blockedInterval.getStart() >= slotEnd) return false;
             if (OverlapUtils.overlaps(slotStart, slotEnd, blockedInterval.getStart(), blockedInterval.getEnd())) return true;
@@ -46,6 +48,7 @@ public final class SlotsCalculator {
         return false;
     }
 
+    // Gets available slots for a specific day and service
     public static List<Slot> getAvailableSlotsForDay(
             List<Appointment> appointmentsForDay,
             List<WorkWindow> workWindowsForDay,
@@ -59,7 +62,9 @@ public final class SlotsCalculator {
         if (workWindowsForDay == null || workWindowsForDay.isEmpty()) return new ArrayList<>();
         if (scheduleSettings.getSlotMinutes() <= 0) return new ArrayList<>();
         if (service.getDurationMinutes() <= 0) return new ArrayList<>();
+        if (service.getDurationMinutes() % scheduleSettings.getSlotMinutes() != 0) return new ArrayList<>(); // if service is not divisible by slot duration
 
+        // getting blocked intervals
         List<TimeInterval> blocked = getBlockedIntervals(appointmentsForDay, timeOffsForDay);
         // converting WorkWindows to TimeIntervals
         List<TimeInterval> workIntervals = new ArrayList<>();
@@ -94,5 +99,24 @@ public final class SlotsCalculator {
 
         return availableSlots;
     }
+
+    // Validation: Checks if a slot is still available to avoid race conditions
+    public static boolean isSlotStillAvailable(
+            List<Appointment> appointmentsForDay,
+            List<WorkWindow> workWindowsForDay,
+            List<TimeOff> timeOffsForDay,
+            ScheduleSettings scheduleSettings,
+            Service service,
+            long dayStartEpoch,    // from UI
+            long chosenStartEpoch // the slot that the user chose
+    ) {
+        List<Slot> slots = getAvailableSlotsForDay(appointmentsForDay, workWindowsForDay, timeOffsForDay, scheduleSettings, service, dayStartEpoch);
+
+        for (Slot s : slots) {
+            if (s.getStartEpoch() == chosenStartEpoch) return true;
+        }
+        return false;
+    }
+
 
 }

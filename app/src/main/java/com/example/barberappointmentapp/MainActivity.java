@@ -28,7 +28,6 @@ import com.google.firebase.database.FirebaseDatabase;
 public class MainActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private final String ADMIN_ID = "2MDnTYrrupcbAv0bAZ1hm18CWA73";
-    private final DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("users");
 
 
     @Override
@@ -170,7 +169,7 @@ public class MainActivity extends AppCompatActivity {
                             User newUser = new User(uid, name, email, phone, System.currentTimeMillis());
 
                             // Write to Realtime DB
-                            usersRef.child(uid).setValue(newUser)
+                            FirebaseDatabase.getInstance().getReference("users").child(uid).setValue(newUser)
                                     .addOnSuccessListener(aVoid -> {
                                         Toast.makeText(MainActivity.this, "Signed up successfully.", Toast.LENGTH_SHORT).show();
                                         NavHostFragment navFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.navgraph);
