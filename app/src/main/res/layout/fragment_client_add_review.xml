@@ -12,7 +12,7 @@
         android:layout_height="40dp"
         android:src="@drawable/ic_arrow_back"
         android:background="?attr/selectableItemBackgroundBorderless"
-        android:contentDescription="Back" />
+        android:contentDescription="@string/cd_back" />
 
     <TextView
         android:id="@+id/textView13"

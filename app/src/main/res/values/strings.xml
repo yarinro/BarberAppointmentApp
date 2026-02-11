@@ -37,6 +37,9 @@
 
     <!-- ClientMyAppointmentsFragment - client -->
     <string name="client_my_appointments_title">My Appointments</string>
+    <string name="client_my_appointments_empty">No appointments yet</string>
+    <string name="client_my_appointments_loading">Loading appointments…</string>
+    <string name="client_my_appointments_load_failed">Failed to load appointments. Please try again.</string>
 
     <!-- ClientAddReviewFragment - client -->
     <string name="client_add_review_title">Rate and Add a Review</string>
@@ -84,4 +87,5 @@
     <string name="cancel">Cancel Appointment</string>
     <string name="placeholder_phone">050-1234567</string>
     <!-- Future feature fragments: placeholders for upcoming screens -->
+    <string name="cd_back">Back</string>
 </resources>

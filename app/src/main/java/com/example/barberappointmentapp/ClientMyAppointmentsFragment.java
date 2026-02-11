@@ -2,12 +2,30 @@ package com.example.barberappointmentapp;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.example.barberappointmentapp.adapters.ClientAppointmentsAdapter;
+import com.example.barberappointmentapp.models.Appointment;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -24,6 +42,7 @@ public class ClientMyAppointmentsFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
 
     public ClientMyAppointmentsFragment() {
         // Required empty public constructor
@@ -56,6 +75,8 @@ public class ClientMyAppointmentsFragment extends Fragment {
         }
     }
 
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -70,7 +91,63 @@ public class ClientMyAppointmentsFragment extends Fragment {
                         .getOnBackPressedDispatcher()
                         .onBackPressed()
         );
-        //----------------------------------BACK BUTTON-------------------------------------------
+        //-----------------------------------------------------------------------------
+        ProgressBar progress = view.findViewById(R.id.progress_appointments); // Progress bar
+        TextView tvEmpty = view.findViewById(R.id.tv_empty_appointments); // Text that shows when there are no appointments
+
+        RecyclerView recyclerView  = view.findViewById(R.id.recycler_appointments);
+        // RecyclerView
+        ArrayList<Appointment> dataSet = new ArrayList<>();
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        // Adapter
+        ClientAppointmentsAdapter adapter = new ClientAppointmentsAdapter(dataSet);
+        recyclerView.setAdapter(adapter);
+        // Loading the UI
+        progress.setVisibility(View.VISIBLE);
+        tvEmpty.setVisibility(View.GONE);
+
+        // -------------------Firebase logic-------------------------------
+        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
+            progress.setVisibility(View.GONE);
+            tvEmpty.setVisibility(View.VISIBLE);
+            return view;
+        }
+        // User ID
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference ref = database.getReference("appointments");
+        // Getting all appointments for the current user from DB
+        ref.orderByChild("clientUid").equalTo(uid)
+                        .addListenerForSingleValueEvent(new ValueEventListener() {
+
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                        dataSet.clear();
+                        // constructing the list of appointments as 'dataSet'
+                        for (DataSnapshot s : snapshot.getChildren()) {
+                            Appointment ap = s.getValue(Appointment.class);
+                            if (ap != null) {
+                                dataSet.add(ap);
+                            }
+                        }
+                        // Done loading the UI -> notify adapter
+                        adapter.notifyDataSetChanged();
+                        progress.setVisibility(View.GONE);
+
+                        tvEmpty.setVisibility(dataSet.isEmpty() ? View.VISIBLE : View.GONE); // if there are no appointments show an appropriate text
+                    }
+                    // In case of DB error
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        progress.setVisibility(View.GONE);
+                        tvEmpty.setVisibility(View.VISIBLE);
+                        Toast.makeText(getContext(), error.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
 
         return view;
 

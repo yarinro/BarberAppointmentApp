@@ -12,7 +12,7 @@
         android:layout_height="40dp"
         android:src="@drawable/ic_arrow_back"
         android:background="?attr/selectableItemBackgroundBorderless"
-        android:contentDescription="Back" />
+        android:contentDescription="@string/cd_back" />
 
     <TextView
         android:id="@+id/textView15"
@@ -21,9 +21,25 @@
         android:text="@string/client_my_appointments_title"
         android:textSize="34sp" />
 
+    <ProgressBar
+        android:id="@+id/progress_appointments"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone"/>
+
     <TextView
-        android:id="@+id/textView18"
+        android:id="@+id/tv_empty_appointments"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="placeholder - List of client appointments" />
+        android:gravity="center"
+        android:text="@string/client_my_appointments_empty"
+        android:visibility="gone" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_appointments"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
 </LinearLayout>
