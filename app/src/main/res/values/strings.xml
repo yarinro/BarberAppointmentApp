@@ -76,5 +76,12 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
+    <!-- item_appointment -->
+    <string name="placeholder_client_name">Client Name</string>
+    <string name="placeholder_service">Service</string>
+    <string name="placeholder_datetime">Date &amp; Time</string>
+    <string name="placeholder_status">CONFIRMED</string>
+    <string name="cancel">Cancel Appointment</string>
+    <string name="placeholder_phone">050-1234567</string>
     <!-- Future feature fragments: placeholders for upcoming screens -->
 </resources>
