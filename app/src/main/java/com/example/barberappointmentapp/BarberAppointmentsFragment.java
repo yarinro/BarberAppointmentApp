@@ -2,12 +2,30 @@ package com.example.barberappointmentapp;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.example.barberappointmentapp.adapters.BarberAppointmentsAdapter;
+import com.example.barberappointmentapp.models.Appointment;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -70,7 +88,84 @@ public class BarberAppointmentsFragment extends Fragment {
                         .getOnBackPressedDispatcher()
                         .onBackPressed()
         );
-        //----------------------------------BACK BUTTON-------------------------------------------
+        //----------------------------------------------------------------------------
+        // ---------------- UI ----------------
+        ProgressBar progress = view.findViewById(R.id.progress_barber_appointments);
+        TextView tvEmpty = view.findViewById(R.id.tv_empty_barber_appointments);
+        // recyclerview
+        RecyclerView recyclerView = view.findViewById(R.id.recycler_barber_appointments);
+        ArrayList<Appointment> dataSet = new ArrayList<>();
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        // adapter
+        final BarberAppointmentsAdapter[] adapter = new BarberAppointmentsAdapter[1];
+        adapter[0] = new BarberAppointmentsAdapter(dataSet, ap -> {
+            if (ap == null || ap.getId() == null) return;
+
+            new androidx.appcompat.app.AlertDialog.Builder(requireContext()).setTitle("Cancel appointment").setMessage("Are you sure you want to cancel this appointment?").setPositiveButton("Yes", (dialog, which) -> {
+                        DatabaseReference r = FirebaseDatabase.getInstance().getReference("appointments").child(ap.getId()).child("cancelled");
+                        r.setValue(true).addOnSuccessListener(unused -> {
+                                    for (int i = 0; i < dataSet.size(); i++) {
+                                        Appointment a = dataSet.get(i);
+                                        if (a != null && ap.getId().equals(a.getId())) {
+                                            a.setCancelled(true);
+                                            adapter[0].notifyItemChanged(i);
+                                            break;
+                                        }
+                                    }
+                                }).addOnFailureListener(e -> Toast.makeText(getContext(), "Cancel failed: " + e.getMessage(), Toast.LENGTH_LONG).show()
+                                );
+                    }).setNegativeButton("No", null).show();
+        });
+        recyclerView.setAdapter(adapter[0]);
+
+        // loading appointments- progress bar
+        progress.setVisibility(View.VISIBLE);
+        tvEmpty.setVisibility(View.GONE); // hide "no appointments"
+
+        // ---------------- Firebase logic ----------------
+        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
+            progress.setVisibility(View.GONE);
+            tvEmpty.setVisibility(View.VISIBLE); // make "no appointments" visible
+            return view;
+        }
+        // get appointments from firebase
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference ref = database.getReference("appointments");
+
+        ref.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        dataSet.clear();
+
+                        for (DataSnapshot s : snapshot.getChildren()) {
+                            Appointment ap = s.getValue(Appointment.class);
+
+                            if (ap != null) {
+                                ap.setId(s.getKey());
+                                // adding only future appointments
+                                long now = System.currentTimeMillis();
+                                if (ap.getStartEpoch() >= now) {
+                                    dataSet.add(ap);
+                                }
+
+                            }
+                        }
+
+                        dataSet.sort((a, b) -> Long.compare(a.getStartEpoch(), b.getStartEpoch()));
+                        adapter[0].notifyDataSetChanged();
+                        progress.setVisibility(View.GONE);
+                        tvEmpty.setVisibility(dataSet.isEmpty() ? View.VISIBLE : View.GONE);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        progress.setVisibility(View.GONE);
+                        tvEmpty.setVisibility(View.VISIBLE);
+                        Toast.makeText(getContext(), error.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                }
+        );
 
         return view;
     }

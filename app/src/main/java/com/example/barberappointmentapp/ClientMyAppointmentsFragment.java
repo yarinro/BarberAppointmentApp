@@ -102,8 +102,30 @@ public class ClientMyAppointmentsFragment extends Fragment {
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         // Adapter
-        ClientAppointmentsAdapter adapter = new ClientAppointmentsAdapter(dataSet);
-        recyclerView.setAdapter(adapter);
+        // Using an array to allow refreshing the adapter inside lambda function
+        final ClientAppointmentsAdapter[] adapter = new ClientAppointmentsAdapter[1];
+
+        adapter[0] = new ClientAppointmentsAdapter(dataSet, ap -> {
+            if (ap == null || ap.getId() == null) return;
+
+            new androidx.appcompat.app.AlertDialog.Builder(requireContext()).setTitle("Cancel appointment").setMessage("Are you sure you want to cancel this appointment?").setPositiveButton("Yes", (dialog, which) -> {
+                DatabaseReference r = FirebaseDatabase.getInstance().getReference("appointments").child(ap.getId()).child("cancelled");
+                r.setValue(true).addOnSuccessListener(unused -> {
+                    for (int i = 0; i < dataSet.size(); i++) {
+                        Appointment a = dataSet.get(i);
+                        if (a != null && ap.getId().equals(a.getId())) {
+                            a.setCancelled(true);
+                            adapter[0].notifyItemChanged(i);
+                            break;
+                        }
+                    }
+                }).addOnFailureListener(e -> Toast.makeText(getContext(), "Cancel failed: " + e.getMessage(), Toast.LENGTH_LONG).show()
+                );
+            }).setNegativeButton("No", null).show();
+        });
+
+        recyclerView.setAdapter(adapter[0]);
+
         // Loading the UI
         progress.setVisibility(View.VISIBLE);
         tvEmpty.setVisibility(View.GONE);
@@ -121,7 +143,7 @@ public class ClientMyAppointmentsFragment extends Fragment {
         DatabaseReference ref = database.getReference("appointments");
         // Getting all appointments for the current user from DB
         ref.orderByChild("clientUid").equalTo(uid)
-                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                        .addValueEventListener(new ValueEventListener() {
 
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -131,11 +153,18 @@ public class ClientMyAppointmentsFragment extends Fragment {
                         for (DataSnapshot s : snapshot.getChildren()) {
                             Appointment ap = s.getValue(Appointment.class);
                             if (ap != null) {
-                                dataSet.add(ap);
+                                ap.setId(s.getKey());
+                                // adding only future appointments
+                                long now = System.currentTimeMillis();
+                                if (ap.getStartEpoch() >= now) {
+                                    dataSet.add(ap);
+                                }
+
                             }
                         }
                         // Done loading the UI -> notify adapter
-                        adapter.notifyDataSetChanged();
+                        dataSet.sort((a,b) -> Long.compare(a.getStartEpoch(), b.getStartEpoch()));
+                        adapter[0].notifyDataSetChanged();
                         progress.setVisibility(View.GONE);
 
                         tvEmpty.setVisibility(dataSet.isEmpty() ? View.VISIBLE : View.GONE); // if there are no appointments show an appropriate text

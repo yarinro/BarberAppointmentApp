@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Firebase Debug (Auth + DB)"
+            android:textSize="22sp"
+            android:paddingBottom="12dp"/>
+
+        <Button
+            android:id="@+id/btn_ensure_test_user"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="1) Ensure TEST user (login or create)"/>
+
+        <Button
+            android:id="@+id/btn_seed_for_current"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="2) Seed appointments for CURRENT user"
+            android:layout_marginTop="8dp"/>
+
+        <Button
+            android:id="@+id/btn_print"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="3) Print appointments (Logcat)"
+            android:layout_marginTop="8dp"/>
+
+        <Button
+            android:id="@+id/btn_clear_appointments"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Clear ALL appointments"
+            android:layout_marginTop="16dp"/>
+
+        <Button
+            android:id="@+id/btn_open_client_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Open ClientMyAppointmentsFragment"
+            android:layout_marginTop="16dp"/>
+
+        <Button
+            android:id="@+id/btn_open_barber_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Open BarberAppointmentsFragment"
+            android:layout_marginTop="8dp"/>
+
+        <TextView
+            android:id="@+id/tv_status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Status: idle"
+            android:paddingTop="16dp"/>
+
+    </LinearLayout>
+</ScrollView>

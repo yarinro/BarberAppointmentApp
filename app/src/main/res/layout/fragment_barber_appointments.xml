@@ -22,9 +22,24 @@
         android:text="@string/barber_appointments_title"
         android:textSize="34sp" />
 
+    <ProgressBar
+        android:id="@+id/progress_barber_appointments"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone"/>
+
     <TextView
-        android:id="@+id/textView5"
+        android:id="@+id/tv_empty_barber_appointments"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Placeholder – booked appointments list" />
+        android:gravity="center"
+        android:text="@string/barber_appointments_empty"
+        android:visibility="gone" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_barber_appointments"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
 </LinearLayout>

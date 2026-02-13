@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navgraph"
-    app:startDestination="@id/welcomeFragment">
+    app:startDestination="@id/debugFirebaseFragment">
 
     <fragment
         android:id="@+id/welcomeFragment"
@@ -138,4 +138,8 @@
             android:id="@+id/action_clientSignUpFragment_to_welcomeFragment"
             app:destination="@id/welcomeFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/debugFirebaseFragment"
+        android:name="com.example.barberappointmentapp.testings.DebugFirebaseFragment"
+        android:label="DebugFirebaseFragment" />
 </navigation>

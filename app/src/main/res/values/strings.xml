@@ -53,6 +53,8 @@
     <string name="barber_home_schedule_management_btn">Schedule Management</string>
     <string name="barber_home_services_and_prices_btn">Services and Prices Management</string>
     <string name="barber_home_ui_btn">UI Theme</string>
+    <string name="barber_appointments_empty">No booked appointments yet.</string>
+
 
     <!-- BarberAppointmentsFragment -->
     <string name="barber_appointments_title">Booked Appointments</string>

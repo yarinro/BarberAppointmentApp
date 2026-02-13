@@ -10,7 +10,7 @@ public final class AppointmentFactory {
     private AppointmentFactory() {}
 
     // Factory method that creates an Appointment from a Slot
-    public static Appointment createFromSlot(String clientUid, Service service, Slot slot) {
+    public static Appointment createFromSlot(String clientUid, String clientName, String clientPhone, Service service, Slot slot) {
         if (clientUid == null || clientUid.trim().isEmpty()) return null;
         if (service == null || slot == null) return null;
 
@@ -23,7 +23,12 @@ public final class AppointmentFactory {
         long start = slot.getStartEpoch();
         if (start <= 0) return null;
 
-        // IMPORTANT: do not forget to get the id from Realtime DB when pulling data
-        return new Appointment(null, clientUid, serviceId, start, duration);
+        if (clientName == null) clientName = "";
+        if (clientPhone == null) clientPhone = "";
+        String serviceName = service.getName();
+        if (serviceName == null) serviceName = "";
+
+        return new Appointment(null, clientUid, clientName, clientPhone, serviceName, serviceId, start, duration);
     }
+
 }

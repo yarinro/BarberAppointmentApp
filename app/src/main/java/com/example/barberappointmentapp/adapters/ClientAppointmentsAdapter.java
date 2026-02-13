@@ -19,8 +19,14 @@ public class ClientAppointmentsAdapter extends RecyclerView.Adapter<ClientAppoin
 
     private ArrayList<Appointment> appointmentsList;
 
-    public ClientAppointmentsAdapter(ArrayList<Appointment> appointmentsList) {
+    public interface OnCancelClickListener {
+        void onCancel(Appointment ap);
+    }
+    private OnCancelClickListener cancelListener;
+
+    public ClientAppointmentsAdapter(ArrayList<Appointment> appointmentsList, OnCancelClickListener cancelListener) {
         this.appointmentsList = appointmentsList;
+        this.cancelListener = cancelListener;
     }
 
     public static class myViewHolder extends RecyclerView.ViewHolder {
@@ -50,10 +56,29 @@ public class ClientAppointmentsAdapter extends RecyclerView.Adapter<ClientAppoin
     public void onBindViewHolder(@NonNull ClientAppointmentsAdapter.myViewHolder holder, int position) {
         Appointment ap = appointmentsList.get(position);
 
-        holder.tvServiceName.setText(ap.getServiceId());
+        String name = ap.getServiceName();
+        holder.tvServiceName.setText(name != null ? name : "UNKNOWN SERVICE");
         holder.tvDateTime.setText(TimeUtils.formatDateAndTimeRange(ap.getStartEpoch(), ap.calcEndEpoch()));
-        holder.tvStatus.setText(ap.isCancelled() ? "CANCELED" : "ACTIVE");
-        holder.btnCancel.setVisibility(View.GONE);
+
+        if (ap.getCancelled()) {
+            holder.tvStatus.setText("CANCELED");
+            holder.tvStatus.setBackgroundResource(R.drawable.bg_status_badge_cancelled);
+            holder.btnCancel.setVisibility(View.GONE);
+            holder.btnCancel.setOnClickListener(null);
+        } else {
+            holder.tvStatus.setText("CONFIRMED");
+            holder.tvStatus.setBackgroundResource(R.drawable.bg_status_badge_confirmed);
+            holder.btnCancel.setVisibility(View.VISIBLE);
+            // Setting a cancel listener for the cancel appointment button
+            holder.btnCancel.setOnClickListener(v -> {
+                int pos = holder.getBindingAdapterPosition();
+                if (pos == RecyclerView.NO_POSITION) return;
+
+                if (cancelListener != null) {
+                    cancelListener.onCancel(appointmentsList.get(pos));
+                }
+            });
+        }
     }
 
     @Override

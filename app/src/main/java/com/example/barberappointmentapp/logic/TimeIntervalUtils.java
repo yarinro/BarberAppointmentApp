@@ -27,7 +27,7 @@ public final class TimeIntervalUtils {
     // converts an Appointment (which in minutes format) to an Interval (which in Epoch time format)
     public static TimeInterval appointmentToInterval(Appointment ap) {
         if (ap == null) return null;
-        if (ap.isCancelled()) return null;
+        if (ap.getCancelled()) return null;
 
         long start = ap.getStartEpoch();
         long end = start + TimeUtils.minutesToMillis(ap.getDurationMinutes());
