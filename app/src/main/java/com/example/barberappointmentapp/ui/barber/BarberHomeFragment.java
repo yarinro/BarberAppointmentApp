@@ -1,4 +1,4 @@
-package com.example.barberappointmentapp;
+package com.example.barberappointmentapp.ui.barber;
 
 import android.os.Bundle;
 
@@ -9,6 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+
+import com.example.barberappointmentapp.R;
 
 /**
  * A simple {@link Fragment} subclass.

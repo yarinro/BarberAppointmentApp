@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".BarberUploadToGalleryFragment">
+    tools:context=".ui.barber.BarberUploadToGalleryFragment">
 
     <ImageButton
         android:id="@+id/btn_back_barber_upload_gallery"

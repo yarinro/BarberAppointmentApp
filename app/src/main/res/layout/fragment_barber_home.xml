@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".BarberHomeFragment" >
+    tools:context=".ui.barber.BarberHomeFragment" >
 
     <TextView
         android:id="@+id/textView3"

@@ -1,4 +1,4 @@
-package com.example.barberappointmentapp;
+package com.example.barberappointmentapp.ui.client;
 
 import android.os.Bundle;
 
@@ -16,6 +16,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.barberappointmentapp.R;
 import com.example.barberappointmentapp.adapters.ClientAppointmentsAdapter;
 import com.example.barberappointmentapp.models.Appointment;
 import com.google.firebase.auth.FirebaseAuth;

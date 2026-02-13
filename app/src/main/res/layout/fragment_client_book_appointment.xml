@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ClientBookAppointmentFragment">
+    tools:context=".ui.client.ClientBookAppointmentFragment">
 
     <ImageButton
         android:id="@+id/btn_back_client_book_appointment"
@@ -19,11 +19,97 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/client_book_appointment_title"
-        android:textSize="34sp" />
+        android:textSize="34sp"
+        android:gravity="center" />
 
+    <!-- Service -->
     <TextView
-        android:id="@+id/textView17"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="placeholder - choose date/time" />
+        android:text="@string/service_label"
+        android:textStyle="bold"
+        android:paddingTop="8dp"
+        android:paddingBottom="6dp"
+        android:layout_marginHorizontal="12dp" />
+
+    <TextView
+        android:id="@+id/tvService"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="@android:drawable/editbox_background"
+        android:gravity="center_vertical"
+        android:padding="12dp"
+        android:text="@string/service_hint" />
+
+    <!-- Date -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/date_label"
+        android:textStyle="bold"
+        android:paddingTop="16dp"
+        android:paddingBottom="6dp"
+        android:layout_marginHorizontal="12dp"/>
+
+    <TextView
+        android:id="@+id/tvDate"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="@android:drawable/editbox_background"
+        android:gravity="center_vertical"
+        android:padding="12dp"
+        android:text="@string/date_hint"
+        />
+
+    <!-- Time -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/time_label"
+        android:textStyle="bold"
+        android:paddingTop="16dp"
+        android:paddingBottom="6dp"
+        android:layout_marginHorizontal="12dp"/>
+
+    <TextView
+        android:id="@+id/tvSlot"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="@android:drawable/editbox_background"
+        android:gravity="center_vertical"
+        android:padding="12dp"
+        android:text="@string/time_hint" />
+
+    <TextView
+        android:id="@+id/tvNoAvailability"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/no_availability"
+        android:textColor="#B00020"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textAlignment="center"
+        android:padding="12dp"
+        android:layout_marginTop="8dp"
+        android:background="#FFEAEA"
+        android:visibility="gone" />
+
+
+    <!-- Confirm -->
+    <Button
+        android:id="@+id/btnConfirm"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="22dp"
+        android:text="@string/confirm_appointment" />
+
+    <!-- Progress bar when loading appointments -->
+    <ProgressBar
+        android:id="@+id/progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="14dp"
+        android:visibility="gone" />
+
 </LinearLayout>

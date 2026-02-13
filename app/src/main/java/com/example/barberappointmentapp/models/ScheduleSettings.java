@@ -7,18 +7,15 @@ public class ScheduleSettings {
 
     private int slotMinutes;
     private int maxDaysAhead;
-    private String timezone;
 
     public ScheduleSettings() {
         this.slotMinutes = DEFAULT_SLOT_MINUTES;
         this.maxDaysAhead = DEFAULT_MAX_DAYS;
-        this.timezone = DEFAULT_TZ;
     }
 
-    public ScheduleSettings(int slotMinutes, int maxDaysAhead, String timezone) {
+    public ScheduleSettings(int slotMinutes, int maxDaysAhead) {
         this.slotMinutes = slotMinutes;
         this.maxDaysAhead = maxDaysAhead;
-        this.timezone = timezone;
     }
 
     public int getSlotMinutes() {
@@ -33,20 +30,12 @@ public class ScheduleSettings {
     public void setMaxDaysAhead(int maxDaysAhead) {
         this.maxDaysAhead = maxDaysAhead;
     }
-    public String getTimezone() {
-        return timezone;
-    }
-    public void setTimezone(String timezone) {
-        this.timezone = timezone;
-    }
 
     public boolean isValid() {
         return slotMinutes >= 5
                 && slotMinutes <= 60
                 && 60 % slotMinutes == 0
                 && maxDaysAhead >= 1
-                && maxDaysAhead <= 90
-                && timezone != null
-                && !timezone.isBlank();
+                && maxDaysAhead <= 90;
     }
 }

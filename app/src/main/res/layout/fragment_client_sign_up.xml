@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ClientSignUpFragment">
+    tools:context=".ui.auth.ClientSignUpFragment">
 
     <ImageButton
         android:id="@+id/btn_back_client_sign_up"

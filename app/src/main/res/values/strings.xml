@@ -33,7 +33,16 @@
     <string name="client_home_reviews">Reviews</string>
 
     <!-- ClientBookAppointmentFragment- client -->
-    <string name="client_book_appointment_title">Book an Appointment</string>
+    <string name="client_book_appointment_title">Book Appointment</string>
+    <string name="service_label">Service</string>
+    <string name="service_hint">Select service</string>
+    <string name="date_label">Date</string>
+    <string name="date_hint">Select date </string>
+    <string name="time_label">Time</string>
+    <string name="time_hint">Select time</string>
+    <string name="confirm_appointment">Confirm Appointment</string>
+    <string name="no_availability">No available appointments.\nTry another day.</string>
+
 
     <!-- ClientMyAppointmentsFragment - client -->
     <string name="client_my_appointments_title">My Appointments</string>

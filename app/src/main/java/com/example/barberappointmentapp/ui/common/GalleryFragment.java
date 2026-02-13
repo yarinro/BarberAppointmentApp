@@ -1,4 +1,4 @@
-package com.example.barberappointmentapp;
+package com.example.barberappointmentapp.ui.common;
 
 import android.os.Bundle;
 
@@ -7,27 +7,27 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
+
+import com.example.barberappointmentapp.R;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link ClientSignUpFragment#newInstance} factory method to
+ * Use the {@link GalleryFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ClientSignUpFragment extends Fragment {
+public class GalleryFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-    private MainActivity mainActivity;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
-    public ClientSignUpFragment() {
+    public GalleryFragment() {
         // Required empty public constructor
     }
 
@@ -37,11 +37,11 @@ public class ClientSignUpFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment ClientSignUpFragment.
+     * @return A new instance of fragment GalleryFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static ClientSignUpFragment newInstance(String param1, String param2) {
-        ClientSignUpFragment fragment = new ClientSignUpFragment();
+    public static GalleryFragment newInstance(String param1, String param2) {
+        GalleryFragment fragment = new GalleryFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -62,28 +62,23 @@ public class ClientSignUpFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_client_sign_up, container, false);
+        View view = inflater.inflate(R.layout.fragment_gallery, container, false);
 
         //----------------------------------BACK BUTTON-------------------------------------------
-        ImageButton btnBack = view.findViewById(R.id.btn_back_client_sign_up);
+        ImageButton btnBack = view.findViewById(R.id.btn_back_gallery);
 
         btnBack.setOnClickListener(v ->
                 requireActivity()
                         .getOnBackPressedDispatcher()
                         .onBackPressed()
         );
-        //----------------------------------------------------------------------------------------
+        //-----------------------------------------------------------------------------
+        //----------------------------------LOGIN BUTTON-------------------------------------------
+        ImageButton btnLogin = view.findViewById(R.id.btn_login);
 
-        Button btnSignUp = view.findViewById(R.id.signup_btn_sign_up);
+        //btnLogin.setOnClickListener()
+        //-----------------------------------------------------------------------------
 
-        btnSignUp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mainActivity =(MainActivity) getActivity();
-                mainActivity.signUp();
-            }
-        });
-        //----------------------------------------------------------------------------------------
         return view;
 
     }

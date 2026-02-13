@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".BarberScheduleManagementFragment">
+    tools:context=".ui.barber.BarberScheduleManagementFragment">
 
     <ImageButton
         android:id="@+id/btn_back_barber_schedule_management"

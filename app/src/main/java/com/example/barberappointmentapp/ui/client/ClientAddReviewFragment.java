@@ -1,4 +1,4 @@
-package com.example.barberappointmentapp;
+package com.example.barberappointmentapp.ui.client;
 
 import android.os.Bundle;
 
@@ -9,12 +9,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 
+import com.example.barberappointmentapp.R;
+
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link ClientBookAppointmentFragment#newInstance} factory method to
+ * Use the {@link ClientAddReviewFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ClientBookAppointmentFragment extends Fragment {
+public class ClientAddReviewFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -25,7 +27,7 @@ public class ClientBookAppointmentFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public ClientBookAppointmentFragment() {
+    public ClientAddReviewFragment() {
         // Required empty public constructor
     }
 
@@ -35,11 +37,11 @@ public class ClientBookAppointmentFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment ClientBookAppointmentFragment.
+     * @return A new instance of fragment ClientAddReviewFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static ClientBookAppointmentFragment newInstance(String param1, String param2) {
-        ClientBookAppointmentFragment fragment = new ClientBookAppointmentFragment();
+    public static ClientAddReviewFragment newInstance(String param1, String param2) {
+        ClientAddReviewFragment fragment = new ClientAddReviewFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -60,10 +62,10 @@ public class ClientBookAppointmentFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_client_book_appointment, container, false);
+        View view = inflater.inflate(R.layout.fragment_client_add_review, container, false);
 
         //----------------------------------BACK BUTTON-------------------------------------------
-        ImageButton btnBack = view.findViewById(R.id.btn_back_client_book_appointment);
+        ImageButton btnBack = view.findViewById(R.id.btn_back_client_add_review);
 
         btnBack.setOnClickListener(v ->
                 requireActivity()
