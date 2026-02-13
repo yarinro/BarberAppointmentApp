@@ -1,5 +1,6 @@
 package com.example.barberappointmentapp.ui.barber;
 
+import android.app.DatePickerDialog;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -11,6 +12,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -26,7 +29,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -93,9 +100,20 @@ public class BarberAppointmentsFragment extends Fragment {
         // ---------------- UI ----------------
         ProgressBar progress = view.findViewById(R.id.progress_barber_appointments);
         TextView tvEmpty = view.findViewById(R.id.tv_empty_barber_appointments);
+        Button btnShowAll = view.findViewById(R.id.btn_show_all_barber);
+        Button btnPickDate = view.findViewById(R.id.btn_pick_date_barber);
+        TextView tvSelectedDate = view.findViewById(R.id.tv_selected_date_barber);
+        CheckBox cbShowCancelled = view.findViewById(R.id.cb_show_cancelled_barber);
+
+        SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+
         // recyclerview
         RecyclerView recyclerView = view.findViewById(R.id.recycler_barber_appointments);
-        ArrayList<Appointment> dataSet = new ArrayList<>();
+        ArrayList<Appointment> dataSet = new ArrayList<>(); // what shown in recycler view
+        ArrayList<Appointment> allFuture = new ArrayList<>(); // all future appointments
+        final long[] selectedDayStart = { -1L }; // -1 = All upcoming, else: start of selected date (epoch milliseconds)
+        final boolean[] showCancelled = { false }; // showing cancelled appointments or not
+
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         // adapter
@@ -120,6 +138,73 @@ public class BarberAppointmentsFragment extends Fragment {
         });
         recyclerView.setAdapter(adapter[0]);
 
+        // =================== RUNNABLE applyFilter() ===================
+        // applying filter by date
+        // Using Runnable to run applyFilter() inside onCreateView
+        final Runnable applyFilter = () -> {
+            dataSet.clear();
+
+            if (selectedDayStart[0] == -1L) { // all upcoming
+                long now = System.currentTimeMillis();
+                for (Appointment ap : allFuture) {
+                    if (!showCancelled[0] && ap.getCancelled()) continue; // if user did not checked the checkbox -> skip cancelled appointments
+                    if (ap.getStartEpoch() < now) continue; // show only future
+                    dataSet.add(ap);
+                }
+            } else {// mode = filter by date
+                long dayStart = selectedDayStart[0];
+                long dayEnd = dayStart + 24L * 60L * 60L * 1000L;
+                //
+                for (Appointment ap : allFuture) {
+                    if (!showCancelled[0] && ap.getCancelled()) continue; // if user did not checked the checkbox -> skip cancelled appointments
+                    long s = ap.getStartEpoch();
+                    if (s >= dayStart && s < dayEnd) {
+                        dataSet.add(ap); // adding only future appointments that are in timeframe of selected date
+                    }
+                }
+            }
+        //============================================================
+            dataSet.sort((a, b) -> Long.compare(a.getStartEpoch(), b.getStartEpoch()));
+            adapter[0].notifyDataSetChanged();
+            tvEmpty.setVisibility(dataSet.isEmpty() ? View.VISIBLE : View.GONE);
+        };
+        // Clicking on button "All upcoming" -> show all upcoming appointments
+        btnShowAll.setOnClickListener(v -> {
+            selectedDayStart[0] = -1L; // mode = all upcoming. -1 = all
+            tvSelectedDate.setText(getString(R.string.barber_appointments_selected_all)); // update the text of mode so user knows what mode is selected
+            applyFilter.run(); // running the filter
+        });
+
+        // Date picker
+        btnPickDate.setOnClickListener(v -> {
+            Calendar c = Calendar.getInstance();
+
+            new DatePickerDialog(requireContext(), (dp, year, month, day) -> {
+                Calendar chosen = Calendar.getInstance();
+                chosen.set(Calendar.YEAR, year);
+                chosen.set(Calendar.MONTH, month);
+                chosen.set(Calendar.DAY_OF_MONTH, day);
+                chosen.set(Calendar.HOUR_OF_DAY, 0);
+                chosen.set(Calendar.MINUTE, 0);
+                chosen.set(Calendar.SECOND, 0);
+                chosen.set(Calendar.MILLISECOND, 0);
+
+                selectedDayStart[0] = chosen.getTimeInMillis();
+
+                tvSelectedDate.setText(getString(R.string.barber_appointments_selected_date_prefix)
+                        + " " + df.format(new Date(selectedDayStart[0])));
+
+                applyFilter.run();
+            }, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH)).show();
+        });
+
+        // Listener for show cancelled checkbox
+        cbShowCancelled.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            showCancelled[0] = isChecked;
+            applyFilter.run();
+        });
+
+
         // loading appointments- progress bar
         progress.setVisibility(View.VISIBLE);
         tvEmpty.setVisibility(View.GONE); // hide "no appointments"
@@ -137,26 +222,22 @@ public class BarberAppointmentsFragment extends Fragment {
         ref.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        dataSet.clear();
+                        allFuture.clear();
+
+                        long now = System.currentTimeMillis();
 
                         for (DataSnapshot s : snapshot.getChildren()) {
                             Appointment ap = s.getValue(Appointment.class);
-
                             if (ap != null) {
                                 ap.setId(s.getKey());
-                                // adding only future appointments
-                                long now = System.currentTimeMillis();
-                                if (ap.getStartEpoch() >= now) {
-                                    dataSet.add(ap);
-                                }
-
+                                allFuture.add(ap); // keep ALL appointments (past + future)
                             }
                         }
 
-                        dataSet.sort((a, b) -> Long.compare(a.getStartEpoch(), b.getStartEpoch()));
-                        adapter[0].notifyDataSetChanged();
                         progress.setVisibility(View.GONE);
-                        tvEmpty.setVisibility(dataSet.isEmpty() ? View.VISIBLE : View.GONE);
+
+                        // Default mode - if nothing is selected yet - showing "all upcoming"
+                        applyFilter.run();
                     }
 
                     @Override
@@ -167,6 +248,8 @@ public class BarberAppointmentsFragment extends Fragment {
                     }
                 }
         );
+
+        btnShowAll.performClick();
 
         return view;
     }

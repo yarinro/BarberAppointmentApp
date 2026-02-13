@@ -68,6 +68,16 @@
     <!-- BarberAppointmentsFragment -->
     <string name="barber_appointments_title">Booked Appointments</string>
     <string name="barber_appointments_add_appointment_btn">Add Appointment></string>
+    <string name="barber_appointments_filter_all_upcoming">All upcoming</string>
+    <string name="barber_appointments_filter_pick_date">Pick date</string>
+    <string name="barber_appointments_selected_all">Selected: All upcoming</string>
+    <string name="barber_appointments_selected_date_prefix">Selected:</string>
+    <string name="barber_appointments_cancel_title">Cancel appointment</string>
+    <string name="barber_appointments_cancel_message">Are you sure you want to cancel this appointment?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="barber_appointments_show_cancelled">Show cancelled</string>
+
 
     <!-- BarberUploadToGalleryFragment -->
     <string name="barber_upload_to_gallery_fragment_title">Add image</string>

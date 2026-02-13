@@ -57,27 +57,43 @@ public class BarberAppointmentsAdapter extends RecyclerView.Adapter<BarberAppoin
     public void onBindViewHolder(@NonNull BarberAppointmentsAdapter.myViewHolder holder, int position) {
         Appointment ap = appointmentsList.get(position);
 
+        long now = System.currentTimeMillis(); // current time in epoch milliseconds
+        boolean isPast = ap.calcEndEpoch() <= now; // appointment already ended
+
         holder.tvClientName.setText(ap.getClientName() != null ? ap.getClientName() : "Unknown client");
         holder.tvClientPhone.setText(ap.getClientPhone() != null ? ap.getClientPhone() : "unknown phone");
         holder.tvServiceName.setText(ap.getServiceName() != null ? ap.getServiceName() : "Unknown service");
 
         holder.tvDateTime.setText(TimeUtils.formatDateAndTimeRange(ap.getStartEpoch(), ap.calcEndEpoch())); // appointment date & time
-        // Appointment status:
+        // ================= STATUS LOGIC =================
         if (ap.getCancelled()) {
             holder.tvStatus.setText("CANCELED");
             holder.tvStatus.setBackgroundResource(R.drawable.bg_status_badge_cancelled);
 
+            // cancelled appointments cannot be cancelled again
             holder.btnCancel.setVisibility(View.GONE);
             holder.btnCancel.setOnClickListener(null);
 
-        } else {
+        }
+        else if (isPast) {
+            // appointment already happened
+            holder.tvStatus.setText("COMPLETED");
+            holder.tvStatus.setBackgroundResource(R.drawable.bg_status_badge_completed);
+            holder.tvStatus.setTextColor(0xFF424242);
+            // past appointments cannot be cancelled
+            holder.btnCancel.setVisibility(View.GONE);
+            holder.btnCancel.setOnClickListener(null);
+
+        }
+        else {
+            // upcoming confirmed appointment
             holder.tvStatus.setText("CONFIRMED");
             holder.tvStatus.setBackgroundResource(R.drawable.bg_status_badge_confirmed);
-            // cancel button
+
             holder.btnCancel.setVisibility(View.VISIBLE);
             holder.btnCancel.setOnClickListener(v -> {
-                int pos = holder.getBindingAdapterPosition();
 
+                int pos = holder.getBindingAdapterPosition();
                 if (pos == RecyclerView.NO_POSITION) return;
 
                 if (cancelListener != null) {
