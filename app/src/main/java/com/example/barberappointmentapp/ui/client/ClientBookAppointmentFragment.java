@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +27,7 @@ import com.example.barberappointmentapp.models.Service;
 import com.example.barberappointmentapp.models.Slot;
 import com.example.barberappointmentapp.models.TimeOff;
 import com.example.barberappointmentapp.models.WorkWindow;
+import com.example.barberappointmentapp.utils.AppConfig;
 import com.example.barberappointmentapp.utils.TimeUtils;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -60,19 +62,18 @@ public class ClientBookAppointmentFragment extends Fragment {
     }
     // fetch schedule settings
     void loadScheduleSettings(DoneCallback cb) {
-        DatabaseReference ref = FirebaseDatabase.getInstance()
-                .getReference("scheduleSettings");
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("scheduleSettings");
 
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snap) {
                 scheduleSettings = snap.getValue(ScheduleSettings.class);
-                cb.onDone(scheduleSettings != null && scheduleSettings.isValid());
+                if (cb != null) cb.onDone(scheduleSettings != null && scheduleSettings.isValid());
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                cb.onDone(false);
+                if (cb != null) cb.onDone(false);
             }
         });
     }
@@ -94,11 +95,11 @@ public class ClientBookAppointmentFragment extends Fragment {
                     w.ensureId();
                     if (w.isValid()) workWindowsAll.add(w);
                 }
-                cb.onDone(true);
+                if (cb != null) cb.onDone(true);
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                cb.onDone(false);
+                if (cb != null) cb.onDone(false);
             }
         });
     }
@@ -106,8 +107,14 @@ public class ClientBookAppointmentFragment extends Fragment {
 
     // fetch time offs
     void loadTimeOffsForDay(long dayStartEpoch, DoneCallback cb) {
-        long oneDay = 24L * 60L * 60L * 1000L; // one day in epoch milliseconds
-        long dayEndEpoch = dayStartEpoch + oneDay;
+        long oneDay = 24L * 60L * 60L * 1000L;
+
+        // Calculate the day end epoch by matching the timezone (in case of changing to summer/winter time)
+        Calendar endCal = Calendar.getInstance(AppConfig.APP_TIMEZONE);
+        endCal.setTimeInMillis(dayStartEpoch);
+        endCal.add(Calendar.DAY_OF_MONTH, 1);
+        long dayEndEpoch = endCal.getTimeInMillis();
+
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("timeOffs");
         //gets time off's
         ref.orderByChild("startEpoch")
@@ -131,12 +138,12 @@ public class ClientBookAppointmentFragment extends Fragment {
                             timeOffsAll.add(timeoff);
                         }
 
-                        cb.onDone(true);
+                        if (cb != null) cb.onDone(true);
                     }
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
-                        cb.onDone(false);
+                        if (cb != null) cb.onDone(false);
                     }
                 });
     }
@@ -144,7 +151,11 @@ public class ClientBookAppointmentFragment extends Fragment {
 
     // fetch appointments
     void loadAppointmentsForDay(long dayStartEpoch, DoneCallback cb) {
-        long dayEndEpoch = dayStartEpoch + 24L * 60L * 60L * 1000L; // +24h
+        // Calculate the day end epoch by matching the timezone (in case of changing to summer/winter time)
+        Calendar endCal = Calendar.getInstance(AppConfig.APP_TIMEZONE);
+        endCal.setTimeInMillis(dayStartEpoch);
+        endCal.add(Calendar.DAY_OF_MONTH, 1);
+        long dayEndEpoch = endCal.getTimeInMillis();
 
         DatabaseReference ref = FirebaseDatabase.getInstance()
                 .getReference("appointments");
@@ -170,12 +181,12 @@ public class ClientBookAppointmentFragment extends Fragment {
                             appointmentsAll.add(ap);
 
                         }
-                        cb.onDone(true);
+                        if (cb != null) cb.onDone(true);
                     }
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
-                        cb.onDone(false);
+                        if (cb != null) cb.onDone(false);
                     }
                 });
     }
@@ -184,15 +195,15 @@ public class ClientBookAppointmentFragment extends Fragment {
     void loadBookingDataForDay(long dayStartEpoch, int dayOfWeek, DoneCallback cb) {
 
         loadScheduleSettings(ok -> {
-            if (!ok) { cb.onDone(false); return; }
+            if (!ok) { if (cb != null) cb.onDone(false); return; }
 
             loadWorkWindowsForDay(dayOfWeek, ok2 -> {
-                if (!ok2) { cb.onDone(false); return; }
+                if (!ok2) { if (cb != null) cb.onDone(false); return; }
 
                 loadTimeOffsForDay(dayStartEpoch, ok3 -> {
-                    if (!ok3) { cb.onDone(false); return; }
+                    if (!ok3) { if (cb != null) cb.onDone(false); return; }
 
-                    loadAppointmentsForDay(dayStartEpoch, ok4 -> cb.onDone(ok4));
+                    loadAppointmentsForDay(dayStartEpoch, ok4 -> {if (cb != null) cb.onDone(ok4);});
                 });
             });
         });
@@ -282,8 +293,7 @@ public class ClientBookAppointmentFragment extends Fragment {
         TextView tvNoAvailability = view.findViewById(R.id.tvNoAvailability);
         Button btnConfirm = view.findViewById(R.id.btnConfirm);
 
-        loadScheduleSettings(ok -> {});
-
+        loadScheduleSettings(ok -> {if (!ok) Toast.makeText(getContext(), "Failed loading settings", Toast.LENGTH_SHORT).show();});
         //---------------------------------- DATE PICKING ----------------------------------
         // When user clicks on it -> show a date picker
         tvDate.setOnClickListener(v -> {
@@ -293,12 +303,12 @@ public class ClientBookAppointmentFragment extends Fragment {
                 return;
             }
 
-            Calendar c = Calendar.getInstance();
+            Calendar c = Calendar.getInstance(AppConfig.APP_TIMEZONE);
             // Create the date picker dialog
             DatePickerDialog dlg = new DatePickerDialog(requireContext(),
                     (picker, year, month, day) -> {
                         // Getting the selected date
-                        Calendar chosen = Calendar.getInstance();
+                        Calendar chosen = Calendar.getInstance(AppConfig.APP_TIMEZONE);
                         chosen.set(Calendar.YEAR, year);
                         chosen.set(Calendar.MONTH, month);
                         chosen.set(Calendar.DAY_OF_MONTH, day);
@@ -317,12 +327,23 @@ public class ClientBookAppointmentFragment extends Fragment {
                     c.get(Calendar.DAY_OF_MONTH)
             );
             // Set the minimum date to today
-            dlg.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
+            // Min date = today (Israel timezone)
+            Calendar minCal = Calendar.getInstance(AppConfig.APP_TIMEZONE);
+            minCal.set(Calendar.HOUR_OF_DAY, 0);
+            minCal.set(Calendar.MINUTE, 0);
+            minCal.set(Calendar.SECOND, 0);
+            minCal.set(Calendar.MILLISECOND, 0);
+            dlg.getDatePicker().setMinDate(minCal.getTimeInMillis());
 
-            long DAY = 24L * 60L * 60L * 1000L;
-            int maxDaysAhead = scheduleSettings.getMaxDaysAhead();
-            long maxDate = System.currentTimeMillis() + (maxDaysAhead * DAY);
-            dlg.getDatePicker().setMaxDate(maxDate);
+            // Max date = today + maxDaysAhead (Israel timezone)
+            Calendar maxCal = Calendar.getInstance(AppConfig.APP_TIMEZONE);
+            maxCal.set(Calendar.HOUR_OF_DAY, 0);
+            maxCal.set(Calendar.MINUTE, 0);
+            maxCal.set(Calendar.SECOND, 0);
+            maxCal.set(Calendar.MILLISECOND, 0);
+            maxCal.add(Calendar.DAY_OF_MONTH, scheduleSettings.getMaxDaysAhead());
+            dlg.getDatePicker().setMaxDate(maxCal.getTimeInMillis());
+
             dlg.show();
         });
         //----------------------------------SERVICE PICKING----------------------------------
@@ -401,7 +422,7 @@ public class ClientBookAppointmentFragment extends Fragment {
             }
 
             // compute dayOfWeek (convert from epoch to day of week)
-            Calendar cal = Calendar.getInstance();
+            Calendar cal = Calendar.getInstance(AppConfig.APP_TIMEZONE);
             cal.setTimeInMillis(selectedDayStartEpoch);
             int dayOfWeek = cal.get(Calendar.DAY_OF_WEEK);
 
@@ -433,11 +454,46 @@ public class ClientBookAppointmentFragment extends Fragment {
                     return;
                 }
 
+                // Filter past slots if selected date is today (Israel timezone)
+                long now = System.currentTimeMillis(); // now in Epoch milliseconds
+
+                // constructing a calendar that represents now in Israel timezone
+                // client always sees current day in Israel timezone
+                Calendar cNow = Calendar.getInstance(AppConfig.APP_TIMEZONE); // now in Israel timezone
+                cNow.setTimeInMillis(now);
+
+                Calendar cSel = Calendar.getInstance(AppConfig.APP_TIMEZONE);
+                cSel.setTimeInMillis(selectedDayStartEpoch);
+
+                boolean isToday = cNow.get(Calendar.YEAR) == cSel.get(Calendar.YEAR) && cNow.get(Calendar.DAY_OF_YEAR) == cSel.get(Calendar.DAY_OF_YEAR);
+
+                List<Slot> slotsFiltered = slots;
+
+                if (isToday) {
+                    long grace = TimeUtils.minutesToMillis(1);
+                    List<Slot> filtered = new ArrayList<>();
+                    for (Slot s : slots) {
+                        if (s.getStartEpoch() >= now + grace) {
+                            filtered.add(s);
+                        }
+                    }
+                    slotsFiltered = filtered;
+                }
+
+                final List<Slot> finalSlots = slotsFiltered;
+
+                if (finalSlots.isEmpty()) {
+                    showNoAvailability(tvNoAvailability);
+                    resetSelectedSlot(tvSlot);
+                    return;
+                }
+
                 hideNoAvailability(tvNoAvailability); // hide "no available appointments..."
                 // build display strings
-                String[] items = new String[slots.size()];
-                for (int i = 0; i < slots.size(); i++) {
-                    Slot s = slots.get(i);
+                String[] items = new String[finalSlots.size()];
+                for (int i = 0; i < finalSlots.size(); i++) {
+                    Slot s = finalSlots.get(i);
+
 
                     String start = TimeUtils.formatHHmm(s.getStartEpoch());
                     String end = TimeUtils.formatHHmm(s.getEndEpoch());
@@ -450,7 +506,7 @@ public class ClientBookAppointmentFragment extends Fragment {
                         .setTitle("Choose time")
                         .setItems(items, (dialog, which) -> {
 
-                            Slot chosen = slots.get(which);
+                            Slot chosen = finalSlots.get(which);
 
                             selectedSlotStartEpoch = chosen.getStartEpoch();
 
@@ -478,8 +534,15 @@ public class ClientBookAppointmentFragment extends Fragment {
                 return;
             }
 
+            // Checking if selected time is already passed -> cannot set an appointment in the past -> return
+            long now = System.currentTimeMillis();
+            if (selectedSlotStartEpoch < now + TimeUtils.minutesToMillis(1)) {
+                Toast.makeText(getContext(), "Selected time already passed. Please choose another time.", Toast.LENGTH_LONG).show();
+                resetSelectedSlot(tvSlot);
+                return;
+            }
             // dayOfWeek from selected day
-            Calendar cal = Calendar.getInstance();
+            Calendar cal = Calendar.getInstance(AppConfig.APP_TIMEZONE);
             cal.setTimeInMillis(selectedDayStartEpoch);
             int dayOfWeek = cal.get(Calendar.DAY_OF_WEEK);
 
@@ -511,38 +574,65 @@ public class ClientBookAppointmentFragment extends Fragment {
                 long start = selectedSlotStartEpoch;
                 long end = start + TimeUtils.minutesToMillis(selectedService.getDurationMinutes());
                 Slot chosenSlot = new Slot(start, end);
-
                 // Client info
                 String clientUid = FirebaseAuth.getInstance().getUid();
 
-                String clientName = "";
-                String clientPhone = "";
-
-                // Create appointment via Factory
-                Appointment ap = AppointmentFactory.createFromSlot(clientUid, clientName, clientPhone, selectedService, chosenSlot);
-
-
-                if (ap == null) {
-                    Toast.makeText(getContext(), "Failed creating appointment", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                // Save to Firebase
-                DatabaseReference ref = FirebaseDatabase.getInstance().getReference("appointments");
+                // Client uid
                 if (clientUid == null) {
                     Toast.makeText(getContext(), "Not logged in", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
-                ap.ensureId(clientUid);
-                ref.child(ap.getId()).setValue(ap)
-                        .addOnSuccessListener(unused -> {
-                            Toast.makeText(getContext(), "Appointment booked successfully!", Toast.LENGTH_SHORT).show();
-                            requireActivity().getOnBackPressedDispatcher().onBackPressed();
-                        })
-                        .addOnFailureListener(e -> {
-                            Toast.makeText(getContext(), "Failed saving appointment: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                        });
+                // 1) Load client details from DB (users/{uid})
+                progress.setVisibility(View.VISIBLE);
+                DatabaseReference userRef = FirebaseDatabase.getInstance()
+                        .getReference("users")
+                        .child(clientUid);
+
+                userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snap) {
+                        // read fields (adjust keys if needed)
+                        String clientName = snap.child("name").getValue(String.class);
+                        String clientPhone = snap.child("phone").getValue(String.class);
+
+                        if (clientName == null) clientName = "";
+                        if (clientPhone == null) clientPhone = "";
+
+                        // 2) Create appointment via Factory
+                        Appointment ap = AppointmentFactory.createFromSlot(clientUid, clientName, clientPhone, selectedService, chosenSlot);
+
+                        if (ap == null) {
+                            progress.setVisibility(View.GONE);
+                            Toast.makeText(getContext(), "Failed creating appointment", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
+                        // 3) Save to Firebase
+                        ap.ensureId(clientUid);
+                        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("appointments");
+                        // =======================DEBUG LOG==========================
+                        Log.d("BOOK", "selectedDayStartEpoch=" + selectedDayStartEpoch + " selectedSlotStartEpoch=" + selectedSlotStartEpoch + " start=" + ap.getStartEpoch() + " end=" + ap.calcEndEpoch()); // אם יש לך, או start + duration);
+                        Log.d("BOOK", "date=" + TimeUtils.formatDate(ap.getStartEpoch()) + " time=" + TimeUtils.formatHHmm(ap.getStartEpoch()));
+                        // =======================DEBUG LOG==========================
+                        ref.child(ap.getId()).setValue(ap)
+                                .addOnSuccessListener(unused -> {
+                                    progress.setVisibility(View.GONE);
+                                    Toast.makeText(getContext(), "Appointment booked successfully!", Toast.LENGTH_SHORT).show();
+                                    requireActivity().getOnBackPressedDispatcher().onBackPressed();
+                                })
+                                .addOnFailureListener(e -> {
+                                    progress.setVisibility(View.GONE);
+                                    Toast.makeText(getContext(), "Failed saving appointment: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                                });
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        progress.setVisibility(View.GONE);
+                        Toast.makeText(getContext(), "Failed loading user: " + error.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
             });
         });
 

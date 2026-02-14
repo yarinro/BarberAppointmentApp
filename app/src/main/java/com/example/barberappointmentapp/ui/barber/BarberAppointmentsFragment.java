@@ -22,18 +22,16 @@ import android.widget.Toast;
 import com.example.barberappointmentapp.R;
 import com.example.barberappointmentapp.adapters.BarberAppointmentsAdapter;
 import com.example.barberappointmentapp.models.Appointment;
+import com.example.barberappointmentapp.utils.AppConfig;
+import com.example.barberappointmentapp.utils.TimeUtils;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -105,12 +103,10 @@ public class BarberAppointmentsFragment extends Fragment {
         TextView tvSelectedDate = view.findViewById(R.id.tv_selected_date_barber);
         CheckBox cbShowCancelled = view.findViewById(R.id.cb_show_cancelled_barber);
 
-        SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-
         // recyclerview
         RecyclerView recyclerView = view.findViewById(R.id.recycler_barber_appointments);
         ArrayList<Appointment> dataSet = new ArrayList<>(); // what shown in recycler view
-        ArrayList<Appointment> allFuture = new ArrayList<>(); // all future appointments
+        ArrayList<Appointment> allAppointments = new ArrayList<>(); // all appointments
         final long[] selectedDayStart = { -1L }; // -1 = All upcoming, else: start of selected date (epoch milliseconds)
         final boolean[] showCancelled = { false }; // showing cancelled appointments or not
 
@@ -146,23 +142,33 @@ public class BarberAppointmentsFragment extends Fragment {
 
             if (selectedDayStart[0] == -1L) { // all upcoming
                 long now = System.currentTimeMillis();
-                for (Appointment ap : allFuture) {
+                for (Appointment ap : allAppointments) {
                     if (!showCancelled[0] && ap.getCancelled()) continue; // if user did not checked the checkbox -> skip cancelled appointments
                     if (ap.getStartEpoch() < now) continue; // show only future
                     dataSet.add(ap);
                 }
-            } else {// mode = filter by date
+            } else { // mode = filter by date
                 long dayStart = selectedDayStart[0];
-                long dayEnd = dayStart + 24L * 60L * 60L * 1000L;
-                //
-                for (Appointment ap : allFuture) {
-                    if (!showCancelled[0] && ap.getCancelled()) continue; // if user did not checked the checkbox -> skip cancelled appointments
+                // Calculate the day end epoch by matching the timezone (in case of changing to summer/winter time)
+                Calendar endCal = Calendar.getInstance(AppConfig.APP_TIMEZONE);
+                endCal.setTimeInMillis(dayStart);
+                endCal.add(Calendar.DAY_OF_MONTH, 1);
+                long dayEnd = endCal.getTimeInMillis(); // day end in Israel timezone
+
+                long now = System.currentTimeMillis();
+
+                for (Appointment ap : allAppointments) {
+                    if (!showCancelled[0] && ap.getCancelled()) continue; // check whether to show cancelled or not
+
                     long s = ap.getStartEpoch();
+                    if (s < now) continue; // show only future, even in date mode
+
                     if (s >= dayStart && s < dayEnd) {
-                        dataSet.add(ap); // adding only future appointments that are in timeframe of selected date
+                        dataSet.add(ap);
                     }
                 }
             }
+
         //============================================================
             dataSet.sort((a, b) -> Long.compare(a.getStartEpoch(), b.getStartEpoch()));
             adapter[0].notifyDataSetChanged();
@@ -177,10 +183,10 @@ public class BarberAppointmentsFragment extends Fragment {
 
         // Date picker
         btnPickDate.setOnClickListener(v -> {
-            Calendar c = Calendar.getInstance();
+            Calendar c = Calendar.getInstance(AppConfig.APP_TIMEZONE);
 
             new DatePickerDialog(requireContext(), (dp, year, month, day) -> {
-                Calendar chosen = Calendar.getInstance();
+                Calendar chosen = Calendar.getInstance(AppConfig.APP_TIMEZONE);
                 chosen.set(Calendar.YEAR, year);
                 chosen.set(Calendar.MONTH, month);
                 chosen.set(Calendar.DAY_OF_MONTH, day);
@@ -191,8 +197,8 @@ public class BarberAppointmentsFragment extends Fragment {
 
                 selectedDayStart[0] = chosen.getTimeInMillis();
 
-                tvSelectedDate.setText(getString(R.string.barber_appointments_selected_date_prefix)
-                        + " " + df.format(new Date(selectedDayStart[0])));
+                tvSelectedDate.setText(getString(R.string.barber_appointments_selected_date_prefix) + " " + TimeUtils.formatDate(selectedDayStart[0]));
+
 
                 applyFilter.run();
             }, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH)).show();
@@ -222,15 +228,13 @@ public class BarberAppointmentsFragment extends Fragment {
         ref.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        allFuture.clear();
-
-                        long now = System.currentTimeMillis();
+                        allAppointments.clear();
 
                         for (DataSnapshot s : snapshot.getChildren()) {
                             Appointment ap = s.getValue(Appointment.class);
                             if (ap != null) {
                                 ap.setId(s.getKey());
-                                allFuture.add(ap); // keep ALL appointments (past + future)
+                                allAppointments.add(ap); // keep ALL appointments (past + future)
                             }
                         }
 

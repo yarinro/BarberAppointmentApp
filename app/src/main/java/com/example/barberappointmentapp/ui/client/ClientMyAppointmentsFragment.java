@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -148,7 +149,6 @@ public class ClientMyAppointmentsFragment extends Fragment {
 
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-
                         dataSet.clear();
                         // constructing the list of appointments as 'dataSet'
                         for (DataSnapshot s : snapshot.getChildren()) {
@@ -157,6 +157,11 @@ public class ClientMyAppointmentsFragment extends Fragment {
                                 ap.setId(s.getKey());
                                 // adding only future appointments
                                 long now = System.currentTimeMillis();
+                                // =======================DEBUG LOG==========================
+                                Log.d("APPTS", "now=" + now +
+                                        " start=" + ap.getStartEpoch() +
+                                        " diff=" + (ap.getStartEpoch() - now));
+                                //==========================DEBUG==========================
                                 if (ap.getStartEpoch() >= now) {
                                     dataSet.add(ap);
                                 }
