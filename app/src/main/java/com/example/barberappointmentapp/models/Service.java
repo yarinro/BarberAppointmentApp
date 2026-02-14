@@ -34,6 +34,22 @@ public class Service {
             this.id = generateId(this.name, this.durationMinutes);
         }
     }
+
+    public static Service create(String name, int price, int durationMinutes, boolean isActive) {
+        Service srv = new Service(Service.generateId(name, durationMinutes),name, price, durationMinutes, isActive);
+        if (name == null || name.trim().isEmpty()) {
+            throw new IllegalArgumentException("Service invalid: name is required");
+        }
+        if (price < 0) {
+            throw new IllegalArgumentException("Service invalid: price must be >= 0");
+        }
+        if (durationMinutes <= 0) {
+            throw new IllegalArgumentException("Service invalid: durationMinutes must be > 0");
+        }
+        return srv;
+    }
+
+
     public String getId() {
         return id;
     }

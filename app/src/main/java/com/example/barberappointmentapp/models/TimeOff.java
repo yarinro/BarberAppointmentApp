@@ -25,6 +25,14 @@ public class TimeOff {
             this.id = generateId(this.startEpoch, this.endEpoch);
         }
     }
+    public static TimeOff create(long startEpoch, long endEpoch, String reason) {
+        TimeOff off = new TimeOff(TimeOff.generateId(startEpoch, endEpoch), startEpoch, endEpoch, reason);
+        if (!off.isValid()) {
+            throw new IllegalArgumentException("TimeOff invalid: endEpoch must be > startEpoch");
+        }
+        return off;
+    }
+
     public String getId() {
         return id;
     }

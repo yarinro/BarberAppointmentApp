@@ -26,6 +26,15 @@ public class WorkWindow {
         }
     }
 
+    public static WorkWindow create(int dayOfWeek, int startMinute, int endMinute) {
+        WorkWindow ww = new WorkWindow(WorkWindow.generateId(dayOfWeek, startMinute, endMinute), dayOfWeek, startMinute, endMinute);
+        if (!ww.isValid()) {
+            throw new IllegalArgumentException("WorkWindow invalid: dayOfWeek 1-7, minutes 0-1440, start < end");
+        }
+        return ww;
+    }
+
+
     public String getId() {return id; }
     public void setId(String id) {this.id = id; }
     public int getDayOfWeek() {

@@ -29,6 +29,15 @@ public class Break {
         return dayOfWeek >= 1 && dayOfWeek <= 7 && startMinute >= 0 && startMinute < endMinute && endMinute <= 1440;
     }
 
+    public static Break create(int dayOfWeek, int startMinute, int endMinute) {
+        Break br = new Break(Break.generateId(dayOfWeek, startMinute, endMinute), dayOfWeek, startMinute, endMinute);
+        if (!br.isValid()) {
+            throw new IllegalArgumentException("Break invalid: dayOfWeek 1-7, minutes 0-1440, start < end");
+        }
+        return br;
+    }
+
+
     public String getId() {
         return id;
     }
