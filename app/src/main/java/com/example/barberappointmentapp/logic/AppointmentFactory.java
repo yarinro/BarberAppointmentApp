@@ -25,10 +25,15 @@ public final class AppointmentFactory {
 
         if (clientName == null) clientName = "";
         if (clientPhone == null) clientPhone = "";
+
         String serviceName = service.getName();
         if (serviceName == null) serviceName = "";
 
-        return new Appointment(null, clientUid, clientName, clientPhone, serviceName, serviceId, start, duration);
+        // UPDATED: deterministic id (no barberId)
+        String id = Appointment.generateId(start, clientUid);
+
+        return new Appointment(id, clientUid, clientName, clientPhone, serviceName, serviceId, start, duration);
     }
+
 
 }

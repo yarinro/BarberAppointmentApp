@@ -25,6 +25,17 @@ public class Appointment {
         this.durationMinutes = durationMinutes;
         this.cancelled = false;
     }
+    //generate unique ID
+    public static String generateId(long startEpochMillis, String clientId) {
+        return "ap_" + startEpochMillis + "_" + clientId;
+    }
+    // Create ID in case of missing field (when pulling data from DB)
+    public void ensureId(String clientId) {
+        if (this.id == null || this.id.isEmpty()) {
+            this.id = generateId(this.startEpoch, clientId);
+        }
+    }
+
 
     public String getId() {
         return id;

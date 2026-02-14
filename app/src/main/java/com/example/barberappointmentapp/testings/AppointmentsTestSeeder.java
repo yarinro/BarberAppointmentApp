@@ -2,11 +2,13 @@ package com.example.barberappointmentapp.testings;
 
 import androidx.annotation.NonNull;
 
+import com.example.barberappointmentapp.logic.AppointmentFactory;
+import com.example.barberappointmentapp.models.Appointment;
+import com.example.barberappointmentapp.models.Service;
+import com.example.barberappointmentapp.models.Slot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public final class AppointmentsTestSeeder {
@@ -31,29 +33,39 @@ public final class AppointmentsTestSeeder {
     public static void seedBasicSetForClient(@NonNull String clientUid,
                                              @NonNull String clientName,
                                              @NonNull String clientPhone,
-                                             @NonNull String serviceId,
-                                             @NonNull String serviceName,
+                                             @NonNull String baseServiceId,
+                                             @NonNull String baseServiceName,
                                              @NonNull Callback cb) {
 
         long now = System.currentTimeMillis();
 
-        Map<String, Object> a1 = makeApMap(clientUid, clientName, clientPhone, serviceId, serviceName,
+        Appointment a1 = makeAppointmentViaFactory(clientUid, clientName, clientPhone,
+                baseServiceId, baseServiceName,
                 now + TimeUnit.HOURS.toMillis(1), 30, false);
 
-        Map<String, Object> a2 = makeApMap(clientUid, clientName, clientPhone, serviceId, serviceName,
+        Appointment a2 = makeAppointmentViaFactory(clientUid, clientName, clientPhone,
+                baseServiceId, baseServiceName,
                 now + TimeUnit.DAYS.toMillis(1) + TimeUnit.HOURS.toMillis(2), 45, false);
 
-        Map<String, Object> a3 = makeApMap(clientUid, clientName, clientPhone, serviceId, serviceName,
+        Appointment a3 = makeAppointmentViaFactory(clientUid, clientName, clientPhone,
+                baseServiceId, baseServiceName,
                 now - TimeUnit.DAYS.toMillis(1) + TimeUnit.HOURS.toMillis(3), 60, false);
 
-        Map<String, Object> a4 = makeApMap(clientUid, clientName, clientPhone, serviceId, serviceName,
+        Appointment a4 = makeAppointmentViaFactory(clientUid, clientName, clientPhone,
+                baseServiceId, baseServiceName,
                 now + TimeUnit.HOURS.toMillis(4), 20, true);
 
+        if (a1 == null || a2 == null || a3 == null || a4 == null) {
+            cb.onError("Seeder failed: AppointmentFactory returned null (check inputs / factory validation)");
+            return;
+        }
+
         DatabaseReference ref = apRef();
-        ref.push().setValue(a1);
-        ref.push().setValue(a2);
-        ref.push().setValue(a3);
-        ref.push().setValue(a4)
+
+        ref.child(a1.getId()).setValue(a1);
+        ref.child(a2.getId()).setValue(a2);
+        ref.child(a3.getId()).setValue(a3);
+        ref.child(a4.getId()).setValue(a4)
                 .addOnSuccessListener(unused -> cb.onSuccess())
                 .addOnFailureListener(e -> cb.onError(msg(e)));
     }
@@ -71,37 +83,45 @@ public final class AppointmentsTestSeeder {
         long now = System.currentTimeMillis();
         long start = now + TimeUnit.MINUTES.toMillis(startInMinutes);
 
-        Map<String, Object> ap = makeApMap(clientUid, clientName, clientPhone, serviceId, serviceName,
-                start, durationMinutes, cancelled);
+        Appointment ap = makeAppointmentViaFactory(
+                clientUid, clientName, clientPhone,
+                serviceId, serviceName,
+                start, durationMinutes, cancelled
+        );
 
-        apRef().push().setValue(ap)
+        if (ap == null) {
+            cb.onError("Seeder failed: AppointmentFactory returned null (check inputs / factory validation)");
+            return;
+        }
+
+        apRef().child(ap.getId()).setValue(ap)
                 .addOnSuccessListener(unused -> cb.onSuccess())
                 .addOnFailureListener(e -> cb.onError(msg(e)));
     }
 
     /**
-     * Keys are aligned to Appointment model:
-     * clientUid, clientName, clientPhone, serviceId, serviceName, startEpoch, durationMinutes, cancelled
+     * Builds Service + Slot, then uses AppointmentFactory.createFromSlot(...)
      */
-    private static Map<String, Object> makeApMap(@NonNull String clientUid,
-                                                 @NonNull String clientName,
-                                                 @NonNull String clientPhone,
-                                                 @NonNull String serviceId,
-                                                 @NonNull String serviceName,
-                                                 long startEpoch,
-                                                 int durationMinutes,
-                                                 boolean cancelled) {
+    private static Appointment makeAppointmentViaFactory(@NonNull String clientUid,
+                                                         @NonNull String clientName,
+                                                         @NonNull String clientPhone,
+                                                         @NonNull String serviceId,
+                                                         @NonNull String serviceName,
+                                                         long startEpoch,
+                                                         int durationMinutes,
+                                                         boolean cancelled) {
 
-        Map<String, Object> m = new HashMap<>();
-        m.put("clientUid", clientUid);
-        m.put("clientName", clientName);
-        m.put("clientPhone", clientPhone);
-        m.put("serviceId", serviceId);
-        m.put("serviceName", serviceName);
-        m.put("startEpoch", startEpoch);
-        m.put("durationMinutes", durationMinutes);
-        m.put("cancelled", cancelled); // ✅ matches model field name
-        return m;
+        // create a Service instance that matches the desired duration
+        Service service = new Service(serviceId, serviceName, 0, durationMinutes, true);
+
+        long endEpoch = startEpoch + TimeUnit.MINUTES.toMillis(durationMinutes);
+        Slot slot = new Slot(startEpoch, endEpoch);
+
+        Appointment ap = AppointmentFactory.createFromSlot(clientUid, clientName, clientPhone, service, slot);
+        if (ap == null) return null;
+
+        ap.setCancelled(cancelled);
+        return ap;
     }
 
     private static String msg(Exception e) {

@@ -15,6 +15,16 @@ public class TimeOff {
         this.reason = reason;
     }
 
+    // deterministic id based on actual fields of TimeOff
+    public static String generateId(long startEpoch, long endEpoch) {
+        return "to_" + startEpoch + "_" + endEpoch;
+    }
+    // Create ID in case of missing field (when pulling data from DB)
+    public void ensureId() {
+        if (this.id == null || this.id.isEmpty()) {
+            this.id = generateId(this.startEpoch, this.endEpoch);
+        }
+    }
     public String getId() {
         return id;
     }

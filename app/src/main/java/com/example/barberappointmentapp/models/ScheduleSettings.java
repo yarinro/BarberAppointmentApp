@@ -3,7 +3,6 @@ package com.example.barberappointmentapp.models;
 public class ScheduleSettings {
     public static final int DEFAULT_SLOT_MINUTES = 15;
     public static final int DEFAULT_MAX_DAYS = 30;
-    public static final String DEFAULT_TZ = "Asia/Jerusalem";
 
     private int slotMinutes;
     private int maxDaysAhead;

@@ -18,6 +18,22 @@ public class Service {
         this.isActive = isActive;
     }
 
+    private static String normalizeName(String name) {
+        if (name == null) return "service";
+        return name.trim().toLowerCase().replaceAll("[^a-z0-9]", "_").replaceAll("_+", "_");
+    }
+    // generate deterministic id
+    public static String generateId(String name, int durationMinutes) {
+        String normalized = normalizeName(name);
+        long createdAt = System.currentTimeMillis();
+        return "srv_" + normalized + "_" + durationMinutes + "_" + createdAt;
+    }
+    // Create ID in case of missing field (when pulling data from DB)
+    public void ensureId() {
+        if (this.id == null || this.id.isEmpty()) {
+            this.id = generateId(this.name, this.durationMinutes);
+        }
+    }
     public String getId() {
         return id;
     }
