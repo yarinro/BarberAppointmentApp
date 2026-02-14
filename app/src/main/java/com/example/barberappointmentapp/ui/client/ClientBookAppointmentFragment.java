@@ -91,6 +91,7 @@ public class ClientBookAppointmentFragment extends Fragment {
                 for (DataSnapshot child : snap.getChildren()) {
                     WorkWindow w = child.getValue(WorkWindow.class);
                     if (w == null) continue;
+                    w.ensureId();
                     if (w.isValid()) workWindowsAll.add(w);
                 }
                 cb.onDone(true);
@@ -120,10 +121,7 @@ public class ClientBookAppointmentFragment extends Fragment {
                         for (DataSnapshot child : snap.getChildren()) {
                             TimeOff timeoff = child.getValue(TimeOff.class);
                             if (timeoff == null) continue;
-                            String key = child.getKey();
-                            if ((timeoff.getId() == null || timeoff.getId().trim().isEmpty()) && key != null) {
-                                timeoff.setId(key);
-                            }
+                            timeoff.ensureId();
                             if (!timeoff.isValid()) continue;
 
                             // timeoff.start < dayEnd && dayStart < timeoff.end
@@ -162,14 +160,15 @@ public class ClientBookAppointmentFragment extends Fragment {
                         for (DataSnapshot child : snap.getChildren()) {
                             Appointment ap = child.getValue(Appointment.class);
                             if (ap == null) continue;
-                            String key = child.getKey();
-                            if ((ap.getId() == null || ap.getId().trim().isEmpty()) && key != null) {
-                                ap.setId(key);
-                            }
-                            // Ignore cancelled appointments
-                            if (ap.getCancelled()) continue;
 
+                            String uid = ap.getClientUid();
+                            if (uid == null || uid.trim().isEmpty()) {
+                                continue; // data corrupted or legacy -> ignore
+                            }
+                            ap.ensureId(uid);
+                            if (ap.getCancelled()) continue;
                             appointmentsAll.add(ap);
+
                         }
                         cb.onDone(true);
                     }
@@ -341,9 +340,7 @@ public class ClientBookAppointmentFragment extends Fragment {
                         Service s = child.getValue(Service.class);
                         if (s == null) continue;
                         // if no ID in DB - get it from Firebase
-                        if (s.getId() == null || s.getId().trim().isEmpty()) {
-                            s.setId(child.getKey());
-                        }
+                        s.ensureId();
                         // fetch only active services
                         if (!s.isActive()) continue;
 
@@ -414,6 +411,8 @@ public class ClientBookAppointmentFragment extends Fragment {
                 progress.setVisibility(View.GONE);
                 // if loading data failed
                 if (!ok) {
+                    hideNoAvailability(tvNoAvailability);
+                    resetSelectedSlot(tvSlot);
                     Toast.makeText(getContext(), "Failed loading schedule data", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -491,6 +490,8 @@ public class ClientBookAppointmentFragment extends Fragment {
                 progress.setVisibility(View.GONE);
 
                 if (!ok) {
+                    hideNoAvailability(tvNoAvailability);
+                    resetSelectedSlot(tvSlot);
                     Toast.makeText(getContext(), "Failed loading schedule data", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -500,9 +501,9 @@ public class ClientBookAppointmentFragment extends Fragment {
                 boolean stillAvailable = SlotsCalculator.isSlotStillAvailable(appointmentsAll, workWindowsAll, timeOffsAll, scheduleSettings, selectedService, selectedDayStartEpoch, selectedSlotStartEpoch);
 
                 if (!stillAvailable) {
-                    Toast.makeText(getContext(), "This slot is no longer available. Please choose another time.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), "This appointment time is no longer available. Please choose another time.", Toast.LENGTH_LONG).show();
                     resetSelectedSlot(tvSlot);
-                    showNoAvailability(tvNoAvailability); // optional UX
+                    hideNoAvailability(tvNoAvailability);
                     return;
                 }
 
@@ -528,25 +529,20 @@ public class ClientBookAppointmentFragment extends Fragment {
 
                 // Save to Firebase
                 DatabaseReference ref = FirebaseDatabase.getInstance().getReference("appointments");
-
-                DatabaseReference newRef = ref.push();      // creates the new node reference
-                String newId = newRef.getKey();             // gets its id
-
-                if (newId == null) {
-                    Toast.makeText(getContext(), "Failed creating appointment id", Toast.LENGTH_SHORT).show();
+                if (clientUid == null) {
+                    Toast.makeText(getContext(), "Not logged in", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                ap.setId(newId);
 
-                newRef.setValue(ap)
+                ap.ensureId(clientUid);
+                ref.child(ap.getId()).setValue(ap)
                         .addOnSuccessListener(unused -> {
                             Toast.makeText(getContext(), "Appointment booked successfully!", Toast.LENGTH_SHORT).show();
-                            requireActivity().getOnBackPressedDispatcher().onBackPressed(); // goes back to client home page when booked successfully
+                            requireActivity().getOnBackPressedDispatcher().onBackPressed();
                         })
                         .addOnFailureListener(e -> {
                             Toast.makeText(getContext(), "Failed saving appointment: " + e.getMessage(), Toast.LENGTH_LONG).show();
                         });
-
             });
         });
 

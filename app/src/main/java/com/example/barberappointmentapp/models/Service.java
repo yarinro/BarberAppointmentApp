@@ -17,26 +17,23 @@ public class Service {
         this.durationMinutes = durationMinutes;
         this.isActive = isActive;
     }
-
     private static String normalizeName(String name) {
-        if (name == null) return "service";
-        return name.trim().toLowerCase().replaceAll("[^a-z0-9]", "_").replaceAll("_+", "_");
+        if (name == null || name.trim().isEmpty()) return "invalid";
+        return name.trim().toLowerCase().replaceAll("[^a-z0-9]+", "_");
     }
     // generate deterministic id
     public static String generateId(String name, int durationMinutes) {
-        String normalized = normalizeName(name);
-        long createdAt = System.currentTimeMillis();
-        return "srv_" + normalized + "_" + durationMinutes + "_" + createdAt;
+        return "srv_" + normalizeName(name) + "_" + durationMinutes;
     }
+
     // Create ID in case of missing field (when pulling data from DB)
     public void ensureId() {
-        if (this.id == null || this.id.isEmpty()) {
+        if (this.id == null || this.id.trim().isEmpty()) {
             this.id = generateId(this.name, this.durationMinutes);
         }
     }
 
     public static Service create(String name, int price, int durationMinutes, boolean isActive) {
-        Service srv = new Service(Service.generateId(name, durationMinutes),name, price, durationMinutes, isActive);
         if (name == null || name.trim().isEmpty()) {
             throw new IllegalArgumentException("Service invalid: name is required");
         }
@@ -46,7 +43,8 @@ public class Service {
         if (durationMinutes <= 0) {
             throw new IllegalArgumentException("Service invalid: durationMinutes must be > 0");
         }
-        return srv;
+        String id = generateId(name, durationMinutes);
+        return new Service(id, name, price, durationMinutes, isActive);
     }
 
 
