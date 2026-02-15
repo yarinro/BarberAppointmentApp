@@ -1,5 +1,9 @@
 package com.example.barberappointmentapp.models;
 
+import com.example.barberappointmentapp.utils.TimeUtils;
+
+import java.time.LocalDateTime;
+
 public class Appointment {
     private String id;
     private String clientUid;
@@ -7,109 +11,131 @@ public class Appointment {
     private String clientPhone;
     private String serviceName;
     private String serviceId;
-    private long startEpoch;
-    private int durationMinutes;
+    private long startDateTime;
+    private long endDateTime;
     private boolean cancelled;
 
     public Appointment() {
     }
 
-    public Appointment(String id, String clientUid, String clientName, String clientPhone, String serviceName, String serviceId, long startEpoch, int durationMinutes) {
+    public Appointment(String id, String clientUid, String clientName, String clientPhone, String serviceName, String serviceId, long startDateTime, long startEndTime, boolean cancelled) {
         this.id = id;
         this.clientUid = clientUid;
         this.clientName = clientName;
         this.clientPhone = clientPhone;
         this.serviceName = serviceName;
         this.serviceId = serviceId;
-        this.startEpoch = startEpoch;
-        this.durationMinutes = durationMinutes;
-        this.cancelled = false;
+        this.startDateTime = startDateTime;
+        this.endDateTime = startEndTime;
+        this.cancelled = cancelled;
     }
-    //generate unique ID
-    public static String generateId(long startEpochMillis, String clientId) {
-        return "ap_" + startEpochMillis + "_" + clientId;
-    }
-    // Create ID in case of missing field (when pulling data from DB)
-    public void ensureId(String clientId) {
-        if (this.id == null || this.id.isEmpty()) {
-            this.id = generateId(this.startEpoch, clientId);
-        }
-    }
-
 
     public String getId() {
         return id;
     }
-
     public void setId(String id) {
         this.id = id;
     }
-
     public String getClientUid() {
         return clientUid;
     }
-
     public void setClientUid(String clientUid) {
         this.clientUid = clientUid;
     }
-
     public String getClientName() {
         return clientName;
     }
-
     public void setClientName(String clientName) {
         this.clientName = clientName;
     }
-
     public String getClientPhone() {
         return clientPhone;
     }
-
     public void setClientPhone(String clientPhone) {
         this.clientPhone = clientPhone;
     }
-
     public String getServiceName() {
         return serviceName;
     }
-
     public void setServiceName(String serviceName) {
         this.serviceName = serviceName;
     }
-
     public String getServiceId() {
         return serviceId;
     }
-
     public void setServiceId(String serviceId) {
         this.serviceId = serviceId;
     }
-
-    public long getStartEpoch() {
-        return startEpoch;
+    public long getStartDateTime() {
+        return startDateTime;
     }
-
-    public void setStartEpoch(long startEpoch) {
-        this.startEpoch = startEpoch;
+    public void setStartDateTime(long startDateTime) {
+        this.startDateTime = startDateTime;
     }
-
-    public int getDurationMinutes() {
-        return durationMinutes;
+    public long getEndDateTime() {
+        return endDateTime;
     }
-
-    public void setDurationMinutes(int durationMinutes) {
-        this.durationMinutes = durationMinutes;
+    public void setEndDateTime(long endDateTime) {
+        this.endDateTime = endDateTime;
     }
-
     public boolean getCancelled() {
         return cancelled;
     }
-
     public void setCancelled(boolean cancelled) {
         this.cancelled = cancelled;
     }
 
-    public long calcEndEpoch() {
-        return startEpoch + durationMinutes * 60_000L;
+    // Getters and setters with LocalDateTime objects
+    public LocalDateTime getStartDateTimeObj() {
+        return TimeUtils.toLocalDateTime(startDateTime);
     }
+    public void setStartDateTimeObj(LocalDateTime dateTime) {this.startDateTime = TimeUtils.toLong(dateTime);}
+    public LocalDateTime getEndDateTimeObj() {return TimeUtils.toLocalDateTime(endDateTime);}
+    public void setEndDateTimeObj(LocalDateTime dateTime) {this.endDateTime = TimeUtils.toLong(dateTime);}
+
+    //generate unique ID
+    public static String generateId(String clientUid, long startDateTime, long endDateTime) {
+        return "ap_" + clientUid + "_" + startDateTime + "_" + endDateTime;
+    }
+
+    // Create a new appointment
+    public static Appointment create(String clientUid, String clientName, String clientPhone, Service service, long startDateTime, long endDateTime) {
+        String id = generateId(clientUid, startDateTime, endDateTime);
+        // Validation
+        if (clientUid == null || clientUid.isEmpty()) throw new IllegalArgumentException("clientUid required");
+        if (service == null) throw new IllegalArgumentException("service required");
+        if (startDateTime >= endDateTime) throw new IllegalArgumentException("startDateTime must be before endDateTime");
+        if (clientName == null) throw new IllegalArgumentException("clientName must be a non-empty string");
+        if (clientPhone == null) throw new IllegalArgumentException("Client phone must be a non-empty string");
+
+        return new Appointment(id, clientUid, clientName, clientPhone, service.getName(), service.getId(), startDateTime, endDateTime, false);
+    }
+
+
+    // Calculate the duration of appointment in minutes
+    public int getDurationMinutes() {
+        LocalDateTime start = TimeUtils.toLocalDateTime(startDateTime);
+        LocalDateTime end = TimeUtils.toLocalDateTime(endDateTime);
+        return (int) java.time.Duration.between(start, end).toMinutes();
+    }
+    // Returns true if the appointment is in the past
+    public boolean isPast() {
+        return endDateTime <= TimeUtils.now();
+    }
+    // Returns true if the appointment is in the future
+    public boolean isFuture() {
+        return startDateTime > TimeUtils.now();
+    }
+    // Returns true if the appointment is happening right now
+    public boolean isHappeningNow() {
+        long now = TimeUtils.now();
+        return startDateTime <= now && now < endDateTime;
+    }
+    // Returns true if the appointment can be cancelled - not cancelled and in the future
+    public boolean canBeCancelled() {
+        return !cancelled && isFuture();
+    }
+
+
 }
+

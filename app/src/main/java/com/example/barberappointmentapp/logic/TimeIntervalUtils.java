@@ -3,7 +3,7 @@ package com.example.barberappointmentapp.logic;
 import com.example.barberappointmentapp.models.Appointment;
 import com.example.barberappointmentapp.models.TimeInterval;
 import com.example.barberappointmentapp.models.TimeOff;
-import com.example.barberappointmentapp.models.WorkWindow;
+import com.example.barberappointmentapp.models.WorkingHours;
 import com.example.barberappointmentapp.utils.TimeUtils;
 
 import java.util.ArrayList;
@@ -13,7 +13,7 @@ public final class TimeIntervalUtils {
     private TimeIntervalUtils() {}
 
     // converts a WorkWindow (which in minutes format) to an Interval (which in Epoch time format)
-    public static TimeInterval workWindowToInterval(WorkWindow w, long dayStartEpoch) {
+    public static TimeInterval workWindowToInterval(WorkingHours w, long dayStartEpoch) {
         if (w == null) return null;
 
         long start = dayStartEpoch + TimeUtils.minutesToMillis(w.getStartMinute());
@@ -29,7 +29,7 @@ public final class TimeIntervalUtils {
         if (ap == null) return null;
         if (ap.getCancelled()) return null;
 
-        long start = ap.getStartEpoch();
+        long start = ap.getStartDateTime();
         long end = start + TimeUtils.minutesToMillis(ap.getDurationMinutes());
 
         if (end <= start) return null;

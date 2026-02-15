@@ -144,7 +144,7 @@ public class BarberAppointmentsFragment extends Fragment {
                 long now = System.currentTimeMillis();
                 for (Appointment ap : allAppointments) {
                     if (!showCancelled[0] && ap.getCancelled()) continue; // if user did not checked the checkbox -> skip cancelled appointments
-                    if (ap.getStartEpoch() < now) continue; // show only future
+                    if (ap.getStartDateTime() < now) continue; // show only future
                     dataSet.add(ap);
                 }
             } else { // mode = filter by date
@@ -160,7 +160,7 @@ public class BarberAppointmentsFragment extends Fragment {
                 for (Appointment ap : allAppointments) {
                     if (!showCancelled[0] && ap.getCancelled()) continue; // check whether to show cancelled or not
 
-                    long s = ap.getStartEpoch();
+                    long s = ap.getStartDateTime();
                     if (s < now) continue; // show only future, even in date mode
 
                     if (s >= dayStart && s < dayEnd) {
@@ -170,7 +170,7 @@ public class BarberAppointmentsFragment extends Fragment {
             }
 
         //============================================================
-            dataSet.sort((a, b) -> Long.compare(a.getStartEpoch(), b.getStartEpoch()));
+            dataSet.sort((a, b) -> Long.compare(a.getStartDateTime(), b.getStartDateTime()));
             adapter[0].notifyDataSetChanged();
             tvEmpty.setVisibility(dataSet.isEmpty() ? View.VISIBLE : View.GONE);
         };

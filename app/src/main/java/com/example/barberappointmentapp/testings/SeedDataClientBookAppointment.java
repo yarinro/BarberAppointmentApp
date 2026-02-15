@@ -5,7 +5,7 @@ import androidx.annotation.NonNull;
 import com.example.barberappointmentapp.models.ScheduleSettings;
 import com.example.barberappointmentapp.models.Service;
 import com.example.barberappointmentapp.models.TimeOff;
-import com.example.barberappointmentapp.models.WorkWindow;
+import com.example.barberappointmentapp.models.WorkingHours;
 import com.example.barberappointmentapp.utils.AppConfig;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -55,8 +55,8 @@ public final class SeedDataClientBookAppointment {
         long tomorrowStart = startOfDayMillis(+1);
         int dayOfWeek = dayOfWeekFromDayStart(tomorrowStart);
 
-        WorkWindow w1 = WorkWindow.create(dayOfWeek, 9 * 60, 13 * 60);   // 09:00-13:00
-        WorkWindow w2 = WorkWindow.create(dayOfWeek, 16 * 60, 20 * 60);  // 16:00-20:00
+        WorkingHours w1 = WorkingHours.create(dayOfWeek, 9 * 60, 13 * 60);   // 09:00-13:00
+        WorkingHours w2 = WorkingHours.create(dayOfWeek, 16 * 60, 20 * 60);  // 16:00-20:00
 
         db.getReference("workWindows")
                 .child(String.valueOf(dayOfWeek))

@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.barberappointmentapp.R;
 import com.example.barberappointmentapp.models.Appointment;
+import com.example.barberappointmentapp.ui.main.MainActivity;
 import com.example.barberappointmentapp.utils.TimeUtils;
 import com.google.android.material.button.MaterialButton;
 import java.util.ArrayList;
@@ -15,13 +16,8 @@ import java.util.ArrayList;
 public class BarberAppointmentsAdapter extends RecyclerView.Adapter<BarberAppointmentsAdapter.myViewHolder>  {
     // List of appointments
     private ArrayList<Appointment> appointmentsList;
-    public interface OnCancelClickListener {
-        void onCancel(Appointment ap);
-    }
-    private OnCancelClickListener cancelListener;
-    public BarberAppointmentsAdapter(ArrayList<Appointment> appointmentsList,  OnCancelClickListener cancelListener) {
+    public BarberAppointmentsAdapter(ArrayList<Appointment> appointmentsList) {
         this.appointmentsList = appointmentsList;
-        this.cancelListener = cancelListener;
     }
 
     public static class myViewHolder extends RecyclerView.ViewHolder {
@@ -50,23 +46,24 @@ public class BarberAppointmentsAdapter extends RecyclerView.Adapter<BarberAppoin
     public BarberAppointmentsAdapter.myViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_appointment_barber, parent, false);
 
-        return new BarberAppointmentsAdapter.myViewHolder(view);
+        return new myViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull BarberAppointmentsAdapter.myViewHolder holder, int position) {
-        Appointment ap = appointmentsList.get(position);
+        Appointment appointment = appointmentsList.get(position);
 
         long now = System.currentTimeMillis(); // current time in epoch milliseconds
-        boolean isPast = ap.calcEndEpoch() <= now; // appointment already ended
+        boolean isPast = appointment.calcEndEpoch() <= now; // appointment already ended
 
-        holder.tvClientName.setText(ap.getClientName() != null ? ap.getClientName() : "Unknown client");
-        holder.tvClientPhone.setText(ap.getClientPhone() != null ? ap.getClientPhone() : "unknown phone");
-        holder.tvServiceName.setText(ap.getServiceName() != null ? ap.getServiceName() : "Unknown service");
+        holder.tvClientName.setText(appointment.getClientName());
+        holder.tvClientPhone.setText(appointment.getClientPhone());
+        holder.tvServiceName.setText(appointment.getServiceName());
+        holder.tvDateTime.setText(TimeUtils.formatDateAndTimeRange(appointment.getStartDateTime(), appointment.calcEndEpoch())); // appointment date & time
 
-        holder.tvDateTime.setText(TimeUtils.formatDateAndTimeRange(ap.getStartEpoch(), ap.calcEndEpoch())); // appointment date & time
-        // ================= STATUS LOGIC =================
-        if (ap.getCancelled()) {
+        // ================= appointment status badge- confirmed/cancelled/completed =================
+        // appointment is cancelled
+        if (appointment.getCancelled()) { // if appointment is cancelled - cancelled=true
             holder.tvStatus.setText("CANCELED");
             holder.tvStatus.setBackgroundResource(R.drawable.bg_status_badge_cancelled);
 
@@ -74,8 +71,8 @@ public class BarberAppointmentsAdapter extends RecyclerView.Adapter<BarberAppoin
             holder.btnCancel.setVisibility(View.GONE);
             holder.btnCancel.setOnClickListener(null);
 
-        }
-        else if (isPast) {
+        } // appointment is in the past -> completed
+        else if (isPast) { //CHANGE THIS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             // appointment already happened
             holder.tvStatus.setText("COMPLETED");
             holder.tvStatus.setBackgroundResource(R.drawable.bg_status_badge_completed);
@@ -83,21 +80,18 @@ public class BarberAppointmentsAdapter extends RecyclerView.Adapter<BarberAppoin
             // past appointments cannot be cancelled
             holder.btnCancel.setVisibility(View.GONE);
             holder.btnCancel.setOnClickListener(null);
-
         }
-        else {
-            // upcoming confirmed appointment
+        else { // appointment is not cancelled and not in the past -> hence confirmed
             holder.tvStatus.setText("CONFIRMED");
             holder.tvStatus.setBackgroundResource(R.drawable.bg_status_badge_confirmed);
-
             holder.btnCancel.setVisibility(View.VISIBLE);
-            holder.btnCancel.setOnClickListener(v -> {
 
-                int pos = holder.getBindingAdapterPosition();
-                if (pos == RecyclerView.NO_POSITION) return;
-
-                if (cancelListener != null) {
-                    cancelListener.onCancel(appointmentsList.get(pos));
+            // cancel appointment button listener
+            holder.btnCancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    MainActivity mainActivity = (MainActivity) view.getContext();
+                    mainActivity.cancelAppointment(appointment);
                 }
             });
         }

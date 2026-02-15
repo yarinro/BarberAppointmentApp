@@ -1,6 +1,7 @@
 package com.example.barberappointmentapp.ui.main;
 
 import android.os.Bundle;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -14,12 +15,16 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.barberappointmentapp.R;
+import com.example.barberappointmentapp.models.Appointment;
 import com.example.barberappointmentapp.models.User;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 public class MainActivity extends AppCompatActivity {
@@ -78,6 +83,8 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
+    // setError - docs
+    // https://developer.android.com/reference/android/widget/TextView#setError(java.lang.CharSequence)
     private boolean validateSignUpInput(EditText etName, EditText etPhone, EditText etEmail, EditText etPassword){
         etName.setError(null);
         etPhone.setError(null);
@@ -89,50 +96,36 @@ public class MainActivity extends AppCompatActivity {
         String email = etEmail.getText().toString().trim();
         String password = etPassword.getText().toString();
 
-        boolean valid = true;
-        View firstInvalid = null;
-
         if (name.isEmpty()) {
             etName.setError("*");
-            valid = false;
-            firstInvalid = etName;
+            return false;
         }
-
         if (phone.isEmpty()) {
             etPhone.setError("*");
-            valid = false;
-            if (firstInvalid == null) firstInvalid = etPhone;
-        } else if (!phone.matches("\\d+")) {
-            etPhone.setError("Phone number must contain digits only");
-            valid = false;
-            if (firstInvalid == null) firstInvalid = etPhone;
+            return false;
         }
-
+        if (!phone.matches("\\d+")) {
+            etPhone.setError("Digits only");
+            return false;
+        }
+        // https://developer.android.com/reference/android/util/Patterns#EMAIL_ADDRESS
         if (email.isEmpty()) {
             etEmail.setError("*");
-            valid = false;
-            if (firstInvalid == null) firstInvalid = etEmail;
-        } else if (!email.matches(".*\\.[A-Za-z]{2,}$")) {
-                etEmail.setError("Please enter a valid email address");
-                valid = false;
-                if (firstInvalid == null) firstInvalid = etEmail;
-            }
-
+            return false;
+        }
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            etEmail.setError("Invalid email");
+            return false;
+        }
         if (password.isEmpty()) {
             etPassword.setError("*");
-            valid = false;
-            if (firstInvalid == null) firstInvalid = etPassword;
-        } else if (password.length() < 6) {
-            etPassword.setError("Password should be at least 6 characters long");
-            valid = false;
-            if (firstInvalid == null) firstInvalid = etPassword;
+            return false;
         }
-
-        if (!valid && firstInvalid != null) {
-            firstInvalid.requestFocus();
+        if (password.length() < 6) {
+            etPassword.setError("Min 6 characters");
+            return false;
         }
-
-        return valid;
+        return true;
     }
 
     public void signUp(){
@@ -183,4 +176,27 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
     }
+
+
+    public void cancelAppointment(Appointment ap) {
+        // mark appointment as cancelled in Firebase Realtime Database
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference appointmentsRef = database.getReference("appointments");
+
+        // https://firebase.google.com/docs/database/android/read-and-write#updating_or_deleting_data
+        appointmentsRef.child(ap.getId()).child("cancelled").setValue(true)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Toast.makeText(MainActivity.this, "Appointment cancelled", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(MainActivity.this, "Cancel failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
+    }
+
 }

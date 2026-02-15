@@ -1,7 +1,5 @@
 package com.example.barberappointmentapp.logic;
 
-import androidx.annotation.NonNull;
-
 import com.example.barberappointmentapp.models.Appointment;
 import com.example.barberappointmentapp.models.Service;
 import com.example.barberappointmentapp.models.Slot;
@@ -32,7 +30,7 @@ public final class AppointmentFactory {
         // UPDATED: deterministic id (no barberId)
         String id = Appointment.generateId(start, clientUid);
 
-        return new Appointment(id, clientUid, clientName, clientPhone, serviceName, serviceId, start, duration);
+        return new Appointment(id, clientUid, clientName, clientPhone, serviceName, serviceId, start);
     }
 
 

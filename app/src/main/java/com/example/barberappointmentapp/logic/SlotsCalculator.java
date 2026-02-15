@@ -6,7 +6,7 @@ import com.example.barberappointmentapp.models.ScheduleSettings;
 import com.example.barberappointmentapp.models.Service;
 import com.example.barberappointmentapp.models.Slot;
 import com.example.barberappointmentapp.models.TimeOff;
-import com.example.barberappointmentapp.models.WorkWindow;
+import com.example.barberappointmentapp.models.WorkingHours;
 import com.example.barberappointmentapp.utils.TimeUtils;
 
 import java.util.ArrayList;
@@ -51,7 +51,7 @@ public final class SlotsCalculator {
     // Gets available slots for a specific day and service
     public static List<Slot> getAvailableSlotsForDay(
             List<Appointment> appointmentsForDay,
-            List<WorkWindow> workWindowsForDay,
+            List<WorkingHours> workWindowsForDay,
             List<TimeOff> timeOffsForDay,
             ScheduleSettings scheduleSettings,
             Service service,
@@ -68,7 +68,7 @@ public final class SlotsCalculator {
         List<TimeInterval> blocked = getBlockedIntervals(appointmentsForDay, timeOffsForDay);
         // converting WorkWindows to TimeIntervals
         List<TimeInterval> workIntervals = new ArrayList<>();
-        for (WorkWindow w : workWindowsForDay) {
+        for (WorkingHours w : workWindowsForDay) {
             TimeInterval wi = TimeIntervalUtils.workWindowToInterval(w, dayStartEpoch);
             if (wi != null) workIntervals.add(wi);
         }
@@ -103,7 +103,7 @@ public final class SlotsCalculator {
     // Validation: Checks if a slot is still available to avoid race conditions
     public static boolean isSlotStillAvailable(
             List<Appointment> appointmentsForDay,
-            List<WorkWindow> workWindowsForDay,
+            List<WorkingHours> workWindowsForDay,
             List<TimeOff> timeOffsForDay,
             ScheduleSettings scheduleSettings,
             Service service,

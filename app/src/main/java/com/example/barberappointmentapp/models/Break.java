@@ -1,5 +1,9 @@
 package com.example.barberappointmentapp.models;
 
+import com.example.barberappointmentapp.utils.TimeUtils;
+
+import java.time.LocalDateTime;
+
 public class Break {
 // Represents a break of time during a work day.
     private String id;
@@ -16,19 +20,41 @@ public class Break {
         this.endMinute = endMinute;
     }
 
+    public String getId() {
+        return id;
+    }
+    public void setId(String id) {
+        this.id = id;
+    }
+    public int getDayOfWeek() {
+        return dayOfWeek;
+    }
+    public void setDayOfWeek(int dayOfWeek) {
+        this.dayOfWeek = dayOfWeek;
+    }
+    public int getStartMinute() {
+        return startMinute;
+    }
+    public void setStartMinute(int startMinute) {
+        this.startMinute = startMinute;
+    }
+    public int getEndMinute() {
+        return endMinute;
+    }
+    public void setEndMinute(int endMinute) {
+        this.endMinute = endMinute;
+    }
+
+
     // deterministic id
     public static String generateId(int dayOfWeek, int startMinute, int endMinute) {
         return "br_" + dayOfWeek + "_" + startMinute + "_" + endMinute;
-    }
-    public void ensureId() {
-        if (this.id == null || this.id.isEmpty()) {
-            this.id = generateId(this.dayOfWeek, this.startMinute, this.endMinute);
-        }
     }
     public boolean isValid() {
         return dayOfWeek >= 1 && dayOfWeek <= 7 && startMinute >= 0 && startMinute < endMinute && endMinute <= 1440;
     }
 
+    // Creates a Break object with the given parameters
     public static Break create(int dayOfWeek, int startMinute, int endMinute) {
         Break br = new Break(Break.generateId(dayOfWeek, startMinute, endMinute), dayOfWeek, startMinute, endMinute);
         if (!br.isValid()) {
@@ -37,37 +63,9 @@ public class Break {
         return br;
     }
 
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public int getDayOfWeek() {
-        return dayOfWeek;
-    }
-
-    public void setDayOfWeek(int dayOfWeek) {
-        this.dayOfWeek = dayOfWeek;
-    }
-
-    public int getStartMinute() {
-        return startMinute;
-    }
-
-    public void setStartMinute(int startMinute) {
-        this.startMinute = startMinute;
-    }
-
-    public int getEndMinute() {
-        return endMinute;
-    }
-
-    public void setEndMinute(int endMinute) {
-        this.endMinute = endMinute;
+    // Calculate the duration of appointment in minutes
+    public int getDurationMinutes() {
+        return endMinute - startMinute;
     }
 }
 

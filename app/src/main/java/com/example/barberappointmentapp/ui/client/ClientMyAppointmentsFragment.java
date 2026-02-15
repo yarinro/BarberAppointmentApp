@@ -159,17 +159,17 @@ public class ClientMyAppointmentsFragment extends Fragment {
                                 long now = System.currentTimeMillis();
                                 // =======================DEBUG LOG==========================
                                 Log.d("APPTS", "now=" + now +
-                                        " start=" + ap.getStartEpoch() +
-                                        " diff=" + (ap.getStartEpoch() - now));
+                                        " start=" + ap.getStartDateTime() +
+                                        " diff=" + (ap.getStartDateTime() - now));
                                 //==========================DEBUG==========================
-                                if (ap.getStartEpoch() >= now) {
+                                if (ap.getStartDateTime() >= now) {
                                     dataSet.add(ap);
                                 }
 
                             }
                         }
                         // Done loading the UI -> notify adapter
-                        dataSet.sort((a,b) -> Long.compare(a.getStartEpoch(), b.getStartEpoch()));
+                        dataSet.sort((a,b) -> Long.compare(a.getStartDateTime(), b.getStartDateTime()));
                         adapter[0].notifyDataSetChanged();
                         progress.setVisibility(View.GONE);
 

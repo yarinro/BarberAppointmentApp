@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.barberappointmentapp.R;
 import com.example.barberappointmentapp.models.Appointment;
+import com.example.barberappointmentapp.ui.main.MainActivity;
 import com.example.barberappointmentapp.utils.TimeUtils;
 import com.google.android.material.button.MaterialButton;
 
@@ -19,14 +20,8 @@ public class ClientAppointmentsAdapter extends RecyclerView.Adapter<ClientAppoin
 
     private ArrayList<Appointment> appointmentsList;
 
-    public interface OnCancelClickListener {
-        void onCancel(Appointment ap);
-    }
-    private OnCancelClickListener cancelListener;
-
-    public ClientAppointmentsAdapter(ArrayList<Appointment> appointmentsList, OnCancelClickListener cancelListener) {
+    public ClientAppointmentsAdapter(ArrayList<Appointment> appointmentsList) {
         this.appointmentsList = appointmentsList;
-        this.cancelListener = cancelListener;
     }
 
     public static class myViewHolder extends RecyclerView.ViewHolder {
@@ -54,28 +49,30 @@ public class ClientAppointmentsAdapter extends RecyclerView.Adapter<ClientAppoin
 
     @Override
     public void onBindViewHolder(@NonNull ClientAppointmentsAdapter.myViewHolder holder, int position) {
-        Appointment ap = appointmentsList.get(position);
+        Appointment appointment = appointmentsList.get(position);
 
-        String name = ap.getServiceName();
+        String name = appointment.getServiceName();
         holder.tvServiceName.setText(name != null ? name : "UNKNOWN SERVICE");
-        holder.tvDateTime.setText(TimeUtils.formatDateAndTimeRange(ap.getStartEpoch(), ap.calcEndEpoch()));
+        holder.tvDateTime.setText(TimeUtils.formatDateAndTimeRange(appointment.getStartDateTime(), appointment.calcEndEpoch())); // change this!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-        if (ap.getCancelled()) {
+        // if appointment is cancelled - cancelled=true
+        if (appointment.getCancelled()) {
             holder.tvStatus.setText("CANCELED");
             holder.tvStatus.setBackgroundResource(R.drawable.bg_status_badge_cancelled);
             holder.btnCancel.setVisibility(View.GONE);
             holder.btnCancel.setOnClickListener(null);
-        } else {
+
+        } else { // if appointment is confirmed - cancelled=false
             holder.tvStatus.setText("CONFIRMED");
             holder.tvStatus.setBackgroundResource(R.drawable.bg_status_badge_confirmed);
             holder.btnCancel.setVisibility(View.VISIBLE);
-            // Setting a cancel listener for the cancel appointment button
-            holder.btnCancel.setOnClickListener(v -> {
-                int pos = holder.getBindingAdapterPosition();
-                if (pos == RecyclerView.NO_POSITION) return;
 
-                if (cancelListener != null) {
-                    cancelListener.onCancel(appointmentsList.get(pos));
+            // cancel appointment button listener
+            holder.btnCancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    MainActivity mainActivity = (MainActivity) view.getContext();
+                    mainActivity.cancelAppointment(appointment);
                 }
             });
         }

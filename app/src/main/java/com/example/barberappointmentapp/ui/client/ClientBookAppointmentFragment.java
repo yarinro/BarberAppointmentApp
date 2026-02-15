@@ -26,7 +26,7 @@ import com.example.barberappointmentapp.models.ScheduleSettings;
 import com.example.barberappointmentapp.models.Service;
 import com.example.barberappointmentapp.models.Slot;
 import com.example.barberappointmentapp.models.TimeOff;
-import com.example.barberappointmentapp.models.WorkWindow;
+import com.example.barberappointmentapp.models.WorkingHours;
 import com.example.barberappointmentapp.utils.AppConfig;
 import com.example.barberappointmentapp.utils.TimeUtils;
 import com.google.firebase.auth.FirebaseAuth;
@@ -90,7 +90,7 @@ public class ClientBookAppointmentFragment extends Fragment {
                 workWindowsAll.clear();
 
                 for (DataSnapshot child : snap.getChildren()) {
-                    WorkWindow w = child.getValue(WorkWindow.class);
+                    WorkingHours w = child.getValue(WorkingHours.class);
                     if (w == null) continue;
                     w.ensureId();
                     if (w.isValid()) workWindowsAll.add(w);
@@ -221,7 +221,7 @@ public class ClientBookAppointmentFragment extends Fragment {
     Service selectedService = null;
     ScheduleSettings scheduleSettings = null;
 
-    ArrayList<WorkWindow> workWindowsAll = new ArrayList<>();
+    ArrayList<WorkingHours> workWindowsAll = new ArrayList<>();
     ArrayList<TimeOff> timeOffsAll = new ArrayList<>();
     ArrayList<Appointment> appointmentsAll = new ArrayList<>();
     // Time slot parameters
@@ -363,7 +363,7 @@ public class ClientBookAppointmentFragment extends Fragment {
                         // if no ID in DB - get it from Firebase
                         s.ensureId();
                         // fetch only active services
-                        if (!s.isActive()) continue;
+                        if (!s.getActive()) continue;
 
                         servicesList.add(s);
                     }
@@ -612,8 +612,8 @@ public class ClientBookAppointmentFragment extends Fragment {
                         ap.ensureId(clientUid);
                         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("appointments");
                         // =======================DEBUG LOG==========================
-                        Log.d("BOOK", "selectedDayStartEpoch=" + selectedDayStartEpoch + " selectedSlotStartEpoch=" + selectedSlotStartEpoch + " start=" + ap.getStartEpoch() + " end=" + ap.calcEndEpoch()); // אם יש לך, או start + duration);
-                        Log.d("BOOK", "date=" + TimeUtils.formatDate(ap.getStartEpoch()) + " time=" + TimeUtils.formatHHmm(ap.getStartEpoch()));
+                        Log.d("BOOK", "selectedDayStartEpoch=" + selectedDayStartEpoch + " selectedSlotStartEpoch=" + selectedSlotStartEpoch + " start=" + ap.getStartDateTime() + " end=" + ap.calcEndEpoch()); // אם יש לך, או start + duration);
+                        Log.d("BOOK", "date=" + TimeUtils.formatDate(ap.getStartDateTime()) + " time=" + TimeUtils.formatHHmm(ap.getStartDateTime()));
                         // =======================DEBUG LOG==========================
                         ref.child(ap.getId()).setValue(ap)
                                 .addOnSuccessListener(unused -> {
