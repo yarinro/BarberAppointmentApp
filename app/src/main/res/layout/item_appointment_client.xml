@@ -53,7 +53,7 @@
             android:text="@string/cancel"
             android:background="@drawable/bg_btn_cancel"
             app:backgroundTint="@null"/>
-
     </LinearLayout>
+
 
 </com.google.android.material.card.MaterialCardView>

@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +20,7 @@ import com.example.barberappointmentapp.R;
 import com.example.barberappointmentapp.adapters.ClientAppointmentsAdapter;
 import com.example.barberappointmentapp.models.Appointment;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -44,6 +44,13 @@ public class ClientMyAppointmentsFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private ArrayList<Appointment> clientAppointments = new ArrayList<>();
+    private RecyclerView recyclerView;
+    private ClientAppointmentsAdapter adapter;
+    private ProgressBar progress;
+    private TextView tvEmpty;
+    private LinearLayoutManager layoutManager;
 
 
     public ClientMyAppointmentsFragment() {
@@ -77,8 +84,6 @@ public class ClientMyAppointmentsFragment extends Fragment {
         }
     }
 
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -88,103 +93,71 @@ public class ClientMyAppointmentsFragment extends Fragment {
         //----------------------------------BACK BUTTON-------------------------------------------
         ImageButton btnBack = view.findViewById(R.id.btn_back_client_my_appointments);
 
-        btnBack.setOnClickListener(v ->
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 requireActivity()
                         .getOnBackPressedDispatcher()
-                        .onBackPressed()
-        );
-        //-----------------------------------------------------------------------------
-        ProgressBar progress = view.findViewById(R.id.progress_appointments); // Progress bar
-        TextView tvEmpty = view.findViewById(R.id.tv_empty_appointments); // Text that shows when there are no appointments
-
-        RecyclerView recyclerView  = view.findViewById(R.id.recycler_appointments);
-        // RecyclerView
-        ArrayList<Appointment> dataSet = new ArrayList<>();
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
+                        .onBackPressed();
+            }
+        });
+        progress = view.findViewById(R.id.progress_appointments); // Progress bar
+        tvEmpty = view.findViewById(R.id.tv_empty_appointments); // Text that shows when there are no appointments
+        // Recycler view
+        recyclerView  = view.findViewById(R.id.recycler_appointments);
+        layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        // Adapter
-        // Using an array to allow refreshing the adapter inside lambda function
-        final ClientAppointmentsAdapter[] adapter = new ClientAppointmentsAdapter[1];
+        adapter = new ClientAppointmentsAdapter(clientAppointments);
+        recyclerView.setAdapter(adapter);
 
-        adapter[0] = new ClientAppointmentsAdapter(dataSet, ap -> {
-            if (ap == null || ap.getId() == null) return;
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser(); // get current logged in user
+        if (user != null){
+            progress.setVisibility(View.VISIBLE);
+            tvEmpty.setVisibility(View.GONE);
 
-            new androidx.appcompat.app.AlertDialog.Builder(requireContext()).setTitle("Cancel appointment").setMessage("Are you sure you want to cancel this appointment?").setPositiveButton("Yes", (dialog, which) -> {
-                DatabaseReference r = FirebaseDatabase.getInstance().getReference("appointments").child(ap.getId()).child("cancelled");
-                r.setValue(true).addOnSuccessListener(unused -> {
-                    for (int i = 0; i < dataSet.size(); i++) {
-                        Appointment a = dataSet.get(i);
-                        if (a != null && ap.getId().equals(a.getId())) {
-                            a.setCancelled(true);
-                            adapter[0].notifyItemChanged(i);
-                            break;
-                        }
+            String clientUid = user.getUid();
+            FirebaseDatabase database = FirebaseDatabase.getInstance();
+            DatabaseReference ref = FirebaseDatabase.getInstance().getReference("appointments");
+
+            ref.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    progress.setVisibility(View.GONE);
+                    clientAppointments.clear();
+
+                    for (DataSnapshot data : snapshot.getChildren()) {
+                        Appointment appointment = data.getValue(Appointment.class);
+                        // filtering only appointments that belong to current user
+                        if (appointment.getClientUid().equals(clientUid)) {
+                            clientAppointments.add(appointment);
+                            }
                     }
-                }).addOnFailureListener(e -> Toast.makeText(getContext(), "Cancel failed: " + e.getMessage(), Toast.LENGTH_LONG).show()
-                );
-            }).setNegativeButton("No", null).show();
-        });
 
-        recyclerView.setAdapter(adapter[0]);
+                    // sort appointments by date and time
+                    clientAppointments.sort((a, b) -> Long.compare(a.getStartDateTime(), b.getStartDateTime()));
 
-        // Loading the UI
-        progress.setVisibility(View.VISIBLE);
-        tvEmpty.setVisibility(View.GONE);
+                    // if there are no appointments for current user - show "no appointments" text view
+                    if (clientAppointments.isEmpty()) {
+                        tvEmpty.setVisibility(View.VISIBLE);
+                    } else {
+                        tvEmpty.setVisibility(View.GONE);
+                    }
 
-        // -------------------Firebase logic-------------------------------
-        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
+                    adapter.notifyDataSetChanged();
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    progress.setVisibility(View.GONE);
+                    Toast.makeText(getContext(), "Error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+        else{ // if user == null
             progress.setVisibility(View.GONE);
             tvEmpty.setVisibility(View.VISIBLE);
-            return view;
         }
-        // User ID
-        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference ref = database.getReference("appointments");
-        // Getting all appointments for the current user from DB
-        ref.orderByChild("clientUid").equalTo(uid)
-                        .addValueEventListener(new ValueEventListener() {
-
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        dataSet.clear();
-                        // constructing the list of appointments as 'dataSet'
-                        for (DataSnapshot s : snapshot.getChildren()) {
-                            Appointment ap = s.getValue(Appointment.class);
-                            if (ap != null) {
-                                ap.setId(s.getKey());
-                                // adding only future appointments
-                                long now = System.currentTimeMillis();
-                                // =======================DEBUG LOG==========================
-                                Log.d("APPTS", "now=" + now +
-                                        " start=" + ap.getStartDateTime() +
-                                        " diff=" + (ap.getStartDateTime() - now));
-                                //==========================DEBUG==========================
-                                if (ap.getStartDateTime() >= now) {
-                                    dataSet.add(ap);
-                                }
-
-                            }
-                        }
-                        // Done loading the UI -> notify adapter
-                        dataSet.sort((a,b) -> Long.compare(a.getStartDateTime(), b.getStartDateTime()));
-                        adapter[0].notifyDataSetChanged();
-                        progress.setVisibility(View.GONE);
-
-                        tvEmpty.setVisibility(dataSet.isEmpty() ? View.VISIBLE : View.GONE); // if there are no appointments show an appropriate text
-                    }
-                    // In case of DB error
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                        progress.setVisibility(View.GONE);
-                        tvEmpty.setVisibility(View.VISIBLE);
-                        Toast.makeText(getContext(), error.getMessage(), Toast.LENGTH_LONG).show();
-                    }
-                });
-
         return view;
-
     }
 }

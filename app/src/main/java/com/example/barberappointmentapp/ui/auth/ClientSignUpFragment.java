@@ -70,11 +70,14 @@ public class ClientSignUpFragment extends Fragment {
         //----------------------------------BACK BUTTON-------------------------------------------
         ImageButton btnBack = view.findViewById(R.id.btn_back_client_sign_up);
 
-        btnBack.setOnClickListener(v ->
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 requireActivity()
                         .getOnBackPressedDispatcher()
-                        .onBackPressed()
-        );
+                        .onBackPressed();
+            }
+        });
         //----------------------------------------------------------------------------------------
 
         Button btnSignUp = view.findViewById(R.id.signup_btn_sign_up);

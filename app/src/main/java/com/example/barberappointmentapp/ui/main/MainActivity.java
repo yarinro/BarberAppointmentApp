@@ -65,8 +65,6 @@ public class MainActivity extends AppCompatActivity {
                             String uid = mAuth.getCurrentUser().getUid();
 
                             NavHostFragment navFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.navgraph);
-                            // Erase back stack in order to stay on
-                            //NavOptions options = new NavOptions.Builder().setPopUpTo(R.id.welcomeFragment, true).build();
 
                             // If user is an admin
                             if (uid.equals(ADMIN_ID)) {
@@ -173,28 +171,6 @@ public class MainActivity extends AppCompatActivity {
                             Exception e = task.getException();
                             Toast.makeText(MainActivity.this, "Sign up failed: " + (e != null ? e.getClass().getSimpleName() + " - " + e.getMessage() : "unknown"), Toast.LENGTH_LONG).show();
                         }
-                    }
-                });
-    }
-
-
-    public void cancelAppointment(Appointment ap) {
-        // mark appointment as cancelled in Firebase Realtime Database
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference appointmentsRef = database.getReference("appointments");
-
-        // https://firebase.google.com/docs/database/android/read-and-write#updating_or_deleting_data
-        appointmentsRef.child(ap.getId()).child("cancelled").setValue(true)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Toast.makeText(MainActivity.this, "Appointment cancelled", Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(MainActivity.this, "Cancel failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 });
     }

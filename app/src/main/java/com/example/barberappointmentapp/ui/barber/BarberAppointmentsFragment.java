@@ -14,6 +14,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.DatePicker;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -24,12 +26,16 @@ import com.example.barberappointmentapp.adapters.BarberAppointmentsAdapter;
 import com.example.barberappointmentapp.models.Appointment;
 import com.example.barberappointmentapp.utils.AppConfig;
 import com.example.barberappointmentapp.utils.TimeUtils;
+import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -48,6 +54,22 @@ public class BarberAppointmentsFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private ArrayList<Appointment> allAppointments = new ArrayList<>();
+    private ArrayList<Appointment> filteredList = new ArrayList<>();
+    private RecyclerView recyclerView;
+    private LocalDate selectedDate = null;
+    private LinearLayoutManager layoutManager;
+    private BarberAppointmentsAdapter adapter;
+
+    private ProgressBar progress;
+    private TextView tvEmpty;
+    private Button btnShowAll;
+    private Button btnPickDate;
+    private TextView tvSelectedDate;
+    private CheckBox cbShowCancelled;
+    // UI elements
+
 
     public BarberAppointmentsFragment() {
         // Required empty public constructor
@@ -89,172 +111,135 @@ public class BarberAppointmentsFragment extends Fragment {
         //----------------------------------BACK BUTTON-------------------------------------------
         ImageButton btnBack = view.findViewById(R.id.btn_back_barber_appointments);
 
-        btnBack.setOnClickListener(v ->
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 requireActivity()
                         .getOnBackPressedDispatcher()
-                        .onBackPressed()
-        );
-        //----------------------------------------------------------------------------
-        // ---------------- UI ----------------
-        ProgressBar progress = view.findViewById(R.id.progress_barber_appointments);
-        TextView tvEmpty = view.findViewById(R.id.tv_empty_barber_appointments);
-        Button btnShowAll = view.findViewById(R.id.btn_show_all_barber);
-        Button btnPickDate = view.findViewById(R.id.btn_pick_date_barber);
-        TextView tvSelectedDate = view.findViewById(R.id.tv_selected_date_barber);
-        CheckBox cbShowCancelled = view.findViewById(R.id.cb_show_cancelled_barber);
-
-        // recyclerview
-        RecyclerView recyclerView = view.findViewById(R.id.recycler_barber_appointments);
-        ArrayList<Appointment> dataSet = new ArrayList<>(); // what shown in recycler view
-        ArrayList<Appointment> allAppointments = new ArrayList<>(); // all appointments
-        final long[] selectedDayStart = { -1L }; // -1 = All upcoming, else: start of selected date (epoch milliseconds)
-        final boolean[] showCancelled = { false }; // showing cancelled appointments or not
-
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        // adapter
-        final BarberAppointmentsAdapter[] adapter = new BarberAppointmentsAdapter[1];
-        adapter[0] = new BarberAppointmentsAdapter(dataSet, ap -> {
-            if (ap == null || ap.getId() == null) return;
-
-            new androidx.appcompat.app.AlertDialog.Builder(requireContext()).setTitle("Cancel appointment").setMessage("Are you sure you want to cancel this appointment?").setPositiveButton("Yes", (dialog, which) -> {
-                        DatabaseReference r = FirebaseDatabase.getInstance().getReference("appointments").child(ap.getId()).child("cancelled");
-                        r.setValue(true).addOnSuccessListener(unused -> {
-                                    for (int i = 0; i < dataSet.size(); i++) {
-                                        Appointment a = dataSet.get(i);
-                                        if (a != null && ap.getId().equals(a.getId())) {
-                                            a.setCancelled(true);
-                                            adapter[0].notifyItemChanged(i);
-                                            break;
-                                        }
-                                    }
-                                }).addOnFailureListener(e -> Toast.makeText(getContext(), "Cancel failed: " + e.getMessage(), Toast.LENGTH_LONG).show()
-                                );
-                    }).setNegativeButton("No", null).show();
-        });
-        recyclerView.setAdapter(adapter[0]);
-
-        // =================== RUNNABLE applyFilter() ===================
-        // applying filter by date
-        // Using Runnable to run applyFilter() inside onCreateView
-        final Runnable applyFilter = () -> {
-            dataSet.clear();
-
-            if (selectedDayStart[0] == -1L) { // all upcoming
-                long now = System.currentTimeMillis();
-                for (Appointment ap : allAppointments) {
-                    if (!showCancelled[0] && ap.getCancelled()) continue; // if user did not checked the checkbox -> skip cancelled appointments
-                    if (ap.getStartDateTime() < now) continue; // show only future
-                    dataSet.add(ap);
-                }
-            } else { // mode = filter by date
-                long dayStart = selectedDayStart[0];
-                // Calculate the day end epoch by matching the timezone (in case of changing to summer/winter time)
-                Calendar endCal = Calendar.getInstance(AppConfig.APP_TIMEZONE);
-                endCal.setTimeInMillis(dayStart);
-                endCal.add(Calendar.DAY_OF_MONTH, 1);
-                long dayEnd = endCal.getTimeInMillis(); // day end in Israel timezone
-
-                long now = System.currentTimeMillis();
-
-                for (Appointment ap : allAppointments) {
-                    if (!showCancelled[0] && ap.getCancelled()) continue; // check whether to show cancelled or not
-
-                    long s = ap.getStartDateTime();
-                    if (s < now) continue; // show only future, even in date mode
-
-                    if (s >= dayStart && s < dayEnd) {
-                        dataSet.add(ap);
-                    }
-                }
+                        .onBackPressed();
             }
+        });
+        // ---------------- UI ----------------
+        progress = view.findViewById(R.id.progress_barber_appointments);
+        tvEmpty = view.findViewById(R.id.tv_empty_barber_appointments);
+        btnShowAll = view.findViewById(R.id.btn_show_all_barber);
+        btnPickDate = view.findViewById(R.id.btn_pick_date_barber);
+        tvSelectedDate = view.findViewById(R.id.tv_selected_date_barber);
+        cbShowCancelled = view.findViewById(R.id.cb_show_cancelled_barber);
 
-        //============================================================
-            dataSet.sort((a, b) -> Long.compare(a.getStartDateTime(), b.getStartDateTime()));
-            adapter[0].notifyDataSetChanged();
-            tvEmpty.setVisibility(dataSet.isEmpty() ? View.VISIBLE : View.GONE);
-        };
-        // Clicking on button "All upcoming" -> show all upcoming appointments
-        btnShowAll.setOnClickListener(v -> {
-            selectedDayStart[0] = -1L; // mode = all upcoming. -1 = all
-            tvSelectedDate.setText(getString(R.string.barber_appointments_selected_all)); // update the text of mode so user knows what mode is selected
-            applyFilter.run(); // running the filter
+        // recyclerview + adapter
+        recyclerView = view.findViewById(R.id.recycler_barber_appointments);
+        layoutManager = new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        adapter = new BarberAppointmentsAdapter(filteredList);
+        recyclerView.setAdapter(adapter);
+
+        btnShowAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectedDate = null; // all upcoming -> selectedDate=null
+                tvSelectedDate.setText("All Upcoming");
+                applyFiltersOnAppointmentsList();
+            }
         });
 
-        // Date picker
-        btnPickDate.setOnClickListener(v -> {
-            Calendar c = Calendar.getInstance(AppConfig.APP_TIMEZONE);
+        // Lisener for button pick date with date picker dialog
+        // https://www.tutorialspoint.com/android/android_datepicker_control.htm
+        btnPickDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 1. Get the current date to show as default in the calendar
+                final Calendar c = Calendar.getInstance();
+                int mYear = c.get(Calendar.YEAR);
+                int mMonth = c.get(Calendar.MONTH);
+                int mDay = c.get(Calendar.DAY_OF_MONTH);
 
-            new DatePickerDialog(requireContext(), (dp, year, month, day) -> {
-                Calendar chosen = Calendar.getInstance(AppConfig.APP_TIMEZONE);
-                chosen.set(Calendar.YEAR, year);
-                chosen.set(Calendar.MONTH, month);
-                chosen.set(Calendar.DAY_OF_MONTH, day);
-                chosen.set(Calendar.HOUR_OF_DAY, 0);
-                chosen.set(Calendar.MINUTE, 0);
-                chosen.set(Calendar.SECOND, 0);
-                chosen.set(Calendar.MILLISECOND, 0);
+                DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(),
+                        new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                                // update 'selectedDate' LocalDate object with the selected parameters the user picked
+                                selectedDate = LocalDate.of(year, monthOfYear + 1, dayOfMonth); // monthOfYear - 0-1 so add 1
 
-                selectedDayStart[0] = chosen.getTimeInMillis();
+                                String dateString = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
+                                tvSelectedDate.setText(dateString);
 
-                tvSelectedDate.setText(getString(R.string.barber_appointments_selected_date_prefix) + " " + TimeUtils.formatDate(selectedDayStart[0]));
+                                applyFiltersOnAppointmentsList();
+                            }
+                        }, mYear, mMonth, mDay);
 
-
-                applyFilter.run();
-            }, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH)).show();
+                // 5. Pop it up
+                datePickerDialog.show();
+            }
         });
 
-        // Listener for show cancelled checkbox
-        cbShowCancelled.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            showCancelled[0] = isChecked;
-            applyFilter.run();
+        // listener for show cancelled check box
+        // https://developer.android.com/develop/ui/views/components/checkbox#HandlingEvents
+        cbShowCancelled.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                applyFiltersOnAppointmentsList();
+            }
         });
 
 
-        // loading appointments- progress bar
+        // Fetching appointments from Realtime DB
         progress.setVisibility(View.VISIBLE);
         tvEmpty.setVisibility(View.GONE); // hide "no appointments"
 
-        // ---------------- Firebase logic ----------------
-        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
-            progress.setVisibility(View.GONE);
-            tvEmpty.setVisibility(View.VISIBLE); // make "no appointments" visible
-            return view;
-        }
         // get appointments from firebase
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference ref = database.getReference("appointments");
+            FirebaseDatabase database = FirebaseDatabase.getInstance();
+            DatabaseReference ref = database.getReference("appointments");
 
-        ref.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        allAppointments.clear();
+            ref.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    progress.setVisibility(View.GONE);
+                    allAppointments.clear();
 
-                        for (DataSnapshot s : snapshot.getChildren()) {
-                            Appointment ap = s.getValue(Appointment.class);
-                            if (ap != null) {
-                                ap.setId(s.getKey());
-                                allAppointments.add(ap); // keep ALL appointments (past + future)
-                            }
+                    for (DataSnapshot data : snapshot.getChildren()) {
+                        Appointment appointment = data.getValue(Appointment.class);
+                        allAppointments.add(appointment);
+                    }
+                    allAppointments.sort((a, b) -> Long.compare(a.getStartDateTime(), b.getStartDateTime())); // sorting by appointment date and time
+                        if (allAppointments.isEmpty()) {
+                            tvEmpty.setVisibility(View.VISIBLE);
+                        } else {
+                            tvEmpty.setVisibility(View.GONE);
                         }
 
-                        progress.setVisibility(View.GONE);
-
-                        // Default mode - if nothing is selected yet - showing "all upcoming"
-                        applyFilter.run();
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                        progress.setVisibility(View.GONE);
-                        tvEmpty.setVisibility(View.VISIBLE);
-                        Toast.makeText(getContext(), error.getMessage(), Toast.LENGTH_LONG).show();
-                    }
+                        applyFiltersOnAppointmentsList();
                 }
-        );
 
-        btnShowAll.performClick();
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    progress.setVisibility(View.GONE);
+                    tvEmpty.setVisibility(View.VISIBLE);
+                    Toast.makeText(getContext(), "error: " + error.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            });
 
         return view;
     }
+
+    // applies filters on 'allAppointments' list and updates 'filteredList' list accordingly
+    // important: run this function after finding all views by id in onCreateView()
+    private void applyFiltersOnAppointmentsList() {
+        filteredList.clear();
+        boolean showCancelled = cbShowCancelled.isChecked();
+
+        for (Appointment appointment : allAppointments) {
+            LocalDate appointmentDate = appointment.getStartDateTimeObj().toLocalDate(); // converting LocalDateTime to LocalDate
+            boolean isAppointmentCancelled = appointment.getCancelled();
+
+            if (selectedDate != null && !appointmentDate.equals(selectedDate)) continue;
+
+            if (!showCancelled && appointment.getCancelled()) continue;
+
+            filteredList.add(appointment);
+        }
+        adapter.notifyDataSetChanged();
+    }
+
 }
