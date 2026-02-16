@@ -139,11 +139,7 @@
             app:destination="@id/welcomeFragment" />
     </fragment>
     <fragment
-        android:id="@+id/debugFirebaseFragment"
-        android:name="com.example.barberappointmentapp.testings.DebugFirebaseFragment"
-        android:label="DebugFirebaseFragment" />
-    <fragment
-        android:id="@+id/testSeedClientBookAppointmentFragment"
-        android:name="com.example.barberappointmentapp.testings.TestSeedClientBookAppointmentFragment"
-        android:label="TestSeedClientBookAppointmentFragment" />
+        android:id="@+id/testerFragment"
+        android:name="com.example.barberappointmentapp.testings.TesterFragment"
+        android:label="TesterFragment" />
 </navigation>

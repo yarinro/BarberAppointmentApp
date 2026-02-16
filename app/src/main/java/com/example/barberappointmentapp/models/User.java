@@ -5,17 +5,15 @@ public class User {
     private String name;
     private String email;
     private String phone;
-    private long createdAtEpoch;
 
     public User() {
     }
 
-    public User(String uid, String name, String email, String phone, long createdAtEpoch) {
+    public User(String uid, String name, String email, String phone) {
         this.uid = uid;
         this.name = name;
         this.email = email;
         this.phone = phone;
-        this.createdAtEpoch = createdAtEpoch;
     }
 
     public String getUid() {
@@ -50,11 +48,4 @@ public class User {
         this.phone = phone;
     }
 
-    public long getCreatedAtEpoch() {
-        return createdAtEpoch;
-    }
-
-    public void setCreatedAtEpoch(long createdAtEpoch) {
-        this.createdAtEpoch = createdAtEpoch;
-    }
 }

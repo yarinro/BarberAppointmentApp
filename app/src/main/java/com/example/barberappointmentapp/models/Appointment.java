@@ -1,5 +1,5 @@
 package com.example.barberappointmentapp.models;
-
+import com.google.firebase.database.Exclude;
 import com.example.barberappointmentapp.utils.TimeUtils;
 
 import java.time.LocalDateTime;
@@ -86,18 +86,22 @@ public class Appointment {
     }
 
     // Getters and setters with LocalDateTime objects
+    @Exclude
     public LocalDateTime getStartDateTimeObj() {
         return TimeUtils.toLocalDateTime(startDateTime);
     }
+    @Exclude
     public void setStartDateTimeObj(LocalDateTime dateTime) {this.startDateTime = TimeUtils.toLong(dateTime);}
+    @Exclude
     public LocalDateTime getEndDateTimeObj() {return TimeUtils.toLocalDateTime(endDateTime);}
+    @Exclude
     public void setEndDateTimeObj(LocalDateTime dateTime) {this.endDateTime = TimeUtils.toLong(dateTime);}
-
+    @Exclude
     //generate unique ID
     public static String generateId(String clientUid, long startDateTime, long endDateTime) {
         return "ap_" + clientUid + "_" + startDateTime + "_" + endDateTime;
     }
-
+    @Exclude
     // Create a new appointment
     public static Appointment create(String clientUid, String clientName, String clientPhone, Service service, long startDateTime, long endDateTime) {
         String id = generateId(clientUid, startDateTime, endDateTime);
@@ -111,26 +115,30 @@ public class Appointment {
         return new Appointment(id, clientUid, clientName, clientPhone, service.getName(), service.getId(), startDateTime, endDateTime, false);
     }
 
-
+    @Exclude
     // Calculate the duration of appointment in minutes
     public int getDurationMinutes() {
         LocalDateTime start = TimeUtils.toLocalDateTime(startDateTime);
         LocalDateTime end = TimeUtils.toLocalDateTime(endDateTime);
         return (int) java.time.Duration.between(start, end).toMinutes();
     }
+    @Exclude
     // Returns true if the appointment is in the past
     public boolean isPast() {
         return endDateTime <= TimeUtils.now();
     }
+    @Exclude
     // Returns true if the appointment is in the future
     public boolean isFuture() {
         return startDateTime > TimeUtils.now();
     }
+    @Exclude
     // Returns true if the appointment is happening right now
     public boolean isHappeningNow() {
         long now = TimeUtils.now();
         return startDateTime <= now && now < endDateTime;
     }
+    @Exclude
     // Returns true if the appointment can be cancelled - not cancelled and in the future
     public boolean canBeCancelled() {
         return !cancelled && isFuture();

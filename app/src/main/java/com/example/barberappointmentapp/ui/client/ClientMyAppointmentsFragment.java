@@ -130,7 +130,9 @@ public class ClientMyAppointmentsFragment extends Fragment {
                         Appointment appointment = data.getValue(Appointment.class);
                         // filtering only appointments that belong to current user
                         if (appointment.getClientUid().equals(clientUid)) {
-                            clientAppointments.add(appointment);
+                            if(!appointment.isPast()){
+                                clientAppointments.add(appointment); // do not show past appointments to client
+                            }
                             }
                     }
 

@@ -131,8 +131,8 @@ public class BarberAppointmentsAdapter extends RecyclerView.Adapter<BarberAppoin
             holder.btnCancel.setVisibility(View.GONE); // past appointments cannot be cancelled
         }
 
-        else if (appointment.isHappeningNow()) { // if appointment is happening now -> hide status badge and cancel button
-            holder.cvAppointmentCard.setCardBackgroundColor(0xFFFFFFFF);
+        else if (appointment.isHappeningNow() && !appointment.getCancelled()) { // if appointment is happening now -> hide status badge and cancel button
+            holder.cvAppointmentCard.setCardBackgroundColor(0xFFE8F5E9);
             holder.tvStatus.setVisibility(View.GONE);
             holder.btnCancel.setVisibility(View.GONE);
         }

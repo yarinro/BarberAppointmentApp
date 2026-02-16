@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private final String ADMIN_ID = "2MDnTYrrupcbAv0bAZ1hm18CWA73";
 
+    public String currentUserName = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -154,7 +155,7 @@ public class MainActivity extends AppCompatActivity {
 
                             String uid = user.getUid();
 
-                            User newUser = new User(uid, name, email, phone, System.currentTimeMillis());
+                            User newUser = new User(uid, name, email, phone);
 
                             // Write to Realtime DB
                             FirebaseDatabase.getInstance().getReference("users").child(uid).setValue(newUser)

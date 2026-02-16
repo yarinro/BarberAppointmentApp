@@ -227,11 +227,19 @@ public class BarberAppointmentsFragment extends Fragment {
             LocalDate appointmentDate = appointment.getStartDateTimeObj().toLocalDate(); // converting LocalDateTime to LocalDate
             boolean isAppointmentCancelled = appointment.getCancelled();
 
+            if (selectedDate == null && appointment.isPast()) continue;
+
             if (selectedDate != null && !appointmentDate.equals(selectedDate)) continue;
 
             if (!showCancelled && appointment.getCancelled()) continue;
 
             filteredList.add(appointment);
+        }
+        // if there are no appointments, show "no appointments"
+        if (filteredList.isEmpty()) {
+            tvEmpty.setVisibility(View.VISIBLE);
+        } else {
+            tvEmpty.setVisibility(View.GONE);
         }
         adapter.notifyDataSetChanged();
     }

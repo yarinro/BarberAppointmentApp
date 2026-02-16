@@ -17,6 +17,7 @@ import com.example.barberappointmentapp.utils.TimeUtils;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.card.MaterialCardView;
 import com.google.firebase.database.FirebaseDatabase;
 
 
@@ -31,6 +32,7 @@ public class ClientAppointmentsAdapter extends RecyclerView.Adapter<ClientAppoin
     }
 
     public class myViewHolder extends RecyclerView.ViewHolder {
+        MaterialCardView cvAppointmentCard;
         TextView tvServiceName;
         TextView tvDateTime;
         TextView tvStatus;
@@ -39,6 +41,7 @@ public class ClientAppointmentsAdapter extends RecyclerView.Adapter<ClientAppoin
         public myViewHolder(@NonNull View itemView) {
             super(itemView);
             // https://developer.android.com/develop/ui/views/layout/recyclerview?#implement-adapter
+            cvAppointmentCard = itemView.findViewById(R.id.cardViewAppointmentClient);
             tvServiceName = itemView.findViewById(R.id.tvServiceName);
             tvDateTime = itemView.findViewById(R.id.tvDateTime);
             tvStatus = itemView.findViewById(R.id.tvStatus);
@@ -104,15 +107,36 @@ public class ClientAppointmentsAdapter extends RecyclerView.Adapter<ClientAppoin
         holder.tvServiceName.setText(appointment.getServiceName());
         holder.tvDateTime.setText(TimeUtils.formatDateAndTimeRange(appointment.getStartDateTime(), appointment.getEndDateTime())); // date + appointment time range text view
 
+        // defaults
+        holder.cvAppointmentCard.setCardBackgroundColor(0xFFFFFFFF);
+        holder.tvStatus.setVisibility(View.VISIBLE);
+        holder.btnCancel.setVisibility(View.VISIBLE);
+        holder.tvStatus.setTextColor(0xFFFFFFFF);
+
         // if appointment is cancelled - cancelled=true
         if (appointment.getCancelled()) {
             holder.tvStatus.setText("CANCELED");
+            holder.tvStatus.setTextColor(0xFFFFFFFF);
             holder.tvStatus.setBackgroundResource(R.drawable.bg_status_badge_cancelled);
             holder.btnCancel.setVisibility(View.GONE);
-
         }
+
+        else if (appointment.isPast()){
+            holder.cvAppointmentCard.setCardBackgroundColor(0xFFF5F5F5);
+            holder.btnCancel.setVisibility(View.GONE);
+            holder.tvStatus.setVisibility(View.GONE);
+        }
+
+        else if (appointment.isHappeningNow() && !appointment.getCancelled()){
+            holder.cvAppointmentCard.setCardBackgroundColor(0xFFE8F5E9);
+            holder.btnCancel.setVisibility(View.GONE);
+            holder.tvStatus.setVisibility(View.GONE);
+            holder.tvStatus.setBackgroundResource(R.drawable.bg_status_badge_cancelled);
+        }
+
         else { // if appointment is confirmed - cancelled=false
             holder.tvStatus.setText("CONFIRMED");
+            holder.tvStatus.setTextColor(0xFFFFFFFF);
             holder.tvStatus.setBackgroundResource(R.drawable.bg_status_badge_confirmed);
             holder.btnCancel.setVisibility(View.VISIBLE);
         }

@@ -2,6 +2,7 @@ package com.example.barberappointmentapp.ui.client;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
@@ -9,8 +10,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.barberappointmentapp.R;
+import com.example.barberappointmentapp.models.User;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -64,6 +75,33 @@ public class ClientHomeFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_client_home, container, false);
+        //--------------------------title-------------------------------------
+        TextView tvTitle = view.findViewById(R.id.client_home_title);
+        tvTitle.setText("");
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        String clientUid;
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+        if (user != null) {
+            clientUid = user.getUid();
+            DatabaseReference ref = database.getReference("users").child(clientUid);
+            ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    User user = snapshot.getValue(User.class);
+                    String clientName = user.getName();
+                    tvTitle.setText("Hello, " + clientName);
+
+                    tvTitle.setAlpha(0f);
+                    tvTitle.animate().alpha(1f).setDuration(500);
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    Toast.makeText(getContext(), "Failed to get name: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
         //----------------------------------------------BUTTONS----------------------------------------------------------------------------
         Button btnBookAppointment = view.findViewById(R.id.btn_client_book_appointment);
         btnBookAppointment.setOnClickListener(new View.OnClickListener() {
@@ -106,6 +144,8 @@ public class ClientHomeFragment extends Fragment {
         });
         //--------------------------------------------------------------------------------------------------------------------------
 
+
         return view;
     }
 }
+
