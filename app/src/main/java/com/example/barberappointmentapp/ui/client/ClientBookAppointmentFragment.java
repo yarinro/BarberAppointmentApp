@@ -1,13 +1,9 @@
 package com.example.barberappointmentapp.ui.client;
 
-import android.app.DatePickerDialog;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,13 +11,13 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
+
 import com.example.barberappointmentapp.R;
 import com.example.barberappointmentapp.models.Appointment;
-import com.example.barberappointmentapp.models.ScheduleSettings;
+import com.example.barberappointmentapp.models.Settings;
 import com.example.barberappointmentapp.models.Service;
 import com.example.barberappointmentapp.models.TimeOff;
-import com.example.barberappointmentapp.models.WorkingHours;
+
 import java.util.ArrayList;
 
 
@@ -48,7 +44,7 @@ public class ClientBookAppointmentFragment extends Fragment {
     int selectedServiceDurationMin = -1; // Start value to inspect whether chosen or not
     String selectedServiceName = null;
     Service selectedService = null;
-    ScheduleSettings scheduleSettings = null;
+    Settings settings = null;
 
     ArrayList<WorkingHours> workWindowsAll = new ArrayList<>();
     ArrayList<TimeOff> timeOffsAll = new ArrayList<>();

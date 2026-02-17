@@ -30,6 +30,25 @@ public class Appointment {
         this.cancelled = cancelled;
     }
 
+    @Exclude
+    //generate unique ID
+    public static String generateId(String clientUid, long startDateTime, long endDateTime) {
+        return "ap_" + clientUid + "_" + startDateTime + "_" + endDateTime;
+    }
+    @Exclude
+    // Create a new appointment
+    public static Appointment create(String clientUid, String clientName, String clientPhone, Service service, long startDateTime, long endDateTime) {
+        // Validation
+        if (clientUid == null || clientUid.isEmpty()) throw new IllegalArgumentException("clientUid required");
+        if (service == null) throw new IllegalArgumentException("service required");
+        if (startDateTime >= endDateTime) throw new IllegalArgumentException("startDateTime must be before endDateTime");
+        if (clientName == null) throw new IllegalArgumentException("clientName must be a non-empty string");
+        if (clientPhone == null) throw new IllegalArgumentException("Client phone must be a non-empty string");
+        // generating unique ID
+        String id = generateId(clientUid, startDateTime, endDateTime);
+        return new Appointment(id, clientUid, clientName, clientPhone, service.getName(), service.getId(), startDateTime, endDateTime, false);
+    }
+
     public String getId() {
         return id;
     }
@@ -96,24 +115,6 @@ public class Appointment {
     public LocalDateTime getEndDateTimeObj() {return TimeUtils.toLocalDateTime(endDateTime);}
     @Exclude
     public void setEndDateTimeObj(LocalDateTime dateTime) {this.endDateTime = TimeUtils.toLong(dateTime);}
-    @Exclude
-    //generate unique ID
-    public static String generateId(String clientUid, long startDateTime, long endDateTime) {
-        return "ap_" + clientUid + "_" + startDateTime + "_" + endDateTime;
-    }
-    @Exclude
-    // Create a new appointment
-    public static Appointment create(String clientUid, String clientName, String clientPhone, Service service, long startDateTime, long endDateTime) {
-        String id = generateId(clientUid, startDateTime, endDateTime);
-        // Validation
-        if (clientUid == null || clientUid.isEmpty()) throw new IllegalArgumentException("clientUid required");
-        if (service == null) throw new IllegalArgumentException("service required");
-        if (startDateTime >= endDateTime) throw new IllegalArgumentException("startDateTime must be before endDateTime");
-        if (clientName == null) throw new IllegalArgumentException("clientName must be a non-empty string");
-        if (clientPhone == null) throw new IllegalArgumentException("Client phone must be a non-empty string");
-
-        return new Appointment(id, clientUid, clientName, clientPhone, service.getName(), service.getId(), startDateTime, endDateTime, false);
-    }
 
     @Exclude
     // Calculate the duration of appointment in minutes
@@ -143,7 +144,5 @@ public class Appointment {
     public boolean canBeCancelled() {
         return !cancelled && isFuture();
     }
-
-
 }
 

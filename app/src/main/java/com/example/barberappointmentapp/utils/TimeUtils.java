@@ -37,4 +37,14 @@ public final class TimeUtils {
         return formatDate(start) + "  " + formatHHmm(start) + " - " + formatHHmm(end);
     }
 
+    // formats minute (int) to "HH:mm"
+    public static String formatMinuteOfDay(int minuteOfDay) {
+        if (minuteOfDay < 0 || minuteOfDay > 1440) throw new IllegalArgumentException("minuteOfDay must be between 0 and 1440");
+
+        int hours = minuteOfDay / 60;
+        int minutes = minuteOfDay % 60;
+
+        return String.format("%02d:%02d", hours, minutes);
+    }
+
 }
