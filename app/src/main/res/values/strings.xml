@@ -14,7 +14,7 @@
     <string name="login_title">Login</string>
     <string name="login_email_hint">Email</string>
     <string name="login_password_hint">Password</string>
-    <string name="login_btn">Login</string>
+    <string name="login_button_text">Login</string>
 
     <!-- SignUpFragment: client-->
     <string name="client_signup_title">Sign Up</string>
@@ -135,8 +135,6 @@
     <string name="hint_zero">Price (₪)</string>
     <string name="hint_duration_default">Duration (Minutes)</string>
     <string name="barber_add_service_fragment_btn">Save Service</string>
-    <string name="error_fill_all_fields">Please fill in all fields</string>
-    <string name="cd_back">Go back</string>
     <string name="success_service_added">Service added successfully!</string>
 
     <!-- barber_Add_Timeoff fragment -->
@@ -155,7 +153,6 @@
     <string name="hint_reason">Time Off Description</string>
     <string name="btn_save_time_off">Add Time Off</string>
     <string name="error_fill_all_fields">Please fill in all fields</string>
-    <string name="cd_back">Back</string>
     <string name="success_time_off_added">Time off added successfully!</string>
 
 

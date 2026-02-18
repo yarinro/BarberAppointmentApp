@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -31,6 +33,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -55,20 +59,25 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void logIn() {
-
         String email = ((EditText) findViewById(R.id.editText_login_email)).getText().toString().trim();
         String password = ((EditText) findViewById(R.id.editText_login_password)).getText().toString();
+        TextView errorLogin = ((TextView) findViewById(R.id.errorLogin));
+        ProgressBar progressBar = ((ProgressBar) findViewById(R.id.progress_log_in));
+        errorLogin.setVisibility(View.INVISIBLE);
+
 
         if (email.isEmpty() || password.isEmpty()) {
-            Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show();
+            errorLogin.setText("Please fill all fields!");
             return;
         }
 
+        progressBar.setVisibility(View.VISIBLE);
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
+                            progressBar.setVisibility(View.GONE);
                             Toast.makeText(MainActivity.this, "Login successful.", Toast.LENGTH_SHORT).show();
                             // Getting the current user's ID - admin/regular user
                             String uid = mAuth.getCurrentUser().getUid();
@@ -83,56 +92,15 @@ public class MainActivity extends AppCompatActivity {
                                 navFragment.getNavController().navigate(R.id.action_loginFragment_to_clientHomeFragment);
                             }
                         } else {
+                            progressBar.setVisibility(View.GONE);
+                            errorLogin.setText("Login Failed. Please try again");
+                            errorLogin.setVisibility(View.VISIBLE);
+
                             Exception e = task.getException();
-                            Toast.makeText(MainActivity.this, "Login failed: " + (e != null ? e.getMessage() : "unknown error"), Toast.LENGTH_LONG).show();
+                            Toast.makeText(MainActivity.this, "Error: " + (e != null ? e.getMessage() : "unknown error"), Toast.LENGTH_LONG).show();
                         }
                     }
                 });
-    }
-
-    // setError - docs
-    // https://developer.android.com/reference/android/widget/TextView#setError(java.lang.CharSequence)
-    private boolean validateSignUpInput(EditText etName, EditText etPhone, EditText etEmail, EditText etPassword){
-        etName.setError(null);
-        etPhone.setError(null);
-        etEmail.setError(null);
-        etPassword.setError(null);
-
-        String name = etName.getText().toString().trim();
-        String phone = etPhone.getText().toString().trim();
-        String email = etEmail.getText().toString().trim();
-        String password = etPassword.getText().toString();
-
-        if (name.isEmpty()) {
-            etName.setError("*");
-            return false;
-        }
-        if (phone.isEmpty()) {
-            etPhone.setError("*");
-            return false;
-        }
-        if (!phone.matches("\\d+")) {
-            etPhone.setError("Digits only");
-            return false;
-        }
-        // https://developer.android.com/reference/android/util/Patterns#EMAIL_ADDRESS
-        if (email.isEmpty()) {
-            etEmail.setError("*");
-            return false;
-        }
-        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            etEmail.setError("Invalid email");
-            return false;
-        }
-        if (password.isEmpty()) {
-            etPassword.setError("*");
-            return false;
-        }
-        if (password.length() < 6) {
-            etPassword.setError("Min 6 characters");
-            return false;
-        }
-        return true;
     }
 
     public void signUp(){
@@ -141,20 +109,67 @@ public class MainActivity extends AppCompatActivity {
         EditText etEmail = ((EditText) findViewById(R.id.editText_signup_email));
         EditText etPassword = ((EditText) findViewById(R.id.editText_signup_password));
 
-        if (!validateSignUpInput(etName, etPhone, etEmail, etPassword)) return;
+        TextView suErrorFullName = ((TextView) findViewById(R.id.suErrorFullName));
+        TextView suErrorPhoneNumber = ((TextView) findViewById(R.id.suErrorPhoneNumber));
+        TextView suErrorEmail = ((TextView) findViewById(R.id.suErrorEmail));
+        TextView suErrorPassword = ((TextView) findViewById(R.id.suErrorPassword));
+
+        ProgressBar progressBar = ((ProgressBar) findViewById(R.id.progressSignUp));
 
         String name = etName.getText().toString().trim();
         String phone = etPhone.getText().toString().trim();
         String email = etEmail.getText().toString().trim();
         String password = etPassword.getText().toString();
 
+        if (name.isEmpty()) {
+            suErrorFullName.setText("* Required");
+            suErrorFullName.setVisibility(View.VISIBLE);
+            return;
+        }
+        if (phone.isEmpty()) {
+            suErrorPhoneNumber.setText("* Required");
+            suErrorPhoneNumber.setVisibility(View.VISIBLE);
+            return;
+        }
+        // https://developer.android.com/reference/android/util/Patterns#EMAIL_ADDRESS
+        else if (!phone.matches("\\d+")){
+            suErrorPhoneNumber.setText("Phone number must contain digits only");
+            suErrorPhoneNumber.setVisibility(View.VISIBLE);
+            return;
+        }
+        if(email.isEmpty()){
+            suErrorEmail.setText("* Required");
+            suErrorEmail.setVisibility(View.VISIBLE);
+            return;
+        }
+        else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
+            suErrorEmail.setText("Invalid email");
+            suErrorEmail.setVisibility(View.VISIBLE);
+            return;
+        }
+        if(password.isEmpty()){
+            suErrorPassword.setText("* Required");
+            suErrorPassword.setVisibility(View.VISIBLE);
+            return;
+        }
+        else if (password.length() < 6){
+            suErrorPassword.setText("Password must be at least 6 characters");
+            suErrorPassword.setVisibility(View.VISIBLE);
+            return;
+        }
+
+        progressBar.setVisibility(View.VISIBLE);
+
+        suErrorFullName.setVisibility(View.INVISIBLE);
+        suErrorPhoneNumber.setVisibility(View.INVISIBLE);
+        suErrorEmail.setVisibility(View.INVISIBLE);
+        suErrorPassword.setVisibility(View.INVISIBLE);
 
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-
                             FirebaseUser user = task.getResult().getUser();
                             if (user == null) {
                                 Toast.makeText(MainActivity.this, "Sign up failed (no user).", Toast.LENGTH_SHORT).show();
@@ -170,6 +185,7 @@ public class MainActivity extends AppCompatActivity {
                             ref.setValue(newUser).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
+                                    progressBar.setVisibility(View.GONE);
                                     Toast.makeText(MainActivity.this, "Signed up successfully.", Toast.LENGTH_SHORT).show();
 
                                     NavHostFragment navFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.navgraph);
@@ -178,11 +194,13 @@ public class MainActivity extends AppCompatActivity {
                             }).addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
+                                    progressBar.setVisibility(View.GONE);
                                     Toast.makeText(MainActivity.this, "DB write failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
                                 }
                             });
 
                         } else {
+                            progressBar.setVisibility(View.GONE);
                             Exception e = task.getException();
                             Toast.makeText(MainActivity.this, "Sign up failed: " + (e != null ? e.getClass().getSimpleName() + " - " + e.getMessage() : "unknown"), Toast.LENGTH_LONG).show();
                         }

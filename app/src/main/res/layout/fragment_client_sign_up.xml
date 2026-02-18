@@ -19,44 +19,123 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/client_signup_title"
-        android:textSize="34sp" />
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textSize="60sp"
+        android:textColor="@color/black"
+        android:layout_marginBottom="10dp" />
+
+    <TextView
+        android:id="@+id/suErrorFullName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:gravity="center"
+        android:text="@string/error_fill_all_fields"
+        android:textColor="#F60632"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:visibility="invisible" />
 
     <EditText
         android:id="@+id/editText_signup_name"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:ems="10"
+        android:layout_height="56dp"
+        android:padding="12dp"
+        android:background="@android:drawable/editbox_background"
         android:hint="@string/client_signup_name"
         android:inputType="text" />
+
+    <TextView
+        android:id="@+id/suErrorPhoneNumber"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:gravity="center"
+        android:text="@string/error_fill_all_fields"
+        android:textColor="#F60632"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:visibility="invisible" />
+
 
     <EditText
         android:id="@+id/editText_signup_phone"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:ems="10"
         android:hint="@string/client_signup_phone_number"
-        android:inputType="text" />
+        android:inputType="text"
+        android:layout_height="56dp"
+        android:padding="12dp"
+        android:background="@android:drawable/editbox_background"
+         />
+
+    <TextView
+        android:id="@+id/suErrorEmail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:gravity="center"
+        android:text="@string/error_fill_all_fields"
+        android:textColor="#F60632"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:visibility="invisible" />
 
     <EditText
         android:id="@+id/editText_signup_email"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:ems="10"
         android:hint="@string/client_signup_email"
-        android:inputType="text|textEmailAddress" />
+        android:inputType="text|textEmailAddress"
+        android:layout_height="56dp"
+        android:padding="12dp"
+        android:background="@android:drawable/editbox_background" />
+
+    <TextView
+        android:id="@+id/suErrorPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:gravity="center"
+        android:text="@string/error_fill_all_fields"
+        android:textColor="#F60632"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:visibility="invisible" />
 
     <EditText
         android:id="@+id/editText_signup_password"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:ems="10"
         android:hint="@string/client_signup_password"
-        android:inputType="text|textPassword" />
+        android:inputType="text|textPassword"
+        android:layout_height="56dp"
+        android:padding="12dp"
+        android:background="@android:drawable/editbox_background"
+        android:layout_marginBottom="30dp" />
 
     <Button
         android:id="@+id/signup_btn_sign_up"
-        android:layout_width="match_parent"
+        android:layout_width="220sp"
         android:layout_height="wrap_content"
-        android:text="@string/client_signup_signup_btn" />
+        android:text="@string/client_signup_signup_btn"
+        android:layout_gravity="center_horizontal"
+        android:backgroundTint="@android:color/black"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <ProgressBar
+        android:id="@+id/progressSignUp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="16dp"
+        android:visibility="gone"/>
 
 </LinearLayout>
