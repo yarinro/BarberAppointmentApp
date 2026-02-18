@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="20dp"
+    tools:context=".ui.barber.BarberAddTimeOffFragment">
+
+    <ImageButton
+        android:id="@+id/btn_back_add_time_off"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/ic_arrow_back"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/cd_back"
+        android:layout_marginBottom="8dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="40dp"
+        android:gravity="center"
+        android:text="@string/barber_add_time_off_title"
+        android:textSize="34sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tvSelectedDateStart"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="@android:drawable/editbox_background"
+        android:hint="@string/hint_select_start_date"
+        android:gravity="center_vertical"
+        android:padding="12dp"
+        android:layout_marginBottom="30dp" />
+
+    <TextView
+        android:id="@+id/tvSelectedDateEnd"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="@android:drawable/editbox_background"
+        android:hint="@string/hint_select_end_date"
+        android:gravity="center_vertical"
+        android:padding="12dp"
+        android:layout_marginBottom="30dp" />
+
+    <EditText
+        android:id="@+id/etTimeOffReason"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="@android:drawable/editbox_background"
+        android:hint="@string/hint_reason"
+        android:padding="12dp"
+        android:inputType="textCapSentences"
+        android:layout_marginBottom="24dp" />
+
+    <TextView
+        android:id="@+id/tvErrorAddTimeOff"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:gravity="center"
+        android:text="@string/error_fill_all_fields"
+        android:textColor="#B00020"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:visibility="invisible" />
+
+    <Button
+        android:id="@+id/btnAddTimeOff"
+        android:layout_height="wrap_content"
+        android:layout_width="220dp"
+        android:layout_marginTop="12dp"
+        android:layout_gravity="center_horizontal"
+        android:backgroundTint="@android:color/black"
+        android:text="@string/btn_save_time_off"
+        android:textColor="@android:color/white" />
+
+    <TextView
+        android:id="@+id/tvSuccessAddTimeOff"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:layout_marginBottom="8dp"
+        android:gravity="center"
+        android:text="@string/success_time_off_added"
+        android:textColor="#388E3C"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:visibility="invisible" />
+
+    <ProgressBar
+        android:id="@+id/progress_add_time_off"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="16dp"
+        android:visibility="gone"/>
+
+</LinearLayout>

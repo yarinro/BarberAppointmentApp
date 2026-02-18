@@ -16,7 +16,11 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.barberappointmentapp.R;
 import com.example.barberappointmentapp.models.Appointment;
+import com.example.barberappointmentapp.models.Service;
+import com.example.barberappointmentapp.models.Settings;
+import com.example.barberappointmentapp.models.TimeOff;
 import com.example.barberappointmentapp.models.User;
+import com.example.barberappointmentapp.models.WorkingDay;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -26,6 +30,10 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
@@ -154,19 +162,25 @@ public class MainActivity extends AppCompatActivity {
                             }
 
                             String uid = user.getUid();
-
                             User newUser = new User(uid, name, email, phone);
-
                             // Write to Realtime DB
-                            FirebaseDatabase.getInstance().getReference("users").child(uid).setValue(newUser)
-                                    .addOnSuccessListener(aVoid -> {
-                                        Toast.makeText(MainActivity.this, "Signed up successfully.", Toast.LENGTH_SHORT).show();
-                                        NavHostFragment navFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.navgraph);
-                                        navFragment.getNavController().navigate(R.id.action_clientSignUpFragment_to_welcomeFragment);
-                                    })
-                                    .addOnFailureListener(e -> {
-                                        Toast.makeText(MainActivity.this, "DB write failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                                    });
+                            FirebaseDatabase db = FirebaseDatabase.getInstance();
+                            DatabaseReference ref = db.getReference("users").child(uid);
+
+                            ref.setValue(newUser).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    Toast.makeText(MainActivity.this, "Signed up successfully.", Toast.LENGTH_SHORT).show();
+
+                                    NavHostFragment navFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.navgraph);
+                                    navFragment.getNavController().navigate(R.id.action_clientSignUpFragment_to_welcomeFragment);
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Toast.makeText(MainActivity.this, "DB write failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                                }
+                            });
 
                         } else {
                             Exception e = task.getException();
@@ -175,5 +189,54 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
     }
+
+    // https://firebase.google.com/docs/auth/android/password-auth#next_steps
+    public void signOut() {
+        FirebaseAuth.getInstance().signOut();
+    }
+
+    // creates default settings in realtime db. if fails user is signed out and navigates back to welcome fragment
+//    public void createDefaultSettingsInDB(){
+//        NavHostFragment navFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.navgraph);
+//        Settings defaultSettings = new Settings();
+//
+//        defaultSettings.setBarbershopName("Add barbershop name in \"Settings\"");
+//        defaultSettings.setAddress("\"Add address in \\\"Settings\\\"");
+//        defaultSettings.setPhoneNumber("Add phone number in \"Settings\"");
+//        defaultSettings.setAboutUs("Edit description in \"Settings\"");
+//        defaultSettings.setMaxDaysAheadToBookAppointment(14);
+//
+//        Map<String, WorkingDay> workingDaysMap = new HashMap<>();
+//        defaultSettings.setServices(new HashMap<>()); // default - no services yet
+//        defaultSettings.setTimeOffs(new ArrayList<>()); // default - no time offs yet
+//
+//        // default working days -
+//        for (int i = 1; i <= 7; i++) {
+//            boolean isOpen = (i != 1 && i != 7); // closed on sunday and saturday
+//            WorkingDay workingday = new WorkingDay(i, isOpen, 540, 1020, null); // 9:00 to 17:00
+//
+//            workingDaysMap.put(String.valueOf(i), workingday);
+//        }
+//        defaultSettings.setWorkingDays(workingDaysMap);
+//
+//        // adding default settings to realtime db
+//        FirebaseDatabase db = FirebaseDatabase.getInstance();
+//        DatabaseReference settingsRef = db.getReference("settings");
+//
+//        settingsRef.setValue(defaultSettings)
+//                .addOnSuccessListener(new OnSuccessListener<Void>() {
+//                    @Override
+//                    public void onSuccess(Void aVoid) {
+//                        Toast.makeText(MainActivity.this, "Initialized Default Settings successfully", Toast.LENGTH_SHORT).show();
+//                        navFragment.getNavController().navigate(R.id.action_loginFragment_to_barberHomeFragment);                    }
+//                })
+//                .addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//                        Toast.makeText(MainActivity.this, "Failed to init settings: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+//                        navFragment.getNavController().navigate(R.id.);
+//                    }
+//                });
+//    }
 
 }

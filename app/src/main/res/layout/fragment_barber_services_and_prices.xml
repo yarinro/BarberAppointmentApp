@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -15,16 +16,44 @@
         android:contentDescription="@string/cd_back" />
 
     <TextView
-        android:id="@+id/textView11"
+        android:id="@+id/tv_services_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/barber_services_and_prices_title"
         android:textSize="34sp" />
 
+    <ProgressBar
+        android:id="@+id/progress_bar_services"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone"/>
+
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_add_service"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="10dp"
+        android:text="Add Service"
+        android:textColor="@android:color/white"
+        app:backgroundTint="@color/black" />
+
     <TextView
-        android:id="@+id/textView12"
+        android:id="@+id/tv_no_services_yet"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Placeholder - manage services  prices" />
+        android:text="@string/no_services_yet"
+        android:textSize="20sp"
+        android:visibility="visible" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_services_and_prices"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+
 
 </LinearLayout>

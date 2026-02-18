@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/cardViewAppointmentClient"
+    android:id="@+id/cardViewService"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="12dp"
     app:cardCornerRadius="12dp"
     app:cardUseCompatPadding="true"
-    app:cardBackgroundColor="@android:color/white" >
+    app:cardBackgroundColor="@android:color/white">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -19,16 +19,24 @@
             android:id="@+id/tvServiceName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/placeholder_service"
+            android:text="@string/item_service_service_name"
             android:textSize="16sp"
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/tvDateTime"
+            android:id="@+id/tvServiceDuration"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:text="@string/placeholder_datetime"
+            android:text="@string/item_service_service_duration"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/tvServicePrice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="@string/item_service_service_price"
             android:textSize="14sp" />
 
         <View
@@ -37,24 +45,15 @@
             android:layout_marginVertical="10dp"
             android:background="#DDDDDD" />
 
-        <TextView
-            android:id="@+id/tvStatus"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/bg_status_badge_confirmed"
-            android:paddingHorizontal="10dp"
-            android:paddingVertical="4dp"
-            android:text="@string/placeholder_status"
-            android:textSize="12sp" />
-
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnCancel"
+            android:id="@+id/btnRemoveService"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:background="@drawable/bg_btn_cancel"
-            android:text="@string/cancel"
+            android:text="@string/item_service_service_remove"
             app:backgroundTint="@null" />
+
     </LinearLayout>
 
 

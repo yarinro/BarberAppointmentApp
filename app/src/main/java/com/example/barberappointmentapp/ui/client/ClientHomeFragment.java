@@ -1,10 +1,13 @@
 package com.example.barberappointmentapp.ui.client;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +18,9 @@ import android.widget.Toast;
 
 import com.example.barberappointmentapp.R;
 import com.example.barberappointmentapp.models.User;
+import com.example.barberappointmentapp.ui.main.MainActivity;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -103,6 +109,32 @@ public class ClientHomeFragment extends Fragment {
             });
         }
         //----------------------------------------------BUTTONS----------------------------------------------------------------------------
+        // Sign out button
+        Button btnSignOut = view.findViewById(R.id.btn_client_sign_out);
+        btnSignOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Alert dialog: "are you sure you want to sign out"
+                // // https://developer.android.com/develop/ui/views/components/dialogs#AddButtons
+                new AlertDialog.Builder(view.getContext())
+                        .setTitle("Sign out")
+                        .setMessage("Are you sure you want to sign out?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // call sign out from MainActivity
+                                MainActivity mainActivity =(MainActivity) getActivity();
+                                mainActivity.signOut();
+                                NavHostFragment navHostFragment = (NavHostFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.navgraph);
+                                navHostFragment.getNavController().navigate(R.id.action_clientHomeFragment_to_welcomeFragment);
+                            }
+                        })
+                        .setNegativeButton("No", null) // click no -> listener=null -> close the dialog
+                        .show();
+            }
+        });
+
+
         Button btnBookAppointment = view.findViewById(R.id.btn_client_book_appointment);
         btnBookAppointment.setOnClickListener(new View.OnClickListener() {
             @Override

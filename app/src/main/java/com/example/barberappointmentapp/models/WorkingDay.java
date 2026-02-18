@@ -64,6 +64,11 @@ public class WorkingDay {
     }
 
     @Exclude
+    public String getStringDayOfWeek(int dayOfWeek) {
+        return String.valueOf(dayOfWeek);
+    }
+
+    @Exclude
     private String getDayName(int day) {
         String[] days = {"", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
         return days[day];

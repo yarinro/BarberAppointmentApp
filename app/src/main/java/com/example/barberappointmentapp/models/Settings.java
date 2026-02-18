@@ -10,16 +10,18 @@ public class Settings {
     private String address;
     private String phoneNumber;
     private String aboutUs; // A short bio or shop description
+    private int maxDaysAheadToBookAppointment;
     private Map<String, WorkingDay> workingDays; // key: day of week, value: working day object
     private ArrayList<TimeOff> timeOffs; // list of time offs (no recurrent time offs- one time only)
     private Map<String, Service> services; // key: service id, value: service object
     public Settings() {}
 
-    public Settings(String barbershopName, String address, String phoneNumber, String aboutUs, Map<String, WorkingDay> workingDays, ArrayList<TimeOff> timeOffs, Map<String, Service> services) {
+    public Settings(String barbershopName, String address, String phoneNumber, String aboutUs, int maxDaysAheadToBookAppointment, Map<String, WorkingDay> workingDays, ArrayList<TimeOff> timeOffs, Map<String, Service> services) {
         BarbershopName = barbershopName;
         this.address = address;
         this.phoneNumber = phoneNumber;
         this.aboutUs = aboutUs;
+        this.maxDaysAheadToBookAppointment = maxDaysAheadToBookAppointment;
         this.workingDays = workingDays;
         this.timeOffs = timeOffs;
         this.services = services;
@@ -55,6 +57,14 @@ public class Settings {
 
     public void setAboutUs(String aboutUs) {
         this.aboutUs = aboutUs;
+    }
+
+    public int getMaxDaysAheadToBookAppointment() {
+        return maxDaysAheadToBookAppointment;
+    }
+
+    public void setMaxDaysAheadToBookAppointment(int maxDaysAheadToBookAppointment) {
+        this.maxDaysAheadToBookAppointment = maxDaysAheadToBookAppointment;
     }
 
     public Map<String, WorkingDay> getWorkingDays() {

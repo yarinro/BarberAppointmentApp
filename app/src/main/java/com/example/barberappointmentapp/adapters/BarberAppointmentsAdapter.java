@@ -17,6 +17,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
@@ -67,10 +68,9 @@ public class BarberAppointmentsAdapter extends RecyclerView.Adapter<BarberAppoin
                                 public void onClick(DialogInterface dialog, int which) {
                                     // Update Firebase
                                     FirebaseDatabase db = FirebaseDatabase.getInstance();
-                                    db.getReference("appointments")
-                                            .child(clickedAppointment.getId())
-                                            .child("cancelled")
-                                            .setValue(true)
+                                    DatabaseReference ref = db.getReference("appointments").child(clickedAppointment.getId()).child("cancelled");
+
+                                    ref.setValue(true)
                                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override
                                                 public void onSuccess(Void aVoid) {

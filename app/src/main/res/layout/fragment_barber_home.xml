@@ -6,6 +6,15 @@
     android:orientation="vertical"
     tools:context=".ui.barber.BarberHomeFragment" >
 
+    <ImageButton
+        android:id="@+id/btn_barber_sign_out"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_alignParentEnd="true"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/client_home_signout_btn"
+        android:src="@drawable/icon_logout" />
+
     <TextView
         android:id="@+id/textView3"
         android:layout_width="match_parent"

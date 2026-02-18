@@ -104,7 +104,7 @@ public class ClientMyAppointmentsFragment extends Fragment {
         progress = view.findViewById(R.id.progress_appointments); // Progress bar
         tvEmpty = view.findViewById(R.id.tv_empty_appointments); // Text that shows when there are no appointments
         // Recycler view
-        recyclerView  = view.findViewById(R.id.recycler_appointments);
+        recyclerView  = view.findViewById(R.id.recycler_client_appointments);
         layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());

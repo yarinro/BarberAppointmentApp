@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="20dp"
+    tools:context=".ui.barber.BarberAddServiceFragment" >
+
+    <ImageButton
+        android:id="@+id/btn_back_add_service"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/ic_arrow_back"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/cd_back"
+        android:layout_marginBottom="8dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/barber_add_service_title"
+        android:textSize="34sp"
+        android:gravity="center"
+        android:layout_marginBottom="32dp" />
+
+    <EditText
+    android:id="@+id/etServiceName"
+    android:layout_width="match_parent"
+    android:layout_height="56dp"
+    android:background="@android:drawable/editbox_background"
+    android:hint="@string/hint_service_name"
+    android:padding="12dp"
+    android:inputType="textCapWords"
+    android:layout_marginBottom="12dp" />
+
+    <EditText
+    android:id="@+id/etServicePrice"
+    android:layout_width="match_parent"
+    android:layout_height="56dp"
+    android:background="@android:drawable/editbox_background"
+    android:hint="@string/hint_zero"
+    android:padding="12dp"
+    android:inputType="number"
+    android:layout_marginBottom="12dp" />
+
+    <EditText
+    android:id="@+id/etServiceDuration"
+    android:layout_width="match_parent"
+    android:layout_height="56dp"
+    android:background="@android:drawable/editbox_background"
+    android:hint="@string/hint_duration_default"
+    android:padding="12dp"
+    android:inputType="number"
+    android:layout_marginBottom="24dp" />
+
+    <TextView
+        android:id="@+id/tvErrorAddService"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:gravity="center"
+        android:text="@string/error_fill_all_fields"
+        android:textColor="#B00020"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:visibility="invisible" />
+
+    <Button
+    android:id="@+id/btnSaveService"
+    android:layout_height="wrap_content"
+    android:layout_width="220dp"
+    android:layout_marginTop="12dp"
+    android:layout_gravity="center_horizontal"
+    android:backgroundTint="@android:color/black"
+    android:text="@string/barber_add_service_fragment_btn"
+    android:textColor="@android:color/white" />
+
+    <TextView
+        android:id="@+id/tvSuccessAddService"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:layout_marginBottom="8dp"
+        android:gravity="center"
+        android:text="@string/success_service_added"
+        android:textColor="#388E3C"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:visibility="invisible" />
+
+    <ProgressBar
+        android:id="@+id/progress_add_service"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone"/>
+
+
+</LinearLayout>

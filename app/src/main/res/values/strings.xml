@@ -16,13 +16,14 @@
     <string name="login_password_hint">Password</string>
     <string name="login_btn">Login</string>
 
-    <!-- ClientSignUpFragment: client-->
+    <!-- SignUpFragment: client-->
     <string name="client_signup_title">Sign Up</string>
     <string name="client_signup_name">Full name</string>
     <string name="client_signup_phone_number">Phone number</string>
     <string name="client_signup_email">Email</string>
     <string name="client_signup_password">Password</string>
     <string name="client_signup_signup_btn">Sign Up</string>
+
 
     <!-- ClientHomeFragment: main menu for client actions -->
     <string name="client_home_title">Client Home</string>
@@ -31,6 +32,7 @@
     <string name="client_home_add_review_btn">Add Review</string>
     <string name="client_home_gallery_btn">Barber\'s Gallery</string>
     <string name="client_home_reviews">Reviews</string>
+    <string name="client_home_signout_btn">Sign Out</string>
 
     <!-- ClientBookAppointmentFragment- client -->
     <string name="client_book_appointment_title">Book Appointment</string>
@@ -84,6 +86,9 @@
 
     <!-- BarberServicesAndPricesFragment -->
     <string name="barber_services_and_prices_title">Services and Prices Management</string>
+    <string name="barber_services_and_prices_add_service_btn">Add service</string>
+    <string name="no_services_yet">You have no services yet...</string>
+
 
     <!-- BarberUiSettingsFragment (optional) -->
     <string name="barber_ui_settings_title">UI Theme</string>
@@ -107,6 +112,55 @@
     <string name="placeholder_status">CONFIRMED</string>
     <string name="cancel">Cancel Appointment</string>
     <string name="placeholder_phone">050-1234567</string>
-    <!-- Future feature fragments: placeholders for upcoming screens -->
+
+    <!-- item_service -->
+    <string name="item_service_service_name">Service name</string>
+    <string name="item_service_service_price">Service price</string>
+    <string name="item_service_service_duration">Service duration </string>
+    <string name="item_service_service_remove">Remove</string>
+
+    <!-- item_timeoff -->
+    <string name="item_timeoff_start_date_time">start: 01/01/2026 00:00</string>
+    <string name="item_timeoff_end_date_time">end: 05/01/2026 00:00</string>
+    <string name="item_timeoff_reason">Vacation in jeruz</string>
+    <string name="item_timeoff_remove">Remove</string>
+
+    <!-- item_break -->
+    <string name="item_break_start_time">12:00-12:45</string>
+    <string name="item_break_description">Remove break</string>
+
+    <!-- barber_Add_service fragment -->
+    <string name="barber_add_service_title">Add New Service</string>
+    <string name="hint_service_name">Service Name</string>
+    <string name="hint_zero">Price (₪)</string>
+    <string name="hint_duration_default">Duration (Minutes)</string>
+    <string name="barber_add_service_fragment_btn">Save Service</string>
+    <string name="error_fill_all_fields">Please fill in all fields</string>
+    <string name="cd_back">Go back</string>
+    <string name="success_service_added">Service added successfully!</string>
+
+    <!-- barber_Add_Timeoff fragment -->
+
+    <!-- barber_holidays_and_time_offs fragment -->
+    <string name="barber_time_offs_title">Holidays &amp; Time Off</string>
+    <string name="no_time_offs_yet">No time off scheduled yet.</string>
+    <string name="btn_add_time_off">Add Time Off</string>
+    <string name="title_barber_time_offs">Time Off Management</string>
+
+    <!-- barber_add_time_off fragment -->
+    <string name="barber_add_time_off_title">Add Time Off</string>
+    <string name="hint_select_start_date">Select Start Date &amp; Time 📅</string>
+    <string name="hint_select_end_date">Select End Date &amp; Time 📅</string>
+    <string name="error_invalid_time_range">End time must be after start time!</string>
+    <string name="hint_reason">Time Off Description</string>
+    <string name="btn_save_time_off">Add Time Off</string>
+    <string name="error_fill_all_fields">Please fill in all fields</string>
     <string name="cd_back">Back</string>
+    <string name="success_time_off_added">Time off added successfully!</string>
+
+
+    <string name="cd_back">Back</string>
+
+
+
 </resources>

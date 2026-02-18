@@ -20,7 +20,7 @@ public final class TimeUtils {
     }
 
     // Returns current date-time in format yyyyMMddHHmm as long
-    // Example output: 202602151437L
+    // output: 202602151437L
     public static long now() {
         return toLong(LocalDateTime.now());
     }

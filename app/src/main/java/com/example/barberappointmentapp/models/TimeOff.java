@@ -50,6 +50,10 @@ public class TimeOff {
     @Exclude
     public void setStartDateTimeObj(LocalDateTime dateTime) {this.startDateTime = TimeUtils.toLong(dateTime);}
     @Exclude
+    public void setEndDateTimeObj(LocalDateTime dateTime) {this.endDateTime = TimeUtils.toLong(dateTime);}
+    @Exclude
+    public LocalDateTime getStartDateTimeObj() {return TimeUtils.toLocalDateTime(startDateTime);}
+    @Exclude
     public LocalDateTime getEndDateTimeObj() {return TimeUtils.toLocalDateTime(endDateTime);}
 
 

@@ -7,17 +7,15 @@ public class Service {
     private String name;
     private int price;
     private int durationMinutes;
-    private boolean active;
 
     public Service() {
     }
 
-    public Service(String id, String name, int price, int durationMinutes, boolean active) {
+    public Service(String id, String name, int price, int durationMinutes) {
         this.id = id;
         this.name = name;
         this.price = price;
         this.durationMinutes = durationMinutes;
-        this.active = active;
     }
 
     @Exclude
@@ -31,13 +29,13 @@ public class Service {
 
     @Exclude
     // creates a new service with validation and generates unique ID
-    public static Service create(String name, int price, int durationMinutes, boolean isActive) {
+    public static Service create(String name, int price, int durationMinutes) {
         if (name == null || name.trim().isEmpty()) throw new IllegalArgumentException("Service invalid: name should be non-empty string");
         if (price < 0) throw new IllegalArgumentException("Service invalid: price must be >= 0");
         if (durationMinutes <= 0) throw new IllegalArgumentException("Service invalid: durationMinutes must be > 0");
         // generating unique ID
         String id = generateId(name, durationMinutes);
-        return new Service(id, name, price, durationMinutes, isActive);
+        return new Service(id, name, price, durationMinutes);
     }
 
     // getters and setters
@@ -64,12 +62,6 @@ public class Service {
     }
     public void setDurationMinutes(int durationMinutes) {
         this.durationMinutes = durationMinutes;
-    }
-    public boolean getActive() {
-        return active;
-    }
-    public void setActive(boolean active) {
-        this.active = active;
     }
 
     // A string that represents how the service should be displayed in the UI

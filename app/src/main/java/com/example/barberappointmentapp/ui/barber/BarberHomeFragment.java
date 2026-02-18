@@ -1,9 +1,12 @@
 package com.example.barberappointmentapp.ui.barber;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.example.barberappointmentapp.R;
+import com.example.barberappointmentapp.ui.main.MainActivity;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -66,6 +70,31 @@ public class BarberHomeFragment extends Fragment {
         View view =  inflater.inflate(R.layout.fragment_barber_home, container, false);
 
         //----------------------------------------------BUTTONS----------------------------------------------------------------------------
+        // Sign out button
+        Button btnSignOut = view.findViewById(R.id.btn_barber_sign_out);
+        btnSignOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Alert dialog: "are you sure you want to sign out"
+                // // https://developer.android.com/develop/ui/views/components/dialogs#AddButtons
+                new AlertDialog.Builder(view.getContext())
+                        .setTitle("Sign out")
+                        .setMessage("Are you sure you want to sign out?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // call sign out from MainActivity
+                                MainActivity mainActivity =(MainActivity) getActivity();
+                                mainActivity.signOut();
+                                NavHostFragment navHostFragment = (NavHostFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.navgraph);
+                                navHostFragment.getNavController().navigate(R.id.action_barberHomeFragment_to_welcomeFragment);
+                            }
+                        })
+                        .setNegativeButton("No", null) // click no -> listener=null -> close the dialog
+                        .show();
+            }
+        });
+
         Button btnViewAppointments = view.findViewById(R.id.btn_barber_view_appointments);
         btnViewAppointments.setOnClickListener(new View.OnClickListener() {
             @Override

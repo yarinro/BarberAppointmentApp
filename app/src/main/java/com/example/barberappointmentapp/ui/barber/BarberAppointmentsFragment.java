@@ -144,7 +144,7 @@ public class BarberAppointmentsFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 // 1. Get the current date to show as default in the calendar
-                final Calendar c = Calendar.getInstance();
+                Calendar c = Calendar.getInstance();
                 int mYear = c.get(Calendar.YEAR);
                 int mMonth = c.get(Calendar.MONTH);
                 int mDay = c.get(Calendar.DAY_OF_MONTH);
@@ -163,7 +163,6 @@ public class BarberAppointmentsFragment extends Fragment {
                             }
                         }, mYear, mMonth, mDay);
 
-                // 5. Pop it up
                 datePickerDialog.show();
             }
         });

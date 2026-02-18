@@ -6,6 +6,15 @@
     android:orientation="vertical"
     tools:context=".ui.client.ClientHomeFragment">
 
+    <ImageButton
+        android:id="@+id/btn_client_sign_out"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_alignParentEnd="true"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/client_home_signout_btn"
+        android:src="@drawable/icon_logout" />
+
     <!-- TODO: Update blank fragment layout -->
     <TextView
         android:id="@+id/client_home_title"
