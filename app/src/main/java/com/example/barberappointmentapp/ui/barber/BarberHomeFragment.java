@@ -86,8 +86,8 @@ public class BarberHomeFragment extends Fragment {
                                 // call sign out from MainActivity
                                 MainActivity mainActivity =(MainActivity) getActivity();
                                 mainActivity.signOut();
-                                NavHostFragment navHostFragment = (NavHostFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.navgraph);
-                                navHostFragment.getNavController().navigate(R.id.action_barberHomeFragment_to_welcomeFragment);
+
+                                Navigation.findNavController(view).navigate(R.id.action_barberHomeFragment_to_welcomeFragment);
                             }
                         })
                         .setNegativeButton("No", null) // click no -> listener=null -> close the dialog
@@ -103,46 +103,6 @@ public class BarberHomeFragment extends Fragment {
             }
         });
 
-        Button btnGallery = view.findViewById(R.id.btn_barber_gallery);
-        btnGallery.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Navigation.findNavController(view).navigate(R.id.action_barberHomeFragment_to_galleryFragment);
-            }
-        });
-
-        Button btnUploadToGallery = view.findViewById(R.id.btn_barber_upload_to_gallery);
-        btnUploadToGallery.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Navigation.findNavController(view).navigate(R.id.action_barberHomeFragment_to_barberUploadToGalleryFragment);
-            }
-        });
-
-        Button btnReviews = view.findViewById(R.id.btn_barber_reviews);
-        btnReviews.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Navigation.findNavController(view).navigate(R.id.action_barberHomeFragment_to_reviewsFragment);
-            }
-        });
-
-        Button scheduleManagement = view.findViewById(R.id.btn_barber_schedule_management);
-        scheduleManagement.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Navigation.findNavController(view).navigate(R.id.action_barberHomeFragment_to_barberScheduleManagementFragment);
-            }
-        });
-
-        Button servicesAndPrices = view.findViewById(R.id.btn_barber_services_and_prices);
-        servicesAndPrices.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Navigation.findNavController(view).navigate(R.id.action_barberHomeFragment_to_barberServicesAndPricesFragment);
-            }
-        });
-        //--------------------------------------------------------------------------------------------------------------------------
 
         return view;
     }

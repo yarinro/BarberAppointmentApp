@@ -94,7 +94,19 @@
     <string name="barber_ui_settings_title">UI Theme</string>
 
     <!-- BarberScheduleManagementFragment -->
-    <string name="barber_schedule_management_title">Schedule Settings</string>
+    <string name="header_schedule_management">Schedule</string>
+    <string name="working_hours">Working Hours: </string>
+    <string name="label_breaks_for_day">Breaks:</string>
+    <string name="day_sun">Sun</string>
+    <string name="day_mon">Mon</string>
+    <string name="day_tue">Tue</string>
+    <string name="day_wed">Wed</string>
+    <string name="day_thu">Thu</string>
+    <string name="day_fri">Fri</string>
+    <string name="day_sat">Sat</string>
+    <string name="btn_add_break">Add new break</string>
+    <string name="btn_save_schedule">Save schedule</string>
+    <string name="msg_no_breaks">No breaks scheduled for this day</string>
 
     <!-- ______________________________________Shared Fragments = Client&Barber (VIEW ONLY)___________________________________ -->
     <!-- Reviews (shared - client&barber) -->
@@ -155,9 +167,26 @@
     <string name="error_fill_all_fields">Please fill in all fields</string>
     <string name="success_time_off_added">Time off added successfully!</string>
 
+    <!-- barber_settings fragment -->
+    <string name="settings_title">Settings</string>
+    <string name="btn_shop_profile_rules">Shop Settings 🏠</string>
+    <string name="btn_opening_hours">Schedule Management 🕒</string>
+    <string name="btn_manage_services">Services &amp; prices ✂️</string>
+    <string name="btn_holidays_time_off">Holidays &amp; time off 🏖️</string>
+
+    <!-- barber_shop_fragment fragment -->
+    <string name="header_shop_profile">Shop Profile</string>
+    <string name="header_booking_rules">Booking Rules</string>
+    <string name="hint_shop_name">Barbershop Name</string>
+    <string name="hint_address">Address</string>
+    <string name="hint_phone">Phone Number</string>
+    <string name="hint_about_us">About Us / Shop Description</string>
+    <string name="booking_rules_shop_settings_description">How many days ahead clients can book appointments</string>
+    <string name="hint_max_days">Max days ahead to book</string>
+    <string name="btn_save_settings">Save all changes</string>
+    <string name="settings_update_success">Profile updated! ✨</string>
 
     <string name="cd_back">Back</string>
-
 
 
 </resources>

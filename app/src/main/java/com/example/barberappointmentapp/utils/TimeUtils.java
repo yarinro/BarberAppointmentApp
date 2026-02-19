@@ -1,6 +1,9 @@
 package com.example.barberappointmentapp.utils;
 
+import androidx.annotation.NonNull;
+
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 public final class TimeUtils {
@@ -45,6 +48,20 @@ public final class TimeUtils {
         int minutes = minuteOfDay % 60;
 
         return String.format("%02d:%02d", hours, minutes);
+    }
+
+    // Input:  "09:00"
+    // Output: 540
+    public static int timeStringToMinutes(@NonNull String time) {
+        LocalTime lt = LocalTime.parse(time);
+        return lt.getHour() * 60 + lt.getMinute();
+    }
+
+    // Input:  540
+    // Output: "09:00"
+    public static String minutesToTimeString(int minutes) {
+        return LocalTime.of(minutes / 60, minutes % 60)
+                .format(DateTimeFormatter.ofPattern("HH:mm"));
     }
 
 }

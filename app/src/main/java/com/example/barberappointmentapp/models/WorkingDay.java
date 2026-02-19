@@ -1,7 +1,5 @@
 package com.example.barberappointmentapp.models;
 
-import androidx.annotation.NonNull;
-
 import com.example.barberappointmentapp.utils.TimeUtils;
 import com.google.firebase.database.Exclude;
 
@@ -64,26 +62,30 @@ public class WorkingDay {
     }
 
     @Exclude
-    public String getStringDayOfWeek(int dayOfWeek) {
+    public String getStringDayOfWeek() {
         return String.valueOf(dayOfWeek);
     }
 
     @Exclude
-    private String getDayName(int day) {
+    private String getDayNamePr(int day) {
         String[] days = {"", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
         return days[day];
+    }
+
+    public String getDayName(){
+        return getDayNamePr(dayOfWeek);
     }
 
     // returns the working hours of a day in a string
     @Exclude
     @Override
     public String toString() {
-        if (!workDay) return getDayName(dayOfWeek) + ": Closed";
+        if (!workDay) return getDayNamePr(dayOfWeek) + ": Closed";
 
-        String output = getDayName(dayOfWeek) + ": ";
+        String output = getDayNamePr(dayOfWeek) + ": ";
 
         if (breaks == null || breaks.isEmpty())
-            return getDayName(dayOfWeek) + ": " + TimeUtils.formatMinuteOfDay(startMinute) + "-" + TimeUtils.formatMinuteOfDay(endMinute);
+            return getDayNamePr(dayOfWeek) + ": " + TimeUtils.formatMinuteOfDay(startMinute) + "-" + TimeUtils.formatMinuteOfDay(endMinute);
 
         ArrayList<Break> sortedBreaks = new ArrayList<>(breaks);
         sortedBreaks.sort((b1, b2) -> Integer.compare(b1.getStartMinute(), b2.getStartMinute()));

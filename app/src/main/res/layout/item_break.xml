@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:padding="12dp">
+        android:padding="5dp">
 
         <TextView
             android:id="@+id/tvBreakTimeRange"
@@ -25,7 +25,8 @@
             android:text="@string/item_break_start_time"
             android:textColor="#333333"
             android:textSize="16sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:layout_marginLeft="50dp" />
 
         <ImageButton
             android:id="@+id/btnRemoveBreak"

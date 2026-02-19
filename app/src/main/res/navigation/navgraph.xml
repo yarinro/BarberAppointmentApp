@@ -45,29 +45,14 @@
         android:label="fragment_barber_home"
         tools:layout="@layout/fragment_barber_home" >
         <action
-            android:id="@+id/action_barberHomeFragment_to_galleryFragment"
-            app:destination="@id/galleryFragment" />
-        <action
-            android:id="@+id/action_barberHomeFragment_to_reviewsFragment"
-            app:destination="@id/reviewsFragment" />
-        <action
-            android:id="@+id/action_barberHomeFragment_to_barberServicesAndPricesFragment"
-            app:destination="@id/barberServicesAndPricesFragment" />
-        <action
-            android:id="@+id/action_barberHomeFragment_to_barberScheduleManagementFragment"
-            app:destination="@id/barberScheduleManagementFragment" />
-        <action
             android:id="@+id/action_barberHomeFragment_to_barberAppointmentsFragment"
             app:destination="@id/barberAppointmentsFragment" />
-        <action
-            android:id="@+id/action_barberHomeFragment_to_barberUploadToGalleryFragment"
-            app:destination="@id/barberUploadToGalleryFragment" />
         <action
             android:id="@+id/action_barberHomeFragment_to_welcomeFragment"
             app:destination="@id/welcomeFragment" />
         <action
-            android:id="@+id/action_barberHomeFragment_to_barberHolidaysAndTimeOffsFragment"
-            app:destination="@id/barberHolidaysAndTimeOffsFragment" />
+            android:id="@+id/action_barberHomeFragment_to_barberSettingsFragment"
+            app:destination="@id/barberSettingsFragment" />
     </fragment>
     <fragment
         android:id="@+id/clientHomeFragment"
@@ -75,17 +60,8 @@
         android:label="fragment_client_home"
         tools:layout="@layout/fragment_client_home" >
         <action
-            android:id="@+id/action_clientHomeFragment_to_galleryFragment"
-            app:destination="@id/galleryFragment" />
-        <action
-            android:id="@+id/action_clientHomeFragment_to_reviewsFragment"
-            app:destination="@id/reviewsFragment" />
-        <action
             android:id="@+id/action_clientHomeFragment_to_clientBookAppointmentFragment"
             app:destination="@id/clientBookAppointmentFragment" />
-        <action
-            android:id="@+id/action_clientHomeFragment_to_clientAddReviewFragment"
-            app:destination="@id/clientAddReviewFragment" />
         <action
             android:id="@+id/action_clientHomeFragment_to_clientMyAppointmentsFragment"
             app:destination="@id/clientMyAppointmentsFragment" />
@@ -102,7 +78,7 @@
         android:id="@+id/barberScheduleManagementFragment"
         android:name="com.example.barberappointmentapp.ui.barber.BarberScheduleManagementFragment"
         android:label="fragment_barber_schedule_settings"
-        tools:layout="@layout/fragment_barber_schedule_settings" />
+        tools:layout="@layout/fragment_barber_schedule_management" />
     <fragment
         android:id="@+id/barberServicesAndPricesFragment"
         android:name="com.example.barberappointmentapp.ui.barber.BarberServicesAndPricesFragment"
@@ -113,16 +89,6 @@
             app:destination="@id/barberAddServiceFragment" />
     </fragment>
     <fragment
-        android:id="@+id/barberUploadToGalleryFragment"
-        android:name="com.example.barberappointmentapp.ui.barber.BarberUploadToGalleryFragment"
-        android:label="fragment_barber_upload_to_gallery"
-        tools:layout="@layout/fragment_barber_upload_to_gallery" />
-    <fragment
-        android:id="@+id/clientAddReviewFragment"
-        android:name="com.example.barberappointmentapp.ui.client.ClientAddReviewFragment"
-        android:label="fragment_client_add_review"
-        tools:layout="@layout/fragment_client_add_review" />
-    <fragment
         android:id="@+id/clientBookAppointmentFragment"
         android:name="com.example.barberappointmentapp.ui.client.ClientBookAppointmentFragment"
         android:label="fragment_client_book_appointment"
@@ -132,16 +98,6 @@
         android:name="com.example.barberappointmentapp.ui.client.ClientMyAppointmentsFragment"
         android:label="fragment_client_my_appointments"
         tools:layout="@layout/fragment_client_my_appointments" />
-    <fragment
-        android:id="@+id/galleryFragment"
-        android:name="com.example.barberappointmentapp.ui.common.GalleryFragment"
-        android:label="fragment_gallery"
-        tools:layout="@layout/fragment_gallery" />
-    <fragment
-        android:id="@+id/reviewsFragment"
-        android:name="com.example.barberappointmentapp.ui.common.ReviewsFragment"
-        android:label="fragment_reviews"
-        tools:layout="@layout/fragment_reviews" />
     <fragment
         android:id="@+id/clientSignUpFragment"
         android:name="com.example.barberappointmentapp.ui.auth.ClientSignUpFragment"
@@ -174,4 +130,27 @@
             android:id="@+id/action_barberHolidaysAndTimeOffsFragment_to_barberAddTimeOffFragment"
             app:destination="@id/barberAddTimeOffFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/barberSettingsFragment"
+        android:name="com.example.barberappointmentapp.ui.barber.BarberSettingsFragment"
+        android:label="fragment_barber_settings"
+        tools:layout="@layout/fragment_barber_settings" >
+        <action
+            android:id="@+id/action_barberSettingsFragment_to_barberHolidaysAndTimeOffsFragment"
+            app:destination="@id/barberHolidaysAndTimeOffsFragment" />
+        <action
+            android:id="@+id/action_barberSettingsFragment_to_barberServicesAndPricesFragment"
+            app:destination="@id/barberServicesAndPricesFragment" />
+        <action
+            android:id="@+id/action_barberSettingsFragment_to_barberScheduleManagementFragment"
+            app:destination="@id/barberScheduleManagementFragment" />
+        <action
+            android:id="@+id/action_barberSettingsFragment_to_barberShopSettingsFragment"
+            app:destination="@id/barberShopSettingsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/barberShopSettingsFragment"
+        android:name="com.example.barberappointmentapp.ui.barber.BarberShopSettingsFragment"
+        android:label="fragment_barber_shop_settings"
+        tools:layout="@layout/fragment_barber_shop_settings" />
 </navigation>

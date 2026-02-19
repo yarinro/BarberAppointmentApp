@@ -54,28 +54,8 @@ public class BreaksAdapter extends RecyclerView.Adapter<com.example.barberappoin
                             .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    // Update Firebase
-                                    String dayOfWeek = clickedBreak.getStringDayOfWeek();
-                                    FirebaseDatabase db = FirebaseDatabase.getInstance();
-                                    DatabaseReference ref = db.getReference("settings").child("workingdays").child(dayOfWeek).child("breaks").child(clickedBreak.getId());
-
-                                    // https://firebase.google.com/docs/database/android/read-and-write#delete_data
-                                    ref.removeValue() // remove the service from the database
-                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                @Override
-                                                public void onSuccess(Void aVoid) {
-                                                    breaksList.remove(position); // remove from the list after removing from DB
-                                                    // https://developer.android.com/reference/androidx/recyclerview/widget/RecyclerView.Adapter#notifyDataSetChanged()
-                                                    notifyDataSetChanged(); // user removed an item -> notify the change
-                                                    Toast.makeText(v.getContext(), "Break removed successfully", Toast.LENGTH_SHORT).show();
-                                                }
-                                            })
-                                            .addOnFailureListener(new OnFailureListener() {
-                                                @Override
-                                                public void onFailure(@NonNull Exception e) {
-                                                    Toast.makeText(v.getContext(), "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                                                }
-                                            });
+                                    breaksList.remove(position);
+                                    notifyDataSetChanged();
                                 }
                             })
                             .setNegativeButton("No", null) // click no -> listener=null -> close the dialog
