@@ -138,7 +138,7 @@ public class BarberScheduleManagementFragment extends Fragment {
         switchIsWorkDay = view.findViewById(R.id.switchIsWorkDay);
 
         // recyclerview + adapter
-        recyclerView = view.findViewById(R.id.recycler_services_and_prices);
+        recyclerView = view.findViewById(R.id.recyclerViewBreaksScheduleManagement);
         layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -175,6 +175,10 @@ public class BarberScheduleManagementFragment extends Fragment {
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             progressBar.setVisibility(View.GONE);
                             WorkingDay workingDay = snapshot.getValue(WorkingDay.class);
+
+                            if (workingDay == null) {
+                                    workingDay = new WorkingDay(1, true, 540, 1080, new ArrayList<>());
+                                }
 
                             boolean isWorkDay = workingDay.getWorkDay();
                             int startMinute = workingDay.getStartMinute();
@@ -355,4 +359,5 @@ public class BarberScheduleManagementFragment extends Fragment {
         return view;
 
     }
+
 }

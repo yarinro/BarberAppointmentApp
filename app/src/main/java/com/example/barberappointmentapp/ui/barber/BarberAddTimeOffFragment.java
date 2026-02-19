@@ -88,7 +88,7 @@ public class BarberAddTimeOffFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_barber_add_time_off, container, false);
 
         //----------------------------------BACK BUTTON-------------------------------------------
-        ImageButton btnBack = view.findViewById(R.id.btn_back_barber_time_offs);
+        ImageButton btnBack = view.findViewById(R.id.btn_back_add_time_off);
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -114,9 +114,11 @@ public class BarberAddTimeOffFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 tvSuccess.setVisibility(View.INVISIBLE);
-                long currentTimestamp = TimeUtils.now();
+
+                long realSystemMillis = System.currentTimeMillis();
                 final Calendar c = Calendar.getInstance();
-                c.setTimeInMillis(currentTimestamp);
+                c.setTimeInMillis(realSystemMillis);
+
                 DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(),
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
@@ -126,17 +128,15 @@ public class BarberAddTimeOffFragment extends Fragment {
                                             @Override
                                             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                                                 selectedDateTimeStart = LocalDateTime.of(year, monthOfYear + 1, dayOfMonth, hourOfDay, minute);
-                                                String dateString = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year + "  " + hourOfDay + ":" + minute + " \uD83D\uDCC5";
-
+                                                String timeStr = String.format(Locale.getDefault(), "%02d:%02d", hourOfDay, minute);
+                                                String dateString = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year + "  " + timeStr + " \uD83D\uDCC5";
                                                 tvSelectedDateStart.setText(dateString);
                                             }
                                         }, c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE), true);
-
                                 timePickerDialog.show();
                             }
                         }, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
-
-                datePickerDialog.getDatePicker().setMinDate(currentTimestamp); // User can't pick a past date
+                datePickerDialog.getDatePicker().setMinDate(realSystemMillis); // Block past dates
                 datePickerDialog.show();
             }
         });
@@ -147,9 +147,10 @@ public class BarberAddTimeOffFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 tvSuccess.setVisibility(View.INVISIBLE);
-                long currentTimestamp = TimeUtils.now();
+                long realSystemMillis = System.currentTimeMillis();
                 final Calendar c = Calendar.getInstance();
-                c.setTimeInMillis(currentTimestamp);
+                c.setTimeInMillis(realSystemMillis);
+
                 DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(),
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
@@ -159,17 +160,17 @@ public class BarberAddTimeOffFragment extends Fragment {
                                             @Override
                                             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                                                 selectedDateTimeEnd = LocalDateTime.of(year, monthOfYear + 1, dayOfMonth, hourOfDay, minute);
-                                                String dateString = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year + "  " + hourOfDay + ":" + minute + " \uD83D\uDCC5";
+
+                                                String timeStr = String.format(Locale.getDefault(), "%02d:%02d", hourOfDay, minute);
+                                                String dateString = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year + "  " + timeStr + " \uD83D\uDCC5";
 
                                                 tvSelectedDateEnd.setText(dateString);
                                             }
                                         }, c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE), true);
-
                                 timePickerDialog.show();
                             }
                         }, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
-
-                datePickerDialog.getDatePicker().setMinDate(currentTimestamp); // User can't pick a past date
+                datePickerDialog.getDatePicker().setMinDate(realSystemMillis); // Block past dates
                 datePickerDialog.show();
             }
         });

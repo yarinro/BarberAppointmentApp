@@ -143,19 +143,25 @@ public class BarberAppointmentsFragment extends Fragment {
         btnPickDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // 1. Get the current date to show as default in the calendar
-                Calendar c = Calendar.getInstance();
-                int mYear = c.get(Calendar.YEAR);
-                int mMonth = c.get(Calendar.MONTH);
-                int mDay = c.get(Calendar.DAY_OF_MONTH);
+                int mYear, mMonth, mDay;
+
+                if (selectedDate != null) { // selectedDate==null if user did not pick a date yet
+                    mYear = selectedDate.getYear();
+                    mMonth = selectedDate.getMonthValue() - 1;
+                    mDay = selectedDate.getDayOfMonth();
+                } else {
+                    // default - today
+                    Calendar c = Calendar.getInstance();
+                    mYear = c.get(Calendar.YEAR);
+                    mMonth = c.get(Calendar.MONTH);
+                    mDay = c.get(Calendar.DAY_OF_MONTH);
+                }
 
                 DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(),
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                                // update 'selectedDate' LocalDate object with the selected parameters the user picked
-                                selectedDate = LocalDate.of(year, monthOfYear + 1, dayOfMonth); // monthOfYear - 0-1 so add 1
-
+                                selectedDate = LocalDate.of(year, monthOfYear + 1, dayOfMonth);
                                 String dateString = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
                                 tvSelectedDate.setText(dateString);
 
@@ -227,9 +233,7 @@ public class BarberAppointmentsFragment extends Fragment {
             boolean isAppointmentCancelled = appointment.getCancelled();
 
             if (selectedDate == null && appointment.isPast()) continue;
-
             if (selectedDate != null && !appointmentDate.equals(selectedDate)) continue;
-
             if (!showCancelled && appointment.getCancelled()) continue;
 
             filteredList.add(appointment);

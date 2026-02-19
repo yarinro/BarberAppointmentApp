@@ -121,8 +121,6 @@ public class BarberShopSettingsFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 progressBar.setVisibility(View.GONE);
-                if (snapshot.exists()) {
-                    // Mapping Firebase snapshot to your Settings model
                     Settings settings = snapshot.getValue(Settings.class);
                     if (settings != null) {
                         etShopName.setText(settings.getBarbershopName());
@@ -131,7 +129,13 @@ public class BarberShopSettingsFragment extends Fragment {
                         etAboutUs.setText(settings.getAboutUs());
                         etMaxDays.setText(String.valueOf(settings.getMaxDaysAheadToBookAppointment()));
                     }
-                }
+                    else{
+                        etShopName.setText("");
+                        etAddress.setText("");
+                        etPhone.setText("");
+                        etAboutUs.setText("");
+                        etMaxDays.setText("");
+                    }
                 showUI();
             }
 
@@ -153,29 +157,33 @@ public class BarberShopSettingsFragment extends Fragment {
                 String about = etAboutUs.getText().toString().trim();
                 String maxDaysStr = etMaxDays.getText().toString().trim();
 
-                if (name.isEmpty()) {
-                    etShopName.setError("Please fill all fields"); // Using your strings.xml
-                    return;
-                }
-                if (maxDaysStr.isEmpty()) {
-                    etMaxDays.setError("Please fill all fields");
+                // validation before saving into db
+                if (name.isEmpty() || address.isEmpty() || phone.isEmpty() || about.isEmpty() || maxDaysStr.isEmpty()) {
+                    Toast.makeText(v.getContext(), "Please fill all fields!", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
-                progressBar.setVisibility(View.VISIBLE);
-                hideUI();
+                if (!phone.matches("\\d+")) {
+                    etPhone.setError("Please enter a valid phone number");
+                    return;
+                }
 
                 int maxDays;
                 try{
                     maxDays = Integer.parseInt(maxDaysStr);
+                    if (maxDays <= 0 || maxDays > 365) {
+                        etMaxDays.setError("max days ahead should be between 1 and 365");
+                        return;
+                    }
                 }
                 catch (Exception e){
-                    progressBar.setVisibility(View.GONE);
-                    showUI();
-                    etMaxDays.setError("Please enter a valid number");
+                    etMaxDays.setError("Please enter a valid number for max days ahead");
                     return;
                 }
 
+                // saving data into DB
+                hideUI();
+                progressBar.setVisibility(View.VISIBLE);
                 // https://firebase.google.com/docs/database/android/read-and-write#updating_or_deleting_data
                 Map<String, Object> newValues = new HashMap<>();
                 newValues.put("barbershopName", name);
@@ -200,7 +208,6 @@ public class BarberShopSettingsFragment extends Fragment {
                                 Toast.makeText(v.getContext(), "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
                             }
                         });
-
             }
         });
 

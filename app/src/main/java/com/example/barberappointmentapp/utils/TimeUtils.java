@@ -64,4 +64,13 @@ public final class TimeUtils {
                 .format(DateTimeFormatter.ofPattern("HH:mm"));
     }
 
+    public static long millisecondsToDays(long durationMillis) {
+        // 1 day = 24 hours * 60 minutes * 60 seconds * 1000 milliseconds
+        return durationMillis / (24L * 60L * 60L * 1000L);
+    }
+
+    public static long daysToMilliseconds(int days) {
+        // 1 day = 24 hours * 60 minutes * 60 seconds * 1000 milliseconds
+        return (long) days * 24L * 60L * 60L * 1000L;
+    }
 }
