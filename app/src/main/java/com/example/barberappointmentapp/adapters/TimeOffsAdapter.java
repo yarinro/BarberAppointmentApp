@@ -63,7 +63,7 @@ public class TimeOffsAdapter extends RecyclerView.Adapter<TimeOffsAdapter.myView
                                 public void onClick(DialogInterface dialog, int which) {
                                     // Update Firebase
                                     FirebaseDatabase db = FirebaseDatabase.getInstance();
-                                    DatabaseReference ref = db.getReference("settings").child("timeoffs").child(clickedTimeOff.getId());
+                                    DatabaseReference ref = db.getReference("settings").child("timeOffs").child(clickedTimeOff.getId());
 
                                     // https://firebase.google.com/docs/database/android/read-and-write#delete_data
                                     ref.removeValue() // remove the service from the database

@@ -72,6 +72,7 @@ public class WorkingDay {
         return days[day];
     }
 
+    @Exclude
     public String getDayName(){
         return getDayNamePr(dayOfWeek);
     }

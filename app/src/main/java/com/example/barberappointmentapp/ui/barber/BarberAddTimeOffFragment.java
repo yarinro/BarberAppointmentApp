@@ -204,7 +204,7 @@ public class BarberAddTimeOffFragment extends Fragment {
                 TimeOff newTimeoff = TimeOff.create(startDateTime, endDateTime, reason);
 
                 FirebaseDatabase db = FirebaseDatabase.getInstance();
-                DatabaseReference ref = db.getReference("settings").child("timeoffs").child(newTimeoff.getId());
+                DatabaseReference ref = db.getReference("settings").child("timeOffs").child(newTimeoff.getId());
 
                 ref.setValue(newTimeoff).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
@@ -213,9 +213,12 @@ public class BarberAddTimeOffFragment extends Fragment {
                                 tvError.setVisibility(View.INVISIBLE);
                                 tvSuccess.setVisibility(View.VISIBLE);
 
-                                tvSelectedDateStart.setText("");
-                                tvSelectedDateEnd.setText("");
+                                tvSelectedDateStart.setText(R.string.hint_select_start_date);
+                                tvSelectedDateEnd.setText(R.string.hint_select_end_date);
                                 etTimeOffReason.setText("");
+
+                                selectedDateTimeStart = null;
+                                selectedDateTimeEnd = null;
                             }
                         })
                         .addOnFailureListener(new OnFailureListener() {

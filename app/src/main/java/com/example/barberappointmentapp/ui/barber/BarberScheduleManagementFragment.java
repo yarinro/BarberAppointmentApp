@@ -165,9 +165,9 @@ public class BarberScheduleManagementFragment extends Fragment {
                         }
                     }
                     // getting data from firebase
-                    String currentDayString = String.valueOf(selectedDay + 1);
+                    String currentDayString = "d" + (selectedDay + 1);
                     FirebaseDatabase db = FirebaseDatabase.getInstance();
-                    DatabaseReference ref = db.getReference("settings").child("workingdays").child(currentDayString);
+                    DatabaseReference ref = db.getReference("settings").child("workingDays").child(currentDayString);
 
                     progressBar.setVisibility(View.VISIBLE);
                     ref.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -222,9 +222,9 @@ public class BarberScheduleManagementFragment extends Fragment {
             public void onClick(View v) {
                 progressBar.setVisibility(View.VISIBLE);
 
-                String selectedDayString = String.valueOf(selectedDay + 1);
+                String selectedDayString = "d" + (selectedDay + 1);
                 FirebaseDatabase db = FirebaseDatabase.getInstance();
-                DatabaseReference ref = db.getReference("settings").child("workingdays").child(selectedDayString);
+                DatabaseReference ref = db.getReference("settings").child("workingDays").child(selectedDayString);
 
                 int startMin = TimeUtils.timeStringToMinutes(btnStartTime.getText().toString());
                 int endMin = TimeUtils.timeStringToMinutes(btnEndTime.getText().toString());

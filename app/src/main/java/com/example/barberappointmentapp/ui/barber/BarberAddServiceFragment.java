@@ -125,9 +125,10 @@ public class BarberAddServiceFragment extends Fragment {
                 String name = etServiceName.getText().toString().trim();
                 String priceStr = etServicePrice.getText().toString().trim();
                 String durationStr = etServiceDuration.getText().toString().trim();
-
+                // validation
                 if (name.isEmpty() || priceStr.isEmpty() || durationStr.isEmpty()) { // fill all fields message
                     tvError.setVisibility(View.VISIBLE);
+                    tvError.setText(R.string.error_fill_all_fields);
                     return;
                 }
                 progress.setVisibility(View.VISIBLE);
@@ -135,6 +136,12 @@ public class BarberAddServiceFragment extends Fragment {
                 try{
                     int price = Integer.parseInt(priceStr);
                     int duration = Integer.parseInt(durationStr);
+                    if (duration % 15 != 0){
+                        progress.setVisibility(View.GONE);
+                        tvError.setVisibility(View.VISIBLE);
+                        tvError.setText("Duration must be a multiple of 15 minutes");
+                        return;
+                    }
 
                     Service newService = Service.create(name, price, duration);
                     // saving to realtime db

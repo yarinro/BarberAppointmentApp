@@ -40,16 +40,16 @@ public class Appointment {
     }
     @Exclude
     // Create a new appointment
-    public static Appointment create(String clientUid, String clientName, String clientPhone, Service service, long startDateTime, long endDateTime) {
+    public static Appointment create(String clientUid, String clientName, String clientPhone, String serviceName, String serviceId, long startDateTime, long endDateTime) {
         // Validation
         if (clientUid == null || clientUid.isEmpty()) throw new IllegalArgumentException("clientUid required");
-        if (service == null) throw new IllegalArgumentException("service required");
+        if (serviceName.isEmpty() || serviceId.isEmpty()) throw new IllegalArgumentException("service name and id required");
         if (startDateTime >= endDateTime) throw new IllegalArgumentException("startDateTime must be before endDateTime");
         if (clientName == null) throw new IllegalArgumentException("clientName must be a non-empty string");
         if (clientPhone == null) throw new IllegalArgumentException("Client phone must be a non-empty string");
         // generating unique ID
         String id = generateId(clientUid, startDateTime, endDateTime);
-        return new Appointment(id, clientUid, clientName, clientPhone, service.getName(), service.getId(), startDateTime, endDateTime, false);
+        return new Appointment(id, clientUid, clientName, clientPhone, serviceName, serviceId, startDateTime, endDateTime, false);
     }
 
     public String getId() {

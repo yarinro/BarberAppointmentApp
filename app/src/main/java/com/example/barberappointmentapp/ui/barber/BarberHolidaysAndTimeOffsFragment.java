@@ -115,7 +115,7 @@ public class BarberHolidaysAndTimeOffsFragment extends Fragment {
         tvNoTimeOffsYet.setVisibility(View.GONE);
 
         FirebaseDatabase db = FirebaseDatabase.getInstance();
-        DatabaseReference ref = db.getReference("settings").child("timeoffs");
+        DatabaseReference ref = db.getReference("settings").child("timeOffs");
 
         ref.addValueEventListener(new ValueEventListener() {
             @Override

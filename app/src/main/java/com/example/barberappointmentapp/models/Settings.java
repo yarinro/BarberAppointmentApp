@@ -6,18 +6,18 @@ import java.util.ArrayList;
 import java.util.Map;
 
 public class Settings {
-    private String BarbershopName;
+    private String barbershopName;
     private String address;
     private String phoneNumber;
     private String aboutUs; // A short bio or shop description
     private int maxDaysAheadToBookAppointment;
     private Map<String, WorkingDay> workingDays; // key: day of week, value: working day object
-    private ArrayList<TimeOff> timeOffs; // list of time offs (no recurrent time offs- one time only)
+    private Map<String, TimeOff> timeOffs; // list of time offs (no recurrent time offs- one time only)
     private Map<String, Service> services; // key: service id, value: service object
     public Settings() {}
 
-    public Settings(String barbershopName, String address, String phoneNumber, String aboutUs, int maxDaysAheadToBookAppointment, Map<String, WorkingDay> workingDays, ArrayList<TimeOff> timeOffs, Map<String, Service> services) {
-        BarbershopName = barbershopName;
+    public Settings(String barbershopName, String address, String phoneNumber, String aboutUs, int maxDaysAheadToBookAppointment, Map<String, WorkingDay> workingDays, Map<String, TimeOff> timeOffs, Map<String, Service> services) {
+        this.barbershopName = barbershopName;
         this.address = address;
         this.phoneNumber = phoneNumber;
         this.aboutUs = aboutUs;
@@ -28,11 +28,11 @@ public class Settings {
     }
 
     public String getBarbershopName() {
-        return BarbershopName;
+        return barbershopName;
     }
 
     public void setBarbershopName(String barbershopName) {
-        BarbershopName = barbershopName;
+        this.barbershopName = barbershopName;
     }
 
     public String getAddress() {
@@ -75,11 +75,11 @@ public class Settings {
         this.workingDays = workingDays;
     }
 
-    public ArrayList<TimeOff> getTimeOffs() {
+    public Map<String, TimeOff> getTimeOffs() {
         return timeOffs;
     }
 
-    public void setTimeOffs(ArrayList<TimeOff> timeOffs) {
+    public void setTimeOffs(Map<String, TimeOff> timeOffs) {
         this.timeOffs = timeOffs;
     }
 
@@ -96,5 +96,11 @@ public class Settings {
         if (services == null) return new ArrayList<>();
 
         return new ArrayList<>(services.values());
+    }
+
+    @Exclude
+    public ArrayList<TimeOff> getTimeOffsAsList() {
+        if (timeOffs == null) return new ArrayList<>();
+        return new ArrayList<>(timeOffs.values());
     }
 }

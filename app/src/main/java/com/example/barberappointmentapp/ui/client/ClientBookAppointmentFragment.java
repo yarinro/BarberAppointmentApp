@@ -1,6 +1,7 @@
 package com.example.barberappointmentapp.ui.client;
 
 import android.app.DatePickerDialog;
+import android.health.connect.datatypes.AppInfo;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -23,8 +24,13 @@ import com.example.barberappointmentapp.models.Break;
 import com.example.barberappointmentapp.models.Settings;
 import com.example.barberappointmentapp.models.Service;
 import com.example.barberappointmentapp.models.TimeOff;
+import com.example.barberappointmentapp.models.User;
 import com.example.barberappointmentapp.models.WorkingDay;
 import com.example.barberappointmentapp.utils.TimeUtils;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -34,6 +40,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -56,9 +63,10 @@ public class ClientBookAppointmentFragment extends Fragment {
     // ======================== END_CALLBACK_INTERFACE ========================
     // Date parameters
     private Service selectedService = null;
-    private LocalDateTime selectedDateTime = null;
+    private LocalDateTime selectedDateTimeMidnight = null;
+
     private int selectedDayOfWeek = -1;
-    private long selectedDateLong = -1L, selectedTimeLong = -1L; // selected date and time in long YYYYMMddHHmm
+    private int selectedBookingMinute = -1; // selected booking minute
 
 
     private Settings settings = null;
@@ -72,26 +80,27 @@ public class ClientBookAppointmentFragment extends Fragment {
     private ArrayList<TimeOff> timeOffsList = new ArrayList<>(); // list of time offs
     private ArrayList<Service> servicesList = new ArrayList<>(); // list of services;
     ArrayList<Appointment> appointmentsList = new ArrayList<>(); // list of appointments
+    private boolean toReturn = false;
 
     private static class TimeWindow{
-        private long start;
-        private long end;
+        private int start;
+        private int end;
 
-        public TimeWindow(long start, long end){
+        public TimeWindow(int start, int end){
             this.start = start;
             this.end = end;
         }
 
-        public long getStart() {
+        public int getStart() {
             return start;
         }
-        public void setStart(long start) {
+        public void setStart(int start) {
             this.start = start;
         }
-        public long getEnd() {
+        public int getEnd() {
             return end;
         }
-        public void setEnd(long end) {
+        public void setEnd(int end) {
             this.end = end;
         }
     }
@@ -168,9 +177,9 @@ public class ClientBookAppointmentFragment extends Fragment {
 
                 if (settings != null){
                     maxDaysAheadToBookAppointment = maxDaysAheadToBookAppointment == 0 ? 14 : settings.getMaxDaysAheadToBookAppointment(); // default value
-                    if (workingDaysMap != null) workingDaysMap = settings.getWorkingDays();
-                    if (timeOffsList != null)  timeOffsList = settings.getTimeOffs();
-                    if (servicesList != null)  servicesList = settings.getServicesAsList();
+                    if (settings.getWorkingDays() != null) workingDaysMap = settings.getWorkingDays();
+                    if (settings.getTimeOffs() != null)  timeOffsList = settings.getTimeOffsAsList();
+                    if (settings.getServicesAsList() != null)  servicesList = settings.getServicesAsList();
                 }
                 else{ // if no settings in DB -> show error and hide UI
                     hideUI();
@@ -223,7 +232,7 @@ public class ClientBookAppointmentFragment extends Fragment {
                 for (int i = 0; i < servicesList.size(); i++) {
                     servicesNames[i] = servicesList.get(i).toString();
                 }
-
+                // services spinner
                 // https://developer.android.com/develop/ui/views/components/spinner
                 new com.google.android.material.dialog.MaterialAlertDialogBuilder(requireContext())
                         .setTitle("Choose a Service")
@@ -233,7 +242,7 @@ public class ClientBookAppointmentFragment extends Fragment {
                                 selectedService = servicesList.get(which);
                                 tvService.setText(selectedService.getName());
 
-                                selectedTimeLong = -1L;
+                                selectedBookingMinute = -1;
                                 tvTime.setText(R.string.time_hint);
                             }
                         })
@@ -246,15 +255,15 @@ public class ClientBookAppointmentFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 tvNoAvailability.setVisibility(View.INVISIBLE);
-                tvTime.setText("");
+                tvTime.setText(R.string.time_hint);
 
                 final Calendar c = Calendar.getInstance();
                 long nowMillis = System.currentTimeMillis();
 
-                if (selectedDateTime != null) { // seletedDateTime==null if user did not pick a date yet
-                    c.set(Calendar.YEAR, selectedDateTime.getYear());
-                    c.set(Calendar.MONTH, selectedDateTime.getMonthValue() - 1);
-                    c.set(Calendar.DAY_OF_MONTH, selectedDateTime.getDayOfMonth());
+                if (selectedDateTimeMidnight != null) { // seletedDateTime==null if user did not pick a date yet
+                    c.set(Calendar.YEAR, selectedDateTimeMidnight.getYear());
+                    c.set(Calendar.MONTH, selectedDateTimeMidnight.getMonthValue() - 1);
+                    c.set(Calendar.DAY_OF_MONTH, selectedDateTimeMidnight.getDayOfMonth());
                 } else {
                     c.setTimeInMillis(nowMillis);
                 }
@@ -262,10 +271,9 @@ public class ClientBookAppointmentFragment extends Fragment {
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                                selectedDateTime = LocalDateTime.of(year, monthOfYear + 1, dayOfMonth, 0, 0);
-                                selectedDateLong = TimeUtils.toLong(selectedDateTime);
-                                selectedTimeLong = -1L;
-                                // getting the day of week of selectedDateTime
+                                selectedDateTimeMidnight = LocalDateTime.of(year, monthOfYear + 1, dayOfMonth, 0, 0);
+                                selectedBookingMinute = -1;
+                                // getting the day of week of selectedDateTimeMidnight
                                 Calendar onDateSetCalendar = Calendar.getInstance();
                                 onDateSetCalendar.set(year, monthOfYear, dayOfMonth);
                                 selectedDayOfWeek = onDateSetCalendar.get(Calendar.DAY_OF_WEEK);
@@ -290,12 +298,17 @@ public class ClientBookAppointmentFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 // checking if user selected service and date
-                if (selectedService == null || selectedDateTime == null){
-                    Toast.makeText(getContext(), "Please select a service and date!", Toast.LENGTH_SHORT).show();
+                if (selectedService == null || selectedDateTimeMidnight == null){
+                    Toast.makeText(getContext(), "Please select a service and date", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if (workingDaysMap == null || workingDaysMap.isEmpty()) {
+                    Toast.makeText(getContext(), "Working hours are not loaded yet", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 // setting the relevant working day object
-                WorkingDay selectedWorkingDay = workingDaysMap.get(String.valueOf(selectedDayOfWeek));
+                WorkingDay selectedWorkingDay = workingDaysMap.get("d" + selectedDayOfWeek);
 
                 if(selectedWorkingDay == null) {
                     Toast.makeText(getContext(), "No working days were found", Toast.LENGTH_SHORT).show();
@@ -307,6 +320,28 @@ public class ClientBookAppointmentFragment extends Fragment {
                     return;
                 }
 
+                ArrayList<Integer> availableBookingMinutes = getAvailableBookingMinutes();
+                if (availableBookingMinutes.isEmpty()){
+                    tvNoAvailability.setVisibility(View.VISIBLE);
+                    return;
+                }
+
+                String[] bookingTimesStrings = new String[availableBookingMinutes.size()];
+                for (int i = 0; i < availableBookingMinutes.size(); i++) {
+                    bookingTimesStrings[i] = TimeUtils.minutesToTimeString(availableBookingMinutes.get(i));
+                }
+                // available appointment booking times spinner
+                // https://developer.android.com/develop/ui/views/components/spinner
+                new com.google.android.material.dialog.MaterialAlertDialogBuilder(requireContext())
+                        .setTitle("Choose time")
+                        .setItems(bookingTimesStrings, new android.content.DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(android.content.DialogInterface dialog, int which) {
+                                selectedBookingMinute = availableBookingMinutes.get(which);
+                                tvTime.setText(bookingTimesStrings[which]);
+                            }
+                        })
+                        .show();
             }
         });
 
@@ -314,7 +349,82 @@ public class ClientBookAppointmentFragment extends Fragment {
         btnConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                tvNoAvailability.setVisibility(View.INVISIBLE);
+                toReturn = false;
+                if (selectedService == null || selectedDateTimeMidnight == null || selectedBookingMinute == -1){
+                    Toast.makeText(getContext(), "Please select a service, date and time", Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
+                if (!getAvailableBookingMinutes().contains(selectedBookingMinute)){ //  validating that time is still available
+                    Toast.makeText(getContext(), "This time is not available anymore", Toast.LENGTH_SHORT).show();
+                    selectedBookingMinute = -1;
+                    tvTime.setText(R.string.time_hint);
+                    return;
+                }
+                else{
+                    progressBar.setVisibility(View.VISIBLE);
+
+                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                    if (user == null){
+                        progressBar.setVisibility(View.GONE);
+                        Toast.makeText(getContext(), "User not logged in", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    String userId = user.getUid();
+                    DatabaseReference ref = db.getReference("users").child(userId);;
+                    // getting user details from DB
+                    ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            progressBar.setVisibility(View.GONE);
+                            User user = snapshot.getValue(User.class);
+                            String clientUid = user.getUid();
+                            String clientName = user.getName();
+                            String clientPhone = user.getPhone();
+                            String serviceId = selectedService.getId();
+                            String serviceName = selectedService.getName();
+
+                            LocalDateTime dtStart = selectedDateTimeMidnight.plusMinutes(selectedBookingMinute);
+                            LocalDateTime dtEnd = dtStart.plusMinutes(selectedService.getDurationMinutes());
+                            long startDateTime = TimeUtils.toLong(dtStart);
+                            long endDateTime = TimeUtils.toLong(dtEnd);
+
+                            // write appointment to DB
+                            progressBar.setVisibility(View.VISIBLE);
+                            Appointment newAppointment = Appointment.create(clientUid, clientName, clientPhone, serviceName, serviceId, startDateTime, endDateTime);
+                            appointmentsRef.child(newAppointment.getId()).setValue(newAppointment).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            progressBar.setVisibility(View.GONE);
+                                            tvNoAvailability.setVisibility(View.INVISIBLE);
+                                            tvService.setText(R.string.service_hint);
+                                            tvDate.setText(R.string.date_hint);
+                                            tvTime.setText(R.string.time_hint);
+                                            selectedService = null;
+                                            selectedDateTimeMidnight = null;
+                                            selectedBookingMinute = -1;
+                                            selectedDayOfWeek = -1;
+                                            Toast.makeText(v.getContext(), "Appointment booked successfully", Toast.LENGTH_SHORT).show();
+                                        }
+                                    })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            progressBar.setVisibility(View.GONE);
+                                            tvNoAvailability.setVisibility(View.INVISIBLE);
+                                            Toast.makeText(v.getContext(), "Failed booking appointment: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                                        }
+                                    });
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+                            progressBar.setVisibility(View.GONE);
+                            Toast.makeText(getContext(), "Failed booking appointment: " + error.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
             }
         });
 
@@ -330,83 +440,68 @@ public class ClientBookAppointmentFragment extends Fragment {
         layout.setVisibility(View.GONE);
     }
 
-    private ArrayList<TimeWindow> getAvailableTimeWindowsForAppointment(){
-//        ArrayList<TimeWindow> blockedTimeWindows = new ArrayList<>();
-//
-//        for (Appointment appointment : appointmentsList){
-//            // filtering non cancelled appointments that are on the same date as selected date
-//            if (!appointment.getCancelled() && appointment.getStartDateTimeObj().toLocalDate().equals(selectedDateTime.toLocalDate())){
-//                long start = appointment.getStartDateTime();
-//                long end = appointment.getEndDateTime();
-//
-//                blockedTimeWindows.add(new TimeWindow(start, end));
-//            }
-//        }
-//
-//        WorkingDay selectedWorkingDay = workingDaysMap.get(String.valueOf(selectedDayOfWeek));
-//        ArrayList<Break> breaksForSelectedDay = new ArrayList<>();
-//        int workingDayStartMinute = selectedWorkingDay.getStartMinute();
-//        int workingDayEndMinute = selectedWorkingDay.getEndMinute();
-//
-//        for (Break br : selectedWorkingDay.getBreaks()){
-//            long start = TimeUtils.addMinutesToDate(workingDayStartMinute, br.getStartMinute());
-//            long end = TimeUtils.addMinutesToDate(workingDayStartMinute, br.getEndMinute());
-//
-//            blockedTimeWindows.add(new TimeWindow(start, end));
-//        }
-//
-//        for (TimeOff timeOff: timeOffsList){
-//            long startTimeOff = timeOff.getStartDateTime();
-//            long endTimeOff = timeOff.getEndDateTime();
-//            long start = Math.max(startTimeOff, workingDayStartMinute);
-//            long end = Math.min(endTimeOff, workingDayEndMinute);
-//
-//            blockedTimeWindows.add(new TimeWindow(start, end));
-//        }
-//
-//
-//
-//        // setting the relevant working day object
-//        WorkingDay selectedWorkingDay = workingDaysMap.get(String.valueOf(selectedDayOfWeek));
-//
-//
-//        ArrayList<Break> breaksForSelectedDay = new ArrayList<>();
-//        int selectedServiceDuration = selectedService.getDurationMinutes();
-//
-//        // sorting the lists
-//        appointmentsSelectedDate.sort((a1, a2) -> Long.compare(a1.getStartDateTime(),a2.getStartDateTime()));
-//        relevantTimeOffs.sort((t1, t2) -> Long.compare(t1.getStartDateTime(),t2.getStartDateTime()));
-//        breaksForSelectedDay.sort((b1, b2) -> Integer.compare(b1.getStartMinute(), b2.getStartMinute()));
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//        return availableTimeWindows;
-
-        ArrayList<TimeWindow> blockedMinutes = new ArrayList<>(); // list of blocked time windows in current selected date       blocked = appointments/timeoffs/breaks
+    private ArrayList<Integer> getAvailableBookingMinutes() {
+        ArrayList<TimeWindow> blockedTimeWindows = new ArrayList<>(); // list of blocked time windows in current selected date       blocked = appointments/timeoffs/breaks
         // setting the relevant working day object
-        WorkingDay selectedWorkingDay = workingDaysMap.get(String.valueOf(selectedDayOfWeek));
+        WorkingDay selectedWorkingDay = workingDaysMap.get("d" + selectedDayOfWeek);
 
-        int dayStart = selectedWorkingDay.getStartMinute();
-        int dayEnd = selectedWorkingDay.getEndMinute();
-        int duration = selectedService.getDurationMinutes();
+        if (selectedWorkingDay == null || selectedService == null)
+            return new ArrayList<>();
 
+        // blocked time windows from other appointments booked at selectedDate
         for (Appointment appointment : appointmentsList) {
-            if (!appointment.getCancelled() && appointment.getStartDateTimeObj().toLocalDate().equals(selectedDateTime.toLocalDate())){
-                int start = appointment.getStartDateTimeObj().getHour() * 60 + appointment.getStartDateTimeObj().getMinute();
-                int end = start + appointment.getDurationMinutes();
-                blockedMinutes.add(new TimeWindow(start, end));
+            if (!appointment.getCancelled() && appointment.getStartDateTimeObj().toLocalDate().equals(selectedDateTimeMidnight.toLocalDate())) {
+                int startMinute = appointment.getStartDateTimeObj().getHour() * 60 + appointment.getStartDateTimeObj().getMinute();
+                int endMinute = startMinute + appointment.getDurationMinutes();
+                blockedTimeWindows.add(new TimeWindow(startMinute, endMinute));
             }
         }
-
+        // blocked time windows from breaks
         for (Break br : selectedWorkingDay.getBreaks()) {
-            blockedMinutes.add(new TimeWindow(br.getStartMinute(), br.getEndMinute()));
+            blockedTimeWindows.add(new TimeWindow(br.getStartMinute(), br.getEndMinute()));
         }
+
+        // blocked time windows from time offs
+        LocalDateTime dayStart = LocalDateTime.of(selectedDateTimeMidnight.toLocalDate(), selectedDateTimeMidnight.toLocalTime()); // selectedDate at 00:00
+        LocalDateTime dayEnd = selectedDateTimeMidnight.plusHours(23).plusMinutes(59); // selectedDate at 23:59
+        for (TimeOff timeOff : timeOffsList) {
+            LocalDateTime timeOffStart = timeOff.getStartDateTimeObj();
+            LocalDateTime timeOffEnd = timeOff.getEndDateTimeObj();
+            if (!(timeOffEnd.isBefore(dayStart) || timeOffStart.isAfter(dayEnd))) {
+                // intersection between timeOff and current date
+                LocalDateTime intersectionStart = timeOffStart.isBefore(dayStart) ? dayStart : timeOffStart;
+                LocalDateTime intersectionEnd = timeOffEnd.isAfter(dayEnd) ? dayEnd : timeOffEnd;
+
+                if (intersectionStart.isBefore(intersectionEnd)) {
+                    int startMinute = intersectionStart.getHour() * 60 + intersectionStart.getMinute();
+                    int endMinute = intersectionEnd.getHour() * 60 + intersectionEnd.getMinute();
+                    blockedTimeWindows.add(new TimeWindow(startMinute, endMinute));
+                }
+            }
+        }
+        // calculating available booking minutes
+        ArrayList<Integer> availableBookingMinutes = new ArrayList<>();
+        int workingDayStartMinute = selectedWorkingDay.getStartMinute();
+        int workingDayEndMinute = selectedWorkingDay.getEndMinute();
+        int serviceDuration = selectedService.getDurationMinutes();
+        int currTime = workingDayStartMinute;
+
+        while (currTime + serviceDuration <= workingDayEndMinute) {
+            boolean isBlocked = false;
+            for (TimeWindow blockedTimeWindow : blockedTimeWindows) {
+                if (!(currTime + serviceDuration <= blockedTimeWindow.start || currTime >= blockedTimeWindow.end)) {
+                    isBlocked = true;
+                    break;
+                }
+            }
+            if (!isBlocked) {
+                availableBookingMinutes.add(currTime);
+            }
+            currTime += 15;
+        }
+
+        Collections.sort(availableBookingMinutes);
+        return availableBookingMinutes;
     }
 
 }
