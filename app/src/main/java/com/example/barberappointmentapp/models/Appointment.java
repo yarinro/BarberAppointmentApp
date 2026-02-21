@@ -3,6 +3,9 @@ import com.google.firebase.database.Exclude;
 import com.example.barberappointmentapp.utils.TimeUtils;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Appointment {
     private String id;
@@ -139,10 +142,15 @@ public class Appointment {
         long now = TimeUtils.now();
         return startDateTime <= now && now < endDateTime;
     }
-    @Exclude
-    // Returns true if the appointment can be cancelled - not cancelled and in the future
-    public boolean canBeCancelled() {
-        return !cancelled && isFuture();
-    }
+
+
+//    @Exclude
+//    // checks:
+//    // 1. if the appointment is not overlapping and collides with other appointments
+//    // 2. if appointment is not in the past + in the future
+//    // 3. if its
+//    public boolean isAppointmentCanBeBooked(ArrayList<Appointment> appointments, HashMap<String, WorkingDay> workingDays, ArrayList<TimeOff> timeOffs) {
+//
+//    }
 }
 

@@ -73,4 +73,19 @@ public final class TimeUtils {
         // 1 day = 24 hours * 60 minutes * 60 seconds * 1000 milliseconds
         return (long) days * 24L * 60L * 60L * 1000L;
     }
+
+
+
+    public static long addMinutesToDate(long dateOnlyLong, int totalMinutes) {
+        int hours = totalMinutes / 60;
+        int mins = totalMinutes % 60;
+
+        // striping the zeros
+        long yyyymmdd = dateOnlyLong;
+        if (String.valueOf(dateOnlyLong).length() > 8) {
+            yyyymmdd = dateOnlyLong / 10000;
+        }
+
+        return (yyyymmdd * 10000) + (hours * 100) + mins;
+    }
 }

@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 import com.example.barberappointmentapp.R;
 import com.example.barberappointmentapp.ui.main.MainActivity;
@@ -71,7 +72,7 @@ public class BarberHomeFragment extends Fragment {
 
         //----------------------------------------------BUTTONS----------------------------------------------------------------------------
         // Sign out button
-        Button btnSignOut = view.findViewById(R.id.btn_barber_sign_out);
+        ImageButton btnSignOut = view.findViewById(R.id.btn_barber_sign_out);
         btnSignOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -69,9 +69,6 @@ public class ServicesAdapter extends RecyclerView.Adapter<ServicesAdapter.myView
                                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override
                                                 public void onSuccess(Void aVoid) {
-                                                    servicesList.remove(position); // remove from the list after removing from DB
-                                                    // https://developer.android.com/reference/androidx/recyclerview/widget/RecyclerView.Adapter#notifyDataSetChanged()
-                                                    notifyDataSetChanged(); // user removed an item -> notify the change
                                                     Toast.makeText(v.getContext(), "Service removed successfully", Toast.LENGTH_SHORT).show();
                                                 }
                                             })

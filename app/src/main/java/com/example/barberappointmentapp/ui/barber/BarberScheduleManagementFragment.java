@@ -192,6 +192,8 @@ public class BarberScheduleManagementFragment extends Fragment {
                             breaksList.clear(); // clear the adapter's list before loading new data
                             if (workingDay.getBreaks() != null){
                                 breaksList.addAll(workingDay.getBreaks()); // add the new data to the adapter's list
+                                breaksList.sort((b1, b2) -> Integer.compare(b1.getStartMinute(), b2.getStartMinute()));
+
                             }
                             adapter.notifyDataSetChanged();
                             // if there are no breaks on work day- show "no breaks" text
@@ -340,6 +342,8 @@ public class BarberScheduleManagementFragment extends Fragment {
                         // creating the new break to add to adapter's list
                         Break newBreak = Break.create(selectedDay + 1, startTotal, endTotal);
                         breaksList.add(newBreak);
+                        breaksList.sort((b1, b2) -> Integer.compare(b1.getStartMinute(), b2.getStartMinute()));
+
                         adapter.notifyDataSetChanged();
                         tvNoBreaks.setVisibility(View.GONE);
 

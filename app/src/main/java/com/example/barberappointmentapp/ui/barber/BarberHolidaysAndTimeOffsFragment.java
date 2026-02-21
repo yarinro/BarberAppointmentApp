@@ -22,6 +22,7 @@ import com.example.barberappointmentapp.adapters.ServicesAdapter;
 import com.example.barberappointmentapp.adapters.TimeOffsAdapter;
 import com.example.barberappointmentapp.models.Service;
 import com.example.barberappointmentapp.models.TimeOff;
+import com.google.android.material.button.MaterialButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -99,7 +100,7 @@ public class BarberHolidaysAndTimeOffsFragment extends Fragment {
         //----------------------------------------------------------------------------------------
         TextView tvTitle = view.findViewById(R.id.tv_time_offs_title);
         TextView tvNoTimeOffsYet = view.findViewById(R.id.tv_no_time_offs_yet);
-        ImageButton btnAddTimeOff = view.findViewById(R.id.btn_add_time_off);
+        MaterialButton btnAddTimeOff = view.findViewById(R.id.btn_add_time_off);
         ProgressBar progress = view.findViewById(R.id.progress_bar_time_offs);
 
         // recyclerview + adapter
@@ -123,7 +124,9 @@ public class BarberHolidaysAndTimeOffsFragment extends Fragment {
                 timeOffsList.clear();
                 for (DataSnapshot data : snapshot.getChildren()) {
                     TimeOff timeoff = data.getValue(TimeOff.class);
-                    timeOffsList.add(timeoff);
+                    if (timeoff.isHappeningNow() || timeoff.isFuture()){ // adding time offs that are happening now or in the future
+                        timeOffsList.add(timeoff);
+                    }
                 }
                 timeOffsList.sort((t1, t2) -> Long.compare(t1.getStartDateTime(), t2.getStartDateTime()));
 

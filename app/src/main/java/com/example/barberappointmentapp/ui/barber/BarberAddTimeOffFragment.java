@@ -28,6 +28,8 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import org.w3c.dom.Text;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Calendar;
@@ -98,7 +100,7 @@ public class BarberAddTimeOffFragment extends Fragment {
             }
         });
         //----------------------------------------------------------------------------------------
-        EditText tvSelectedDateStart = view.findViewById(R.id.tvSelectedDateStart);
+        TextView tvSelectedDateStart = view.findViewById(R.id.tvSelectedDateStart);
         TextView tvSelectedDateEnd = view.findViewById(R.id.tvSelectedDateEnd);
         EditText etTimeOffReason = view.findViewById(R.id.etTimeOffReason);
         TextView tvError = view.findViewById(R.id.tvErrorAddTimeOff);

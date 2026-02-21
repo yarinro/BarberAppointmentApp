@@ -91,7 +91,7 @@ public class BarberAddServiceFragment extends Fragment {
         EditText etServiceName = view.findViewById(R.id.etServiceName);
         EditText etServicePrice = view.findViewById(R.id.etServicePrice);
         EditText etServiceDuration = view.findViewById(R.id.etServiceDuration);
-        MaterialButton btnAddService = view.findViewById(R.id.btn_add_service);
+        MaterialButton btnAddService = view.findViewById(R.id.btnSaveService);
         ProgressBar progress = view.findViewById(R.id.progress_add_service);
         TextView tvError = view.findViewById(R.id.tvErrorAddService);
         TextView tvSuccess = view.findViewById(R.id.tvSuccessAddService);

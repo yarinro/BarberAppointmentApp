@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -110,7 +111,7 @@ public class ClientHomeFragment extends Fragment {
         }
         //----------------------------------------------BUTTONS----------------------------------------------------------------------------
         // Sign out button
-        Button btnSignOut = view.findViewById(R.id.btn_client_sign_out);
+        ImageButton btnSignOut = view.findViewById(R.id.btn_client_sign_out);
         btnSignOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -151,29 +152,6 @@ public class ClientHomeFragment extends Fragment {
             }
         });
 
-        Button btnAddReview = view.findViewById(R.id.btn_client_add_review);
-        btnAddReview.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Navigation.findNavController(view).navigate(R.id.action_clientHomeFragment_to_clientAddReviewFragment);
-            }
-        });
-
-        Button btnGallery = view.findViewById(R.id.btn_client_gallery);
-        btnGallery.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Navigation.findNavController(view).navigate(R.id.action_clientHomeFragment_to_galleryFragment);
-            }
-        });
-
-        Button btnReviews = view.findViewById(R.id.btn_client_reviews);
-        btnReviews.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Navigation.findNavController(view).navigate(R.id.action_clientHomeFragment_to_reviewsFragment);
-            }
-        });
         //--------------------------------------------------------------------------------------------------------------------------
 
 

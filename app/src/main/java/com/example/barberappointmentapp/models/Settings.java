@@ -90,4 +90,11 @@ public class Settings {
     public void setServices(Map<String, Service> services) {
         this.services = services;
     }
+
+    @Exclude
+    public ArrayList<Service> getServicesAsList() {
+        if (services == null) return new ArrayList<>();
+
+        return new ArrayList<>(services.values());
+    }
 }

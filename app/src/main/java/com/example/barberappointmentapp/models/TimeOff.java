@@ -90,4 +90,11 @@ public class TimeOff {
     public boolean isPast() {
         return endDateTime <= TimeUtils.now();
     }
+
+    @Exclude
+    // Returns true if the timeoff is happening right now
+    public boolean isHappeningNow() {
+        long now = TimeUtils.now();
+        return startDateTime <= now && now < endDateTime;
+    }
 }

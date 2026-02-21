@@ -121,6 +121,7 @@ public class BarberShopSettingsFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 progressBar.setVisibility(View.GONE);
+                showUI();
                     Settings settings = snapshot.getValue(Settings.class);
                     if (settings != null) {
                         etShopName.setText(settings.getBarbershopName());
@@ -136,7 +137,6 @@ public class BarberShopSettingsFragment extends Fragment {
                         etAboutUs.setText("");
                         etMaxDays.setText("");
                     }
-                showUI();
             }
 
             @Override

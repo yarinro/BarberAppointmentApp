@@ -70,9 +70,6 @@ public class TimeOffsAdapter extends RecyclerView.Adapter<TimeOffsAdapter.myView
                                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override
                                                 public void onSuccess(Void aVoid) {
-                                                    timeoffsList.remove(position); // remove from the list after removing from DB
-                                                    // https://developer.android.com/reference/androidx/recyclerview/widget/RecyclerView.Adapter#notifyDataSetChanged()
-                                                    notifyDataSetChanged(); // user removed an item -> notify the change
                                                     Toast.makeText(v.getContext(), "Time off removed successfully", Toast.LENGTH_SHORT).show();
                                                 }
                                             })
@@ -105,8 +102,8 @@ public class TimeOffsAdapter extends RecyclerView.Adapter<TimeOffsAdapter.myView
         TimeOff timeoff = timeoffsList.get(position);
 
         holder.tvReason.setText(timeoff.getReason());
-        holder.tvStartDateTime.setText(TimeUtils.formatDate(timeoff.getStartDateTime()));
-        holder.tvEndDateTime.setText(TimeUtils.formatDate(timeoff.getEndDateTime()));;
+        holder.tvStartDateTime.setText("Start: " + TimeUtils.formatDate(timeoff.getStartDateTime()) + " " + TimeUtils.formatHHmm(timeoff.getStartDateTime()));
+        holder.tvEndDateTime.setText("End: " + TimeUtils.formatDate(timeoff.getEndDateTime()) + " " + TimeUtils.formatHHmm(timeoff.getEndDateTime()));
     }
 
     @Override
