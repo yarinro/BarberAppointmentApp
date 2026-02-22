@@ -65,26 +65,7 @@ public class WelcomeFragment extends Fragment {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_welcome, container, false);
 
-        //----------------------------------------------BUTTONS----------------------------------------------------------------------------
-
-        // Debugging button - Login as client. DO NOT FORGET TO ERASE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        Button btnLoginAsClient = view.findViewById(R.id.btn_login_as_client);
-        btnLoginAsClient.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Navigation.findNavController(view).navigate(R.id.action_welcomeFragment_to_clientHomeFragment);
-            }
-        });
-
-        // Debugging button - Login as client. DO NOT FORGET TO ERASE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        Button btnLoginAsBarber = view.findViewById(R.id.btn_login_as_barber);
-        btnLoginAsBarber.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Navigation.findNavController(view).navigate(R.id.action_welcomeFragment_to_barberHomeFragment);
-            }
-        });
-
+        //----------------------------------------------BUTTONS---------------------------------------------------------------------------
         Button btnLogin = view.findViewById(R.id.btn_welcome_login);
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override

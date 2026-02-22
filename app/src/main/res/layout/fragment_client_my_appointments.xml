@@ -4,12 +4,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ui.client.ClientMyAppointmentsFragment">
+    tools:context=".ui.client.ClientMyAppointmentsFragment"
+    android:background="@color/white">
 
     <ImageButton
         android:id="@+id/btn_back_client_my_appointments"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:src="@drawable/ic_arrow_back"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:contentDescription="@string/cd_back" />
@@ -19,7 +20,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/client_my_appointments_title"
-        android:textSize="34sp" />
+        android:gravity="center_horizontal"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:textSize="45sp" />
 
     <ProgressBar
         android:id="@+id/progress_appointments"

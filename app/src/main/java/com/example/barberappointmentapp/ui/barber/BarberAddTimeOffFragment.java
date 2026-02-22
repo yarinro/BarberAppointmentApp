@@ -200,7 +200,6 @@ public class BarberAddTimeOffFragment extends Fragment {
                 }
 
                 progress.setVisibility(View.VISIBLE);
-
                 TimeOff newTimeoff = TimeOff.create(startDateTime, endDateTime, reason);
 
                 FirebaseDatabase db = FirebaseDatabase.getInstance();

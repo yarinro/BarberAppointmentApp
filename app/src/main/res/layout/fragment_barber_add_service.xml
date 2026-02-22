@@ -3,9 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:padding="20dp"
-    tools:context=".ui.barber.BarberAddServiceFragment" >
+    tools:context=".ui.barber.BarberAddServiceFragment"
+    android:background="@color/white">
 
     <ImageButton
         android:id="@+id/btn_back_add_service"
@@ -20,9 +22,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/barber_add_service_title"
-        android:textSize="34sp"
+        android:textSize="48sp"
         android:gravity="center"
-        android:layout_marginBottom="32dp" />
+        android:layout_marginBottom="32dp"
+        android:textStyle="bold"
+        android:textColor="@color/black" />
 
     <EditText
     android:id="@+id/etServiceName"
@@ -32,7 +36,7 @@
     android:hint="@string/hint_service_name"
     android:padding="12dp"
     android:inputType="textCapWords"
-    android:layout_marginBottom="12dp" />
+    android:layout_marginBottom="30dp" />
 
     <EditText
     android:id="@+id/etServicePrice"
@@ -42,7 +46,7 @@
     android:hint="@string/hint_zero"
     android:padding="12dp"
     android:inputType="number"
-    android:layout_marginBottom="12dp" />
+    android:layout_marginBottom="30dp" />
 
     <EditText
     android:id="@+id/etServiceDuration"
@@ -68,14 +72,17 @@
         android:visibility="invisible" />
 
     <Button
-    android:id="@+id/btnSaveService"
-    android:layout_height="wrap_content"
-    android:layout_width="220dp"
-    android:layout_marginTop="12dp"
-    android:layout_gravity="center_horizontal"
-    android:backgroundTint="@android:color/black"
-    android:text="@string/barber_add_service_fragment_btn"
-    android:textColor="@android:color/white" />
+        android:id="@+id/btnSaveService"
+        android:layout_height="wrap_content"
+        android:layout_width="220dp"
+        android:layout_marginTop="12dp"
+        android:layout_gravity="center_horizontal"
+        android:backgroundTint="@android:color/black"
+        android:text="@string/barber_add_service_fragment_btn"
+        android:textColor="@android:color/white"
+        android:textStyle="bold"
+        app:cornerRadius="24dp"
+        android:textSize="20sp"/>
 
     <TextView
         android:id="@+id/tvSuccessAddService"

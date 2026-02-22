@@ -3,6 +3,7 @@ package com.example.barberappointmentapp.ui.barber;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
@@ -13,9 +14,30 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.barberappointmentapp.R;
+import com.example.barberappointmentapp.models.Appointment;
+import com.example.barberappointmentapp.models.Service;
+import com.example.barberappointmentapp.models.Settings;
+import com.example.barberappointmentapp.models.WorkingDay;
 import com.example.barberappointmentapp.ui.main.MainActivity;
+import com.example.barberappointmentapp.utils.TimeUtils;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -65,8 +87,7 @@ public class BarberHomeFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_barber_home, container, false);
 
@@ -101,6 +122,92 @@ public class BarberHomeFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Navigation.findNavController(view).navigate(R.id.action_barberHomeFragment_to_barberAppointmentsFragment);
+            }
+        });
+
+        Button btnSettings = view.findViewById(R.id.btn_barber_home_tosettings);
+        btnSettings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Navigation.findNavController(view).navigate(R.id.action_barberHomeFragment_to_barberSettingsFragment);
+            }
+        });
+
+        TextView tvClientName = view.findViewById(R.id.tvClientName);
+        TextView tvClientPhone = view.findViewById(R.id.tvClientPhone);
+        TextView tvServiceName = view.findViewById(R.id.tvServiceName);
+        TextView tvDateTime = view.findViewById(R.id.tvDateTime);
+        //--------------------------------------------------------------------------------------------------------------------------
+        TextView tvAppointmentsToday = view.findViewById(R.id.tvAppointmentsToday);
+        ProgressBar progressBar = view.findViewById(R.id.barberHomeProgress);
+        LinearLayout barberHomeLayout = view.findViewById(R.id.barberHomeLayout);
+
+        progressBar.setVisibility(View.VISIBLE);
+        barberHomeLayout.setVisibility(View.INVISIBLE);
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+        // get appointments from firebase
+        DatabaseReference appointmentsRef = database.getReference("appointments");
+
+        appointmentsRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                ArrayList<Appointment> appointments = new ArrayList<>();
+                progressBar.setVisibility(View.GONE);
+                barberHomeLayout.setVisibility(View.VISIBLE);
+
+                ArrayList<Appointment> todayAppointments = new ArrayList<>();
+                ArrayList<Appointment> futureAppointments = new ArrayList<>();
+                LocalDate todayDate = LocalDate.now();
+
+                for (DataSnapshot data : snapshot.getChildren()) {
+                    Appointment appointment = data.getValue(Appointment.class);
+                    if (appointment != null) appointments.add(appointment);
+                }
+
+                for (Appointment appointment : appointments){
+                    LocalDate appointmentDate = appointment.getStartDateTimeObj().toLocalDate();
+                    if (appointmentDate.equals(todayDate) && !appointment.getCancelled()){
+                        todayAppointments.add(appointment);
+                    }
+                    if (appointment.isFuture()){
+                        futureAppointments.add(appointment);
+                    }
+                }
+                // updating appointments today
+                int appointmentsToday = todayAppointments.size();
+                tvAppointmentsToday.setText(String.valueOf(appointmentsToday));
+
+                futureAppointments.sort((a, b) -> Long.compare(a.getStartDateTime(), b.getStartDateTime()));
+                if (futureAppointments.isEmpty()){
+                    tvClientName.setText("No booked appointments\nyet for today...");
+                    tvClientPhone.setText("");
+                    tvServiceName.setText("");
+                    tvDateTime.setText("");
+                }
+                else{
+                    Appointment nextAppointment = futureAppointments.get(0);
+                    tvClientName.setText(nextAppointment.getClientName());
+                    tvClientPhone.setText(nextAppointment.getClientPhone());
+                    tvServiceName.setText(nextAppointment.getServiceName());
+                    tvDateTime.setText(TimeUtils.formatDateAndTimeRange(nextAppointment.getStartDateTime(), nextAppointment.getEndDateTime()));
+                }
+
+                barberHomeLayout.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                progressBar.setVisibility(View.GONE);
+                tvAppointmentsToday.setText("");
+                tvClientName.setText("Error loading appointments...");
+                tvClientPhone.setText("");
+                tvServiceName.setText("");
+                tvDateTime.setText("");
+                barberHomeLayout.setVisibility(View.VISIBLE);
+
+                Toast.makeText(getContext(), "error: " + error.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
 

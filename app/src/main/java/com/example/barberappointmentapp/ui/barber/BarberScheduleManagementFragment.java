@@ -257,6 +257,7 @@ public class BarberScheduleManagementFragment extends Fragment {
                             Toast.makeText(getContext(), "Breaks must not overlap!", Toast.LENGTH_SHORT).show();
                             return;
                         }
+                        previous = current;
                     }
                 }
                 // writing updated WorkingDay object to firebase

@@ -3,7 +3,7 @@
     <string name="app_name">Barber Appointment App</string>
 
     <!-- WelcomeFragment: entry screen where user selects role -->
-    <string name="welcome_title">Barber Appointment</string>
+    <string name="welcome_title">Barber\nAppointment\nBooking\n✂️</string>
     <string name="welcome_subtitle">Choose your role</string>
     <string name="welcome_client_btn">Login as Client Debug</string>
     <string name="welcome_barber_btn">Login as Barber Debug</string>
@@ -27,8 +27,8 @@
 
     <!-- ClientHomeFragment: main menu for client actions -->
     <string name="client_home_title">Client Home</string>
-    <string name="client_home_book_btn">Book Appointment</string>
-    <string name="client_home_my_appointments_btn">My Appointments</string>
+    <string name="client_home_book_btn">Book Appointment ✂️</string>
+    <string name="client_home_my_appointments_btn">My Appointments 🗓️</string>
     <string name="client_home_add_review_btn">Add Review</string>
     <string name="client_home_gallery_btn">Barber\'s Gallery</string>
     <string name="client_home_reviews">Reviews</string>
@@ -57,11 +57,8 @@
 
     <!-- BarberHomeFragment: main menu for barber actions -->
     <string name="barber_home_title">Barber Home</string>
-    <string name="barber_home_appointments_btn">View Appointments</string>
-    <string name="barber_home_upload_btn">Upload to Gallery</string>
-    <string name="barber_home_gallery_btn">Gallery</string>
-    <string name="barber_home_reviews_btn">View Reviews</string>
-    <string name="barber_home_schedule_management_btn">Schedule Management</string>
+    <string name="barber_home_appointments_btn">All Appointments 📅</string>
+    <string name="barber_home_to_settings">Settings ⚙️</string>
     <string name="barber_home_services_and_prices_btn">Services and Prices Management</string>
     <string name="barber_home_ui_btn">UI Theme</string>
     <string name="barber_appointments_empty">No booked appointments yet.</string>
@@ -85,7 +82,7 @@
     <string name="barber_upload_to_gallery_fragment_title">Add image</string>
 
     <!-- BarberServicesAndPricesFragment -->
-    <string name="barber_services_and_prices_title">Services and Prices Management</string>
+    <string name="barber_services_and_prices_title">Services &amp; Prices Management</string>
     <string name="barber_services_and_prices_add_service_btn">Add service</string>
     <string name="no_services_yet">You have no services yet...</string>
 

@@ -3,14 +3,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    tools:context=".ui.barber.BarberAppointmentsFragment">
+    tools:context=".ui.barber.BarberAppointmentsFragment"
+    android:background="@color/white">
 
 
     <ImageButton
         android:id="@+id/btn_back_barber_appointments"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:src="@drawable/ic_arrow_back"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:contentDescription="@string/cd_back" />
@@ -20,7 +22,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/barber_appointments_title"
-        android:textSize="34sp" />
+        android:textSize="40sp"
+        android:textStyle="bold"
+        android:gravity="center_horizontal"
+        android:textColor="@color/black" />
 
     <ProgressBar
         android:id="@+id/progress_barber_appointments"
@@ -47,7 +52,12 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/barber_appointments_filter_all_upcoming" />
+                android:layout_marginHorizontal="24dp"
+                android:text="@string/barber_appointments_filter_all_upcoming"
+                app:cornerRadius="24dp"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:backgroundTint="@color/black" />
 
             <Button
                 android:id="@+id/btn_pick_date_barber"
@@ -55,7 +65,12 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginStart="8dp"
-                android:text="@string/barber_appointments_filter_pick_date" />
+                android:layout_marginHorizontal="24dp"
+                android:text="@string/barber_appointments_filter_pick_date"
+                app:cornerRadius="24dp"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                app:backgroundTint="@color/black"/>
         </LinearLayout>
 
         <TextView

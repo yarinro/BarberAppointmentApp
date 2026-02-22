@@ -3,6 +3,7 @@ package com.example.barberappointmentapp.models;
 import com.google.firebase.database.Exclude;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Map;
 
 public class Settings {
@@ -102,5 +103,21 @@ public class Settings {
     public ArrayList<TimeOff> getTimeOffsAsList() {
         if (timeOffs == null) return new ArrayList<>();
         return new ArrayList<>(timeOffs.values());
+    }
+
+    @Exclude
+    public String getOpeningHours() {
+        if (workingDays == null || workingDays.isEmpty()) return "no opening hours";
+        String output = "";
+        ArrayList<String> sortedKeys = new ArrayList<>(workingDays.keySet());
+        Collections.sort(sortedKeys);
+
+        for (String key : sortedKeys) {
+            WorkingDay day = workingDays.get(key);
+            if (day != null) {
+                output = output + day.toString() + "\n";
+            }
+        }
+        return output.trim();
     }
 }

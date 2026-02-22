@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navgraph"
-    app:startDestination="@id/barberAppointmentsFragment">
+    app:startDestination="@id/welcomeFragment">
 
     <fragment
         android:id="@+id/welcomeFragment"
@@ -16,16 +16,6 @@
         <action
             android:id="@+id/action_welcomeFragment_to_clientSignUpFragment"
             app:destination="@id/clientSignUpFragment" />
-        <action
-            android:id="@+id/action_welcomeFragment_to_barberHomeFragment"
-            app:destination="@id/barberHomeFragment"
-            app:popUpTo="@id/welcomeFragment"
-            app:popUpToInclusive="true" />
-        <action
-            android:id="@+id/action_welcomeFragment_to_clientHomeFragment"
-            app:destination="@id/clientHomeFragment"
-            app:popUpTo="@id/welcomeFragment"
-            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/loginFragment"

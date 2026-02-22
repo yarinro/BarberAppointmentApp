@@ -3,9 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:padding="20dp"
-    tools:context=".ui.barber.BarberAddTimeOffFragment">
+    tools:context=".ui.barber.BarberAddTimeOffFragment"
+    android:background="@color/white" >
 
     <ImageButton
         android:id="@+id/btn_back_add_time_off"
@@ -22,8 +24,9 @@
         android:layout_marginBottom="40dp"
         android:gravity="center"
         android:text="@string/barber_add_time_off_title"
-        android:textSize="34sp"
-        android:textStyle="bold" />
+        android:textSize="50sp"
+        android:textStyle="bold"
+        android:textColor="@color/black" />
 
     <TextView
         android:id="@+id/tvSelectedDateStart"
@@ -76,7 +79,10 @@
         android:layout_gravity="center_horizontal"
         android:backgroundTint="@android:color/black"
         android:text="@string/btn_save_time_off"
-        android:textColor="@android:color/white" />
+        android:textColor="@android:color/white"
+        android:textStyle="bold"
+        app:cornerRadius="24dp"
+        android:textSize="18sp"/>
 
     <TextView
         android:id="@+id/tvSuccessAddTimeOff"

@@ -121,42 +121,58 @@ public class MainActivity extends AppCompatActivity {
         String email = etEmail.getText().toString().trim();
         String password = etPassword.getText().toString();
 
+        boolean toReturn = false;
+
         if (name.isEmpty()) {
             suErrorFullName.setText("* Required");
             suErrorFullName.setVisibility(View.VISIBLE);
-            return;
+            toReturn = true;
+        }
+        else{
+            suErrorFullName.setVisibility(View.INVISIBLE);
         }
         if (phone.isEmpty()) {
             suErrorPhoneNumber.setText("* Required");
             suErrorPhoneNumber.setVisibility(View.VISIBLE);
-            return;
+            toReturn = true;
         }
         // https://developer.android.com/reference/android/util/Patterns#EMAIL_ADDRESS
         else if (!phone.matches("\\d+")){
             suErrorPhoneNumber.setText("Phone number must contain digits only");
             suErrorPhoneNumber.setVisibility(View.VISIBLE);
-            return;
+            toReturn = true;
+        }
+        else{
+            suErrorPhoneNumber.setVisibility(View.INVISIBLE);
         }
         if(email.isEmpty()){
             suErrorEmail.setText("* Required");
             suErrorEmail.setVisibility(View.VISIBLE);
-            return;
+            toReturn = true;
         }
         else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
             suErrorEmail.setText("Invalid email");
             suErrorEmail.setVisibility(View.VISIBLE);
-            return;
+            toReturn = true;
+        }
+        else{
+            suErrorEmail.setVisibility(View.INVISIBLE);
         }
         if(password.isEmpty()){
             suErrorPassword.setText("* Required");
             suErrorPassword.setVisibility(View.VISIBLE);
-            return;
+            toReturn = true;
         }
         else if (password.length() < 6){
             suErrorPassword.setText("Password must be at least 6 characters");
             suErrorPassword.setVisibility(View.VISIBLE);
-            return;
+            toReturn = true;
         }
+        else{
+            suErrorPassword.setVisibility(View.INVISIBLE);
+        }
+        if (toReturn) return;
+
 
         progressBar.setVisibility(View.VISIBLE);
 

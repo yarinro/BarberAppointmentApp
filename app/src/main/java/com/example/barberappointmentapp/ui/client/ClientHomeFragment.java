@@ -7,17 +7,18 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
-import androidx.navigation.fragment.NavHostFragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.barberappointmentapp.R;
+import com.example.barberappointmentapp.models.Settings;
 import com.example.barberappointmentapp.models.User;
 import com.example.barberappointmentapp.ui.main.MainActivity;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -45,6 +46,8 @@ public class ClientHomeFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private boolean userNameLoaded = false, settingsLoaded = false;
+
 
     public ClientHomeFragment() {
         // Required empty public constructor
@@ -78,10 +81,24 @@ public class ClientHomeFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_client_home, container, false);
+
+        TextView tvDisplayShopName = view.findViewById(R.id.tv_display_shop_name);
+        TextView tvDisplayAddress = view.findViewById(R.id.tv_display_address);
+        TextView tvDisplayPhone = view.findViewById(R.id.tv_display_phone);
+        TextView tvDisplayAboutUs = view.findViewById(R.id.tv_display_about_us);
+        TextView tvOpeningHours = view.findViewById(R.id.tv_opening_hours);
+        LinearLayout clientHomeLayout = view.findViewById(R.id.clientHomeLayout);
+        ProgressBar progressBar = view.findViewById(R.id.clientHomeProgress);
+        Button btnMyAppointments = view.findViewById(R.id.btn_client_my_appointments);
+        ImageButton btnSignOut = view.findViewById(R.id.btn_client_sign_out);
+
+
+        progressBar.setVisibility(View.VISIBLE);
+        clientHomeLayout.setVisibility(View.INVISIBLE);
+
         //--------------------------title-------------------------------------
         TextView tvTitle = view.findViewById(R.id.client_home_title);
         tvTitle.setText("");
@@ -92,26 +109,31 @@ public class ClientHomeFragment extends Fragment {
         if (user != null) {
             clientUid = user.getUid();
             DatabaseReference ref = database.getReference("users").child(clientUid);
-            ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            ref.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     User user = snapshot.getValue(User.class);
                     String clientName = user.getName();
                     tvTitle.setText("Hello, " + clientName);
-
-                    tvTitle.setAlpha(0f);
-                    tvTitle.animate().alpha(1f).setDuration(500);
+                    userNameLoaded = true;
+                    checkDataLoaded(progressBar, clientHomeLayout);
                 }
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
-                    Toast.makeText(getContext(), "Failed to get name: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                    progressBar.setVisibility(View.GONE);
+                    clientHomeLayout.setVisibility(View.VISIBLE);
+                    Toast.makeText(getContext(), "Failed to get user name: " + error.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
         }
+        else{
+            progressBar.setVisibility(View.GONE);
+            clientHomeLayout.setVisibility(View.VISIBLE);
+        }
+
         //----------------------------------------------BUTTONS----------------------------------------------------------------------------
         // Sign out button
-        ImageButton btnSignOut = view.findViewById(R.id.btn_client_sign_out);
         btnSignOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -126,8 +148,7 @@ public class ClientHomeFragment extends Fragment {
                                 // call sign out from MainActivity
                                 MainActivity mainActivity =(MainActivity) getActivity();
                                 mainActivity.signOut();
-                                NavHostFragment navHostFragment = (NavHostFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.navgraph);
-                                navHostFragment.getNavController().navigate(R.id.action_clientHomeFragment_to_welcomeFragment);
+                                Navigation.findNavController(view).navigate(R.id.action_clientHomeFragment_to_welcomeFragment);
                             }
                         })
                         .setNegativeButton("No", null) // click no -> listener=null -> close the dialog
@@ -144,18 +165,58 @@ public class ClientHomeFragment extends Fragment {
             }
         });
 
-        Button btnMyAppointments = view.findViewById(R.id.btn_client_my_appointments);
         btnMyAppointments.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Navigation.findNavController(view).navigate(R.id.action_clientHomeFragment_to_clientMyAppointmentsFragment);
             }
         });
-
         //--------------------------------------------------------------------------------------------------------------------------
 
 
+
+        DatabaseReference settingsRef = database.getReference("settings");
+        settingsRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Settings settings = snapshot.getValue(Settings.class);
+                if (settings != null) {
+                    if (settings.getBarbershopName() != null) tvDisplayShopName.setText(settings.getBarbershopName());
+                    if (settings.getAddress() != null) tvDisplayAddress.setText("\uD83D\uDCCD" + settings.getAddress());
+                    if (settings.getPhoneNumber() != null) tvDisplayPhone.setText("\uD83D\uDCDE" + settings.getPhoneNumber());
+                    if (settings.getAboutUs() != null) tvDisplayAboutUs.setText(settings.getAboutUs());
+                    if (settings.getWorkingDays() != null) tvOpeningHours.setText(settings.getOpeningHours());
+
+                    settingsLoaded = true;
+                    checkDataLoaded(progressBar, clientHomeLayout);
+                }
+                else {
+                    progressBar.setVisibility(View.GONE);
+                    clientHomeLayout.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                progressBar.setVisibility(View.GONE);
+                clientHomeLayout.setVisibility(View.VISIBLE);
+                Toast.makeText(getContext(), "Failed to load settings from db" + error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        if (userNameLoaded && settingsLoaded) {
+            progressBar.setVisibility(View.GONE);
+            clientHomeLayout.setVisibility(View.VISIBLE);
+        }
+
         return view;
+    }
+
+    private void checkDataLoaded(ProgressBar pb, View layout) {
+        if (userNameLoaded && settingsLoaded) {
+            pb.setVisibility(View.GONE);
+            layout.setVisibility(View.VISIBLE);
+        }
     }
 }
 
